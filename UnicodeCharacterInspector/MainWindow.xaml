@@ -6,6 +6,7 @@
 		xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:UnicodeCharacterInspector"
         mc:Ignorable="d"
+		TextOptions.TextFormattingMode="Display"
         Title="Unicode character inspector"
 		Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
 		Height="350" Width="525">
@@ -41,7 +42,7 @@
 		</Grid.ColumnDefinitions>
 		<TextBox Grid.ColumnSpan="3" MaxLines="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
 		<ListBox Grid.Row="1" Grid.RowSpan="4" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}" />
-		<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
 		<Label Grid.Row="2" Grid.Column="1" Content="Code point" />
 		<TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SelectedCharacterInfo.CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
 		<Label Grid.Row="3" Grid.Column="1" Content="Category" />
