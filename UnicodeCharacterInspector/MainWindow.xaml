@@ -6,11 +6,11 @@
 		xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:UnicodeCharacterInspector"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Unicode character inspector"
 		Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
 		Height="350" Width="525">
 	<Window.DataContext>
-		<local:CharacterInfoViewModel />
+		<local:CharacterInspectorViewModel />
 	</Window.DataContext>
     <Grid Margin="10">
 		<Grid.Resources>
@@ -21,6 +21,9 @@
 				<Setter Property="Margin" Value="3" />
 			</Style>
 			<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ResourceKey={x:Type TextBlock}}">
+				<Setter Property="Margin" Value="3" />
+			</Style>
+			<Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource ResourceKey={x:Type ListBox}}">
 				<Setter Property="Margin" Value="3" />
 			</Style>
 		</Grid.Resources>
@@ -34,20 +37,14 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<TextBox Grid.Row="0" Grid.ColumnSpan="2" MaxLength="2" MaxLines="1">
-			<TextBox.Text>
-				<Binding Path="Character" UpdateSourceTrigger="PropertyChanged">
-					<Binding.ValidationRules>
-						<ExceptionValidationRule />
-					</Binding.ValidationRules>
-				</Binding>
-			</TextBox.Text>
-		</TextBox>
-		<TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Label Grid.Row="2" Grid.Column="0" Content="Code point" />
-		<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
-		<Label Grid.Row="3" Grid.Column="0" Content="Category" />
-		<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Category}" VerticalAlignment="Center" />
+		<TextBox Grid.ColumnSpan="3" MaxLines="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
+		<ListBox Grid.Row="1" Grid.RowSpan="4" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}" />
+		<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		<Label Grid.Row="2" Grid.Column="1" Content="Code point" />
+		<TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SelectedCharacterInfo.CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
+		<Label Grid.Row="3" Grid.Column="1" Content="Category" />
+		<TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SelectedCharacterInfo.Category}" VerticalAlignment="Center" />
     </Grid>
 </Window>
