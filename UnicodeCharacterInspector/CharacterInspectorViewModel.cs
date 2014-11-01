@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnicodeInformation;
 
 namespace UnicodeCharacterInspector
 {
@@ -118,16 +119,18 @@ namespace UnicodeCharacterInspector
 				int index = 0;
 				if (!string.IsNullOrEmpty(value))
 				{
-					var enumerator = StringInfo.GetTextElementEnumerator(value);
-
-					while (enumerator.MoveNext())
+					foreach (int codePoint in value.AsCodePointEnumerable())
 					{
 						if (index >= characters.Length) Array.Resize(ref characters, characters.Length * 2);
 
 						// We don't replace pre-existing elements if they already have the correct value.
 						// This should help a bit with GC, by making new string elements as short-lived as possible.
-						string element = enumerator.GetTextElement();
-						if (characters[index] != element) characters[index] = element;
+						string oldCodePointValue = characters[index];
+
+						if (oldCodePointValue == null || char.ConvertToUtf32(oldCodePointValue, 0) != codePoint)
+						{
+							characters[index] = char.ConvertFromUtf32(codePoint);
+						}
 
 						++index;
 					}
