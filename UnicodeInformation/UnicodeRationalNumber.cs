@@ -15,14 +15,7 @@ namespace UnicodeInformation
 
 			int fractionBarIndex = s.IndexOf('/');
 
-			try
-			{
-				return new UnicodeRationalNumber(long.Parse(fractionBarIndex >= 0 ? s.Substring(0, fractionBarIndex) : s), fractionBarIndex >= 0 ? byte.Parse(s.Substring(fractionBarIndex + 1)) : (byte)1);
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
+			return new UnicodeRationalNumber(long.Parse(fractionBarIndex >= 0 ? s.Substring(0, fractionBarIndex) : s), fractionBarIndex >= 0 ? byte.Parse(s.Substring(fractionBarIndex + 1)) : (byte)1);
 		}
 
 		public readonly long Numerator;

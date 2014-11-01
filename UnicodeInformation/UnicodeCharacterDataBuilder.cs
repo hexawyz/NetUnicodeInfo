@@ -22,6 +22,7 @@ namespace UnicodeInformation
 		private string simpleUpperCaseMapping;
 		private string simpleLowerCaseMapping;
 		private string simpleTitleCaseMapping;
+		private ContributoryProperties contributoryProperties;
 
 		private List<int> relatedCodePoints = new List<int>();
 
@@ -106,6 +107,12 @@ namespace UnicodeInformation
 			set { simpleTitleCaseMapping = value; }
 		}
 
+		public ContributoryProperties ContributoryProperties
+		{
+			get { return contributoryProperties; }
+			set { contributoryProperties = value; }
+		}
+
 		public ICollection<int> RelatedCodePoints { get { return relatedCodePoints; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
@@ -130,6 +137,7 @@ namespace UnicodeInformation
 				simpleUpperCaseMapping,
 				simpleLowerCaseMapping,
 				simpleTitleCaseMapping,
+				contributoryProperties,
 				relatedCodePoints.Count > 0 ? relatedCodePoints.ToArray() : null
 			);
 		}

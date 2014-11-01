@@ -81,10 +81,20 @@ namespace UnicodeInformation
 						characterDataBuilders.Add(characterData);
 					}
 				}
+				/*
+				using (var reader = new UnicodeDataFileReader(await httpClient.GetStreamAsync(UnicodeCharacterDataUri + PropListFileName).ConfigureAwait(false)))
+				{
+					while (reader.MoveToNextLine())
+					{
+						ContributoryProperties property;
 
-				//using (var reader = new UnicodeDataFileReader(await httpClient.GetStreamAsync(UnicodeCharacterDataUri + PropListFileName).ConfigureAwait(false)))
-				//{
-				//}
+						var range = UnicodeCharacterRange.Parse(reader.ReadField().TrimEnd());
+						if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadField().Trim(), out property))
+						{
+						}
+					}
+                }
+				*/
 			}
 
 			var finalData = new UnicodeCharacterData[characterDataBuilders.Count];

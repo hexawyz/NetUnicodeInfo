@@ -22,10 +22,11 @@ namespace UnicodeInformation
 		public readonly string SimpleUpperCaseMapping;
 		public readonly string SimpleLowerCaseMapping;
 		public readonly string SimpleTitleCaseMapping;
+		public readonly ContributoryProperties ContributoryProperties;
 
 		public readonly int[] RelatedCodePoints;
 
-		public UnicodeCharacterData
+		internal UnicodeCharacterData
 		(
 			int codePoint,
 			string name,
@@ -40,6 +41,7 @@ namespace UnicodeInformation
             string simpleUpperCaseMapping,
 			string simpleLowerCaseMapping,
 			string simpleTitleCaseMapping,
+			ContributoryProperties contributoryProperties,
             int[] relatedCodePoints
 		)
 		{
@@ -56,6 +58,7 @@ namespace UnicodeInformation
 			this.SimpleUpperCaseMapping = simpleUpperCaseMapping;
 			this.SimpleLowerCaseMapping = simpleLowerCaseMapping;
 			this.SimpleTitleCaseMapping = simpleTitleCaseMapping;
+			this.ContributoryProperties = contributoryProperties;
 			this.RelatedCodePoints = relatedCodePoints;
         }
 	}
