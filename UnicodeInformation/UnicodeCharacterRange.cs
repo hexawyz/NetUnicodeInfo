@@ -37,6 +37,8 @@ namespace UnicodeInformation
 		public readonly int FirstCodePoint;
 		public readonly int LastCodePoint;
 
+		public bool IsSingleCodePoint { get { return FirstCodePoint == LastCodePoint; } }
+
 		public UnicodeCharacterRange(int codePoint)
 		{
 			if (codePoint < 0 || codePoint > 0x10FFFF) throw new ArgumentOutOfRangeException("codePoint");

@@ -58,7 +58,13 @@ namespace UnicodeInformation
 							name = name.Substring(1, name.Length - 8);
 
 							rangeStartCodePoint = -1;
-                        }
+						}
+						else
+						{
+							name = name.Substring(1, name.Length - 2);
+
+							if (codePoint.IsSingleCodePoint) name = name + "-" + codePoint.ToString();
+						}
 					}
 					else if (rangeStartCodePoint >= 0)
                     {
