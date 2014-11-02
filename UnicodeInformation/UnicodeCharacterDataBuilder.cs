@@ -9,11 +9,11 @@ namespace UnicodeInformation
 {
 	public sealed class UnicodeCharacterDataBuilder
 	{
-		private readonly int codePoint;
+		private readonly UnicodeCharacterRange codePointRange;
 		private string name;
 		private UnicodeCategory category = UnicodeCategory.OtherNotAssigned;
 		private CanonicalCombiningClass canonicalCombiningClass;
-		private string bidirectionalClass;
+		private BidirectionalClass bidirectionalClass;
 		private string decompositionType;
 		private UnicodeNumericType numericType;
 		private UnicodeRationalNumber numericValue;
@@ -26,7 +26,7 @@ namespace UnicodeInformation
 
 		private List<int> relatedCodePoints = new List<int>();
 
-		public int CodePoint { get { return codePoint; } }
+		public UnicodeCharacterRange CodePointRange { get { return codePointRange; } }
 
 		public string Name
 		{
@@ -53,7 +53,7 @@ namespace UnicodeInformation
 			set { canonicalCombiningClass = value; } // Even values not defined in the enum are allowed here.
 		}
 
-		public string BidirectionalClass
+		public BidirectionalClass BidirectionalClass
 		{
 			get { return bidirectionalClass; }
 			set { bidirectionalClass = value; }
@@ -116,15 +116,21 @@ namespace UnicodeInformation
 		public ICollection<int> RelatedCodePoints { get { return relatedCodePoints; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
+			: this(new UnicodeCharacterRange(codePoint))
 		{
-			this.codePoint = codePoint;
+		}
+
+		public UnicodeCharacterDataBuilder(UnicodeCharacterRange codePointRange)
+		{
+			this.codePointRange = codePointRange;
+			this.category = UnicodeCategory.OtherNotAssigned;
 		}
 
 		public UnicodeCharacterData ToCharacterData()
 		{
 			return new UnicodeCharacterData
 			(
-				codePoint,
+				codePointRange,
 				Name,
 				category,
 				canonicalCombiningClass,

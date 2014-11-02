@@ -22,10 +22,10 @@ namespace UnicodeInformation
 			return
 			(
 				from field in type.DeclaredFields
-				let attr = field.GetCustomAttribute<DisplayAttribute>()
-				where attr != null && attr.Name != null
+				from attr in field.GetCustomAttributes<ValueNameAttribute>()
+				where attr.Name != null
 				select new KeyValuePair<string, T>(attr.Name, (T)field.GetValue(null))
-			).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+			).ToDictionary(kvp => kvp.Key, kvp => kvp.Value, StringComparer.OrdinalIgnoreCase);
         }
 
 		public static bool TryGetNamedValue(string name, out T value)

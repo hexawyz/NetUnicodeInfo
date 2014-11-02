@@ -13,55 +13,109 @@ namespace UnicodeInformation
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
 
+		private static string ParseSimpleCaseMapping(string mapping)
+		{
+			if (string.IsNullOrEmpty(mapping)) return null;
+
+			return char.ConvertFromUtf32(int.Parse(mapping, NumberStyles.HexNumber));
+		}
+
+		private static string NullIfEmpty(string s)
+		{
+			return string.IsNullOrEmpty(s) ? null : s;
+        }
+
 		public static async Task<UnicodeData> DownloadAndBuildDataAsync(IUcdSource ucdSource)
 		{
-			var characterDataBuilders = new List<UnicodeCharacterDataBuilder>();
+			var builder = new UnicodeDataBuilder(new Version(7, 0));
 
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(UnicodeDataFileName).ConfigureAwait(false)))
 			{
+				int rangeStartCodePoint = -1;
+
 				while (reader.MoveToNextLine())
 				{
-					// NB: Fields 10 and 11 are deemed obsolete. Field 11 should always be empty, and will be ignored here.
-					var characterData = new UnicodeCharacterDataBuilder(int.Parse(reader.ReadField(), NumberStyles.HexNumber))
+					var codePoint = new UnicodeCharacterRange(int.Parse(reader.ReadField(), NumberStyles.HexNumber));
+
+					string name = reader.ReadField();
+
+					if (!string.IsNullOrEmpty(name) && name[0] == '<' && name[name.Length - 1] == '>')
 					{
-						Name = reader.ReadField(),
+						if (name.EndsWith(", First>", StringComparison.OrdinalIgnoreCase))
+						{
+							if (rangeStartCodePoint >= 0) throw new InvalidDataException("Invalid range data in UnicodeData.txt.");
+
+							rangeStartCodePoint = codePoint.FirstCodePoint;
+
+							continue;
+						}
+						else if (name.EndsWith(", Last>", StringComparison.OrdinalIgnoreCase))
+						{
+							if (rangeStartCodePoint < 0) throw new InvalidDataException("Invalid range data in UnicodeData.txt.");
+
+							codePoint = new UnicodeCharacterRange(rangeStartCodePoint, codePoint.LastCodePoint);
+
+							name = name.Substring(1, name.Length - 8);
+
+							rangeStartCodePoint = -1;
+                        }
+					}
+					else if (rangeStartCodePoint >= 0)
+                    {
+						throw new InvalidDataException("Invalid range data in UnicodeData.txt.");
+					}
+
+					// NB: Fields 10 and 11 are deemed obsolete. Field 11 should always be empty, and will be ignored here.
+					var characterData = new UnicodeCharacterDataBuilder(codePoint)
+					{
+						Name = NullIfEmpty(name),
 						Category = UnicodeCategoryInfo.FromShortName(reader.ReadField()).Category,
 						CanonicalCombiningClass = (CanonicalCombiningClass)byte.Parse(reader.ReadField()),
-						BidirectionalClass = reader.ReadField(),
-						DecompositionType = reader.ReadField()
 					};
 
-					string numericDecimalField = reader.ReadField();
-					string numericDigitField = reader.ReadField();
-					string numericNumericField = reader.ReadField();
+					BidirectionalClass bidirectionalClass;
+					if (EnumHelper<BidirectionalClass>.TryGetNamedValue(reader.ReadField(), out bidirectionalClass))
+					{
+						characterData.BidirectionalClass = bidirectionalClass;
+					}
+					else
+					{
+						throw new InvalidDataException(string.Format("Missing Bidi_Class property for code point(s) {0}.", codePoint));
+					}
+
+					characterData.DecompositionType = NullIfEmpty(reader.ReadField());
+
+					string numericDecimalField = NullIfEmpty(reader.ReadField());
+					string numericDigitField = NullIfEmpty(reader.ReadField());
+					string numericNumericField = NullIfEmpty(reader.ReadField());
 
 					characterData.BidirectionalMirrored = reader.ReadField() == "Y";
-					characterData.OldName = reader.ReadField();
+					characterData.OldName = NullIfEmpty(reader.ReadField());
 					reader.SkipField();
-					characterData.SimpleUpperCaseMapping = reader.ReadField();
-					characterData.SimpleLowerCaseMapping = reader.ReadField();
-					characterData.SimpleTitleCaseMapping = reader.ReadField();
+					characterData.SimpleUpperCaseMapping = ParseSimpleCaseMapping(reader.ReadField());
+					characterData.SimpleLowerCaseMapping = ParseSimpleCaseMapping(reader.ReadField());
+					characterData.SimpleTitleCaseMapping = ParseSimpleCaseMapping(reader.ReadField());
 
 					// Handle Numeric_Type & Numeric_Value:
 					// If field 6 is set, fields 7 and 8 should have the same value, and Numeric_Type is Decimal.
 					// If field 6 is not set but field 7 is set, field 8 should be set and have the same value. Then, the type is Digit.
 					// If field 6 and 7 are not set, but field 8 is set, then Numeric_Type is Numeric.
-					if (!string.IsNullOrEmpty(numericNumericField))
+					if (numericNumericField != null)
 					{
 						characterData.NumericValue = UnicodeRationalNumber.Parse(numericNumericField);
 
-						if (!string.IsNullOrEmpty(numericDigitField))
+						if (numericDigitField != null)
 						{
 							if (numericDigitField != numericNumericField)
 							{
-								throw new InvalidDataException("Invalid value for field 7 of character U+" + characterData.CodePoint.ToString("X4") + ".");
+								throw new InvalidDataException("Invalid value for field 7 of code point " + characterData.CodePointRange.ToString() + ".");
 							}
 
-							if (!string.IsNullOrEmpty(numericDecimalField))
+							if (numericDecimalField != null)
 							{
 								if (numericDecimalField != numericDigitField)
 								{
-									throw new InvalidDataException("Invalid value for field 6 of character U+" + characterData.CodePoint.ToString("X4") + ".");
+									throw new InvalidDataException("Invalid value for field 6 of code point " + characterData.CodePointRange.ToString() + ".");
 								}
 							}
 							else
@@ -75,10 +129,10 @@ namespace UnicodeInformation
 						}
 					}
 
-					characterDataBuilders.Add(characterData);
+					builder.Insert(characterData);
 				}
 			}
-			/*
+			
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(PropListFileName).ConfigureAwait(false)))
 			{
 				while (reader.MoveToNextLine())
@@ -88,17 +142,12 @@ namespace UnicodeInformation
 					var range = UnicodeCharacterRange.Parse(reader.ReadField().TrimEnd());
 					if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadField().Trim(), out property))
 					{
+						builder.SetProperties(property, range);
 					}
 				}
 			}
-			*/
 
-			var finalData = new UnicodeCharacterData[characterDataBuilders.Count];
-
-			for (int i = 0; i < finalData.Length; ++i)
-				finalData[i] = characterDataBuilders[i].ToCharacterData();
-
-			return new UnicodeData(new Version(7, 0), finalData);
+			return builder.ToUnicodeData();
 		}
 	}
 }

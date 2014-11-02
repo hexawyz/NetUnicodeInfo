@@ -62,9 +62,11 @@
     <Compile Include="UnicodeCharacterDataBuilder.cs" />
     <Compile Include="UnicodeCharacterRange.cs" />
     <Compile Include="UnicodeData.cs" />
+    <Compile Include="UnicodeDataBuilder.cs" />
     <Compile Include="UnicodeDataFileReader.cs" />
     <Compile Include="UnicodeDataManager.cs" />
     <Compile Include="UnicodeNumericType.cs" />
+    <Compile Include="ValueNameAttribute.cs" />
     <Compile Include="UnicodeRationalNumber.cs" />
   </ItemGroup>
   <ItemGroup>

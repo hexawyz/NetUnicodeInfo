@@ -9,11 +9,11 @@ namespace UnicodeInformation
 {
 	public sealed class UnicodeCharacterData
 	{
-		public readonly int CodePoint;
-		public readonly string Name;
+		public readonly UnicodeCharacterRange CodePointRange;
+		private readonly string name;
 		public readonly UnicodeCategory Category;
 		public readonly CanonicalCombiningClass CanonicalCombiningClass;
-		public readonly string BidirectionalClass;
+		public readonly BidirectionalClass BidirectionalClass;
 		public readonly string DecompositionType;
 		public readonly UnicodeNumericType NumericType;
 		public readonly UnicodeRationalNumber NumericValue;
@@ -28,11 +28,11 @@ namespace UnicodeInformation
 
 		internal UnicodeCharacterData
 		(
-			int codePoint,
+			UnicodeCharacterRange codePointRange,
 			string name,
 			UnicodeCategory category,
 			CanonicalCombiningClass canonicalCombiningClass,
-			string bidirectionalClass,
+			BidirectionalClass bidirectionalClass,
 			string decompositionType,
 			UnicodeNumericType numericType,
 			UnicodeRationalNumber numericValue,
@@ -45,8 +45,8 @@ namespace UnicodeInformation
             int[] relatedCodePoints
 		)
 		{
-			this.CodePoint = codePoint;
-			this.Name = name;
+			this.CodePointRange = codePointRange;
+			this.name = name;
 			this.Category = category;
 			this.CanonicalCombiningClass = canonicalCombiningClass;
 			this.BidirectionalClass = bidirectionalClass;
@@ -61,5 +61,9 @@ namespace UnicodeInformation
 			this.ContributoryProperties = contributoryProperties;
 			this.RelatedCodePoints = relatedCodePoints;
         }
+
+		public bool IsRange { get { return CodePointRange.FirstCodePoint != CodePointRange.LastCodePoint; } }
+
+		public string Name { get { return !IsRange ? name : null; } }
 	}
 }
