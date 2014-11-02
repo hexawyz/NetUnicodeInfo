@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicodeInformation
+namespace System.Unicode
 {
 	public sealed class UnicodeData
 	{
@@ -41,9 +41,28 @@ namespace UnicodeInformation
 
 		public Version UnicodeVersion { get { return unicodeVersion; } }
 
+		private UnicodeCharacterData FindCodePoint(int codePoint)
+		{
+			int minIndex = 0;
+			int maxIndex = characterData.Length - 1;
+
+			do
+			{
+				int index = (minIndex + maxIndex) >> 1;
+
+				int Δ = characterData[index].CodePointRange.CompareCodePoint(codePoint);
+
+				if (Δ == 0) return characterData[index];
+				else if (Δ < 0) maxIndex = index - 1;
+				else minIndex = index + 1;
+			} while (minIndex <= maxIndex);
+
+			return null;
+		}
+
 		public UnicodeCharacterData GetUnicodeData(int codePoint)
 		{
-			return default(UnicodeCharacterData);
+			return FindCodePoint(codePoint);
 		}
 
 		private void LoadData(Stream stream)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicodeInformation
+namespace System.Unicode
 {
 	[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
 	public sealed class ValueNameAttribute : Attribute

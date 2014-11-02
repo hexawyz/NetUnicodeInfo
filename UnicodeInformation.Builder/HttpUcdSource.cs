@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicodeInformation
+namespace System.Unicode.Builder
 {
 	public class HttpUcdSource : IUcdSource
 	{

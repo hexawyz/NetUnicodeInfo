@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicodeInformation
+namespace System.Unicode
 {
 	internal sealed class EnumHelper<T>
 		where T : struct

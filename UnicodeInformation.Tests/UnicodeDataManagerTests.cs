@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 using System.IO.Compression;
+using System.Unicode.Builder;
 
-namespace UnicodeInformation.Tests
+namespace System.Unicode.Tests
 {
 	[TestClass]
 	public class UnicodeDataManagerTests
@@ -36,7 +37,9 @@ namespace UnicodeInformation.Tests
 		{
 			var source = new FileUcdSource(UcdDirectoryName);
 
-			await UnicodeDataManager.DownloadAndBuildDataAsync(source);
+			var data = await UnicodeDataManager.DownloadAndBuildDataAsync(source);
+
+			Assert.AreEqual((int)'\t', data.GetUnicodeData('\t').CodePointRange.FirstCodePoint);
 		}
 	}
 }

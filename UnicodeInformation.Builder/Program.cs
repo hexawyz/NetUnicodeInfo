@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Unicode
+namespace System.Unicode.Builder
 {
-	public enum UnicodeNumericType : byte
+	class Program
 	{
-		None = 0,
-		Decimal = 1,
-		Digit = 2,
-		Numeric = 3
+		static void Main(string[] args)
+		{
+		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicodeInformation
+namespace System.Unicode
 {
 	public struct UnicodeCharacterRange : IEnumerable<int>
 	{

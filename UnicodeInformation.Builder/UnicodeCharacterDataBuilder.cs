@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicodeInformation
+namespace System.Unicode.Builder
 {
 	public sealed class UnicodeCharacterDataBuilder
 	{

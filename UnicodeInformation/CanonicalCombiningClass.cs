@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UnicodeInformation
+namespace System.Unicode
 {
 	public enum CanonicalCombiningClass : byte
 	{

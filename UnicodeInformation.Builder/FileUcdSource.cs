@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Unicode;
 
-namespace UnicodeInformation.Tests
+namespace System.Unicode.Builder
 {
-	internal sealed class FileUcdSource : IUcdSource
+	public sealed class FileUcdSource : IUcdSource
 	{
 		private readonly string baseDirectory;
 
