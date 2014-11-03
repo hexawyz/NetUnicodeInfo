@@ -10,13 +10,13 @@ namespace System.Unicode
 	public sealed class UnicodeCharacterData
 	{
 		public readonly UnicodeCharacterRange CodePointRange;
-		private readonly string name;
+		public readonly string Name;
 		public readonly UnicodeCategory Category;
 		public readonly CanonicalCombiningClass CanonicalCombiningClass;
 		public readonly BidirectionalClass BidirectionalClass;
 		public readonly string DecompositionType;
 		public readonly UnicodeNumericType NumericType;
-		public readonly UnicodeRationalNumber NumericValue;
+		private readonly UnicodeRationalNumber numericValue;
 		public readonly bool BidirectionalMirrored;
 		public readonly string OldName;
 		public readonly string SimpleUpperCaseMapping;
@@ -46,13 +46,13 @@ namespace System.Unicode
 		)
 		{
 			this.CodePointRange = codePointRange;
-			this.name = name;
+			this.Name = name;
 			this.Category = category;
 			this.CanonicalCombiningClass = canonicalCombiningClass;
 			this.BidirectionalClass = bidirectionalClass;
 			this.DecompositionType = decompositionType;
 			this.NumericType = numericType;
-			this.NumericValue = numericValue;
+			this.numericValue = numericValue;
 			this.BidirectionalMirrored = bidirectionalMirrored;
 			this.OldName = oldName;
 			this.SimpleUpperCaseMapping = simpleUpperCaseMapping;
@@ -62,8 +62,6 @@ namespace System.Unicode
 			this.RelatedCodePoints = relatedCodePoints;
         }
 
-		public bool IsRange { get { return CodePointRange.FirstCodePoint != CodePointRange.LastCodePoint; } }
-
-		public string Name { get { return !IsRange ? name : null; } }
+		public UnicodeRationalNumber? NumericValue { get { return NumericType != UnicodeNumericType.None ? numericValue : null as UnicodeRationalNumber?; } }
 	}
 }

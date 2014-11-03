@@ -25,7 +25,7 @@ namespace System.Unicode.Builder
 			return string.IsNullOrEmpty(s) ? null : s;
         }
 
-		public static async Task<UnicodeData> DownloadAndBuildDataAsync(IUcdSource ucdSource)
+		public static async Task<UnicodeDataBuilder> BuildDataAsync(IUcdSource ucdSource)
 		{
 			var builder = new UnicodeDataBuilder(new Version(7, 0));
 
@@ -153,7 +153,7 @@ namespace System.Unicode.Builder
 				}
 			}
 
-			return builder.ToUnicodeData();
+			return builder;
 		}
 	}
 }

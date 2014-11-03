@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryWriterExtensions.cs" />
     <Compile Include="FileUcdSource.cs" />
     <Compile Include="HttpUcdSource.cs" />
     <Compile Include="IUcdSource.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace System.Unicode.Builder
 	public class UnicodeDataBuilder
 	{
 		private readonly Version unicodeVersion;
-		private UnicodeCharacterDataBuilder[] characterDataBuilders = new UnicodeCharacterDataBuilder[10000];
-		private int characterCount;
+		private UnicodeCharacterDataBuilder[] entries = new UnicodeCharacterDataBuilder[10000];
+		private int entryCount;
 
 		public UnicodeDataBuilder(Version unicodeVersion)
 		{
@@ -19,16 +20,16 @@ namespace System.Unicode.Builder
 
 		private int FindCodePoint(int codePoint)
 		{
-			if (characterCount == 0) return -1;
+			if (entryCount == 0) return -1;
 
 			int minIndex = 0;
-			int maxIndex = characterCount - 1;
+			int maxIndex = entryCount - 1;
 
 			do
 			{
 				int index = (minIndex + maxIndex) >> 1;
 
-				int Δ = characterDataBuilders[index].CodePointRange.CompareCodePoint(codePoint);
+				int Δ = entries[index].CodePointRange.CompareCodePoint(codePoint);
 
 				if (Δ == 0) return index;
 				else if (Δ < 0) maxIndex = index - 1;
@@ -43,22 +44,22 @@ namespace System.Unicode.Builder
 			int minIndex;
 			int maxIndex;
 
-			if (characterCount == 0 || characterDataBuilders[maxIndex = characterCount - 1].CodePointRange.LastCodePoint < startCodePoint) return characterCount;
-			else if (endCodePoint < characterDataBuilders[minIndex = 0].CodePointRange.FirstCodePoint) return 0;
-			else if (characterCount == 1) return -1;
+			if (entryCount == 0 || entries[maxIndex = entryCount - 1].CodePointRange.LastCodePoint < startCodePoint) return entryCount;
+			else if (endCodePoint < entries[minIndex = 0].CodePointRange.FirstCodePoint) return 0;
+			else if (entryCount == 1) return -1;
 
 			do
 			{
 				int index = (minIndex + maxIndex) >> 1;
 
-				int Δ = characterDataBuilders[index].CodePointRange.CompareCodePoint(startCodePoint);
+				int Δ = entries[index].CodePointRange.CompareCodePoint(startCodePoint);
 
 				if (Δ == 0) return -1;
 				else if (Δ < 0) maxIndex = index;
 				else minIndex = index;
 			} while (maxIndex - minIndex > 1);
 
-			if (characterDataBuilders[maxIndex].CodePointRange.FirstCodePoint < endCodePoint) return -1;
+			if (entries[maxIndex].CodePointRange.FirstCodePoint < endCodePoint) return -1;
 			else return maxIndex;
 		}
 
@@ -68,25 +69,25 @@ namespace System.Unicode.Builder
 
 			if (insertionPoint < 0) throw new InvalidOperationException("The specified range overlaps with pre-existing ranges.");
 
-			if (insertionPoint >= characterDataBuilders.Length)
+			if (insertionPoint >= entries.Length)
 			{
-				Array.Resize(ref characterDataBuilders, characterDataBuilders.Length << 1);
+				Array.Resize(ref entries, entries.Length << 1);
 			}
 
-			if (insertionPoint < characterCount)
+			if (insertionPoint < entryCount)
 			{
-				Array.Copy(characterDataBuilders, insertionPoint, characterDataBuilders, insertionPoint + 1, characterCount - insertionPoint);
+				Array.Copy(entries, insertionPoint, entries, insertionPoint + 1, entryCount - insertionPoint);
 			}
 
-			characterDataBuilders[insertionPoint] = data;
-			++characterCount;
+			entries[insertionPoint] = data;
+			++entryCount;
 		}
 
 		public UnicodeCharacterDataBuilder Get(int codePoint)
 		{
 			int index = FindCodePoint(codePoint);
 
-			return index >= 0 ? characterDataBuilders[index] : null;
+			return index >= 0 ? entries[index] : null;
 		}
 
 		public void SetProperties(ContributoryProperties property, UnicodeCharacterRange codePointRange)
@@ -102,8 +103,8 @@ namespace System.Unicode.Builder
 
 			if (firstIndex < 0
 				|| lastIndex < 0
-				|| characterDataBuilders[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
-				|| characterDataBuilders[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
+				|| entries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
+				|| entries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
 			{
 				throw new InvalidOperationException();
 			}
@@ -112,7 +113,7 @@ namespace System.Unicode.Builder
 
 			while (true)
 			{
-				characterDataBuilders[i].ContributoryProperties |= property;
+				entries[i].ContributoryProperties |= property;
 
 				if (i == lastIndex) break;
 
@@ -122,12 +123,35 @@ namespace System.Unicode.Builder
 
 		public UnicodeData ToUnicodeData()
 		{
-			var finalData = new UnicodeCharacterData[characterCount];
+			var finalData = new UnicodeCharacterData[entryCount];
 
 			for (int i = 0; i < finalData.Length; ++i)
-				finalData[i] = characterDataBuilders[i].ToCharacterData();
+				finalData[i] = entries[i].ToCharacterData();
 
 			return new UnicodeData(unicodeVersion, finalData);
+		}
+
+		public void WriteToStream(Stream stream)
+		{
+			using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+			{
+				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 0 });
+				writer.Write((ushort)7);
+				writer.Write((byte)0);
+				writer.WriteCodePoint(entryCount);
+				for (int i = 0; i < entryCount; ++i)
+				{
+					entries[i].WriteToFile(writer);
+				}
+			}
+		}
+
+		public void WriteToFile(string fileName)
+		{
+			using (var stream = File.Create(fileName))
+			{
+				WriteToStream(stream);
+			}
 		}
 	}
 }

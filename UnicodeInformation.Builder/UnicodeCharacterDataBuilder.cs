@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -146,6 +147,47 @@ namespace System.Unicode.Builder
 				contributoryProperties,
 				relatedCodePoints.Count > 0 ? relatedCodePoints.ToArray() : null
 			);
+		}
+
+		internal void WriteToFile(BinaryWriter writer)
+		{
+			UcdFields fields = default(UcdFields);
+
+			if (!codePointRange.IsSingleCodePoint) fields = UcdFields.CodePointRange;
+
+			if (name != null) fields |= UcdFields.Name;
+			if (category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
+			if (canonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
+			/*if (bidirectionalClass != 0)*/fields |= UcdFields.BidirectionalClass;
+			if (decompositionType != null) fields |= UcdFields.DecompositionType;
+			fields |= (UcdFields)((int)numericType << 6);
+			if (bidirectionalMirrored) fields |= UcdFields.BidirectionalMirrored;
+			if (oldName != null) fields |= UcdFields.OldName;
+			if (simpleUpperCaseMapping != null) fields |= UcdFields.SimpleUpperCaseMapping;
+			if (simpleLowerCaseMapping != null) fields |= UcdFields.SimpleLowerCaseMapping;
+			if (simpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
+			if (contributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
+
+			writer.Write((ushort)fields);
+
+			writer.WriteCodePoint(codePointRange.FirstCodePoint);
+			if ((fields & UcdFields.CodePointRange) != 0) writer.WriteCodePoint(CodePointRange.LastCodePoint);
+
+			if ((fields & UcdFields.Name) != 0) writer.Write(name);
+			if ((fields & UcdFields.Category) != 0) writer.Write((byte)category);
+			if ((fields & UcdFields.CanonicalCombiningClass) != 0) writer.Write((byte)canonicalCombiningClass);
+			if ((fields & UcdFields.BidirectionalClass) != 0) writer.Write((byte)bidirectionalClass);
+			if ((fields & UcdFields.DecompositionType) != 0) writer.Write(decompositionType);
+			if ((fields & UcdFields.NumericNumeric) != 0)
+			{
+				writer.Write(numericValue.Numerator);
+				writer.Write(numericValue.Denominator);
+			}
+			if ((fields & UcdFields.OldName) != 0) writer.Write(oldName);
+			if ((fields & UcdFields.SimpleUpperCaseMapping) != 0) writer.Write(simpleUpperCaseMapping);
+			if ((fields & UcdFields.SimpleLowerCaseMapping) != 0) writer.Write(simpleLowerCaseMapping);
+			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(simpleTitleCaseMapping);
+			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)contributoryProperties);
 		}
 	}
 }

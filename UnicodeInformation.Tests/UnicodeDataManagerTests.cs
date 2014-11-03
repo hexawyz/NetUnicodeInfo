@@ -33,13 +33,33 @@ namespace System.Unicode.Tests
 		}
 
 		[TestMethod]
-		public async Task DownloadAndBuildDataAsync()
+		public async Task BuildDataAsync()
 		{
 			var source = new FileUcdSource(UcdDirectoryName);
 
-			var data = await UnicodeDataManager.DownloadAndBuildDataAsync(source);
+			var data = (await UnicodeDataManager.BuildDataAsync(source)).ToUnicodeData();
 
 			Assert.AreEqual((int)'\t', data.GetUnicodeData('\t').CodePointRange.FirstCodePoint);
 		}
+
+		[TestMethod]
+		public async Task BuildAndWriteDataAsync()
+		{
+			var source = new FileUcdSource(UcdDirectoryName);
+
+			var data = await UnicodeDataManager.BuildDataAsync(source);
+
+			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
+			{
+				data.WriteToStream(stream);
+			}
+
+			using (var stream = new DeflateStream(File.OpenRead("ucd.dat"), CompressionMode.Decompress, false))
+			{
+				var readData = UnicodeData.FromStream(stream);
+
+				Assert.AreEqual((int)'\t', data.Get('\t').CodePointRange.FirstCodePoint);
+			}
+        }
 	}
 }

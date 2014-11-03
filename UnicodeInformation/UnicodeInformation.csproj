@@ -59,6 +59,7 @@
     <Compile Include="CanonicalCombiningClass.cs" />
     <Compile Include="CodePointEnumerable.cs" />
     <Compile Include="CodePointEnumerator.cs" />
+    <Compile Include="UcdFields.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />
