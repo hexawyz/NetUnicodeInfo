@@ -87,7 +87,11 @@ namespace System.Unicode
 		//	return reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
 		//}
 
+#if DEBUG
+		internal static int ReadCodePoint(BinaryReader reader)
+#else
 		private static int ReadCodePoint(BinaryReader reader)
+#endif
 		{
 			byte b = reader.ReadByte();
 

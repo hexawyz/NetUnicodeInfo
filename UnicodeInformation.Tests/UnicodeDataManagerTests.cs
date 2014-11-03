@@ -5,6 +5,7 @@ using System.Net;
 using System.IO;
 using System.IO.Compression;
 using System.Unicode.Builder;
+using System.Text;
 
 namespace System.Unicode.Tests
 {
@@ -61,5 +62,25 @@ namespace System.Unicode.Tests
 				Assert.AreEqual((int)'\t', data.Get('\t').CodePointRange.FirstCodePoint);
 			}
         }
+
+#if DEBUG
+		[TestMethod]
+		public void TestCodePointEncoding()
+		{
+			using (var stream = new MemoryStream(4))
+			using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+			using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+			{
+				for (int i = 0; i <= 0x10FFFF; ++i)
+				{
+					writer.WriteCodePoint(i);
+					writer.Flush();
+					stream.Position = 0;
+					Assert.AreEqual(i, UnicodeData.ReadCodePoint(reader));
+					stream.Position = 0;
+				}
+			}
+		}
+#endif
 	}
 }
