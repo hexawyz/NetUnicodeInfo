@@ -29,17 +29,23 @@ namespace System.Unicode.Builder
 		{
 			if (value < 0 || value > 0x40407F) throw new ArgumentOutOfRangeException("value");
 
-			if (value < 0x80) writer.Write((byte)value);
-			else if (value < 0x4080)
+			if (value < 0xA0) writer.Write((byte)value);
+			else if (value < 0x20A0)
 			{
-				value -= 0x80;
-				writer.Write((byte)((byte)(value >> 8) | 0x80));
+				value -= 0xA0;
+				writer.Write((byte)((byte)(value >> 8) | 0xA0));
+				writer.Write((byte)value);
+			}
+			else if (value < 0x40A0)
+			{
+				value -= 0x20A0;
+				writer.Write((byte)((byte)(value >> 8) | 0xC0));
 				writer.Write((byte)value);
 			}
 			else
 			{
-				value -= 0x4080;
-				writer.Write((byte)((byte)(value >> 16) | 0xC0));
+				value -= 0x40A0;
+				writer.Write((byte)((byte)(value >> 16) | 0xE0));
 				writer.Write((byte)(value >> 8));
 				writer.Write((byte)value);
 			}

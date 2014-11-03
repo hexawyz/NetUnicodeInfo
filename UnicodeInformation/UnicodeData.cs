@@ -91,14 +91,18 @@ namespace System.Unicode
 		{
 			byte b = reader.ReadByte();
 
-			if (b < 128) return b;
-			else if ((b & 0x40) == 0)
+			if (b < 0xA0) return b;
+			else if (b < 0xC0)
 			{
-				return 128 + (((b & 0x3F) << 8) | reader.ReadByte());
-            }
+				return 0xA0 + (((b & 0x1F) << 8) | reader.ReadByte());
+			}
+			else if (b < 0xE0)
+			{
+				return 0x20A0 + (((b & 0x1F) << 8) | reader.ReadByte());
+			}
 			else
 			{
-				return 0x4080 + (((((b & 0x3F) << 8) | reader.ReadByte()) << 8) | reader.ReadByte());
+				return 0x40A0 + (((((b & 0x1F) << 8) | reader.ReadByte()) << 8) | reader.ReadByte());
             }
 		}
 
@@ -129,7 +133,7 @@ namespace System.Unicode
 			return null;
 		}
 
-		public UnicodeCharacterData GetUnicodeData(int codePoint)
+		public UnicodeCharacterData Get(int codePoint)
 		{
 			return FindCodePoint(codePoint);
 		}

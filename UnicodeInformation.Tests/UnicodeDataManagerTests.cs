@@ -39,7 +39,7 @@ namespace System.Unicode.Tests
 
 			var data = (await UnicodeDataManager.BuildDataAsync(source)).ToUnicodeData();
 
-			Assert.AreEqual((int)'\t', data.GetUnicodeData('\t').CodePointRange.FirstCodePoint);
+			Assert.AreEqual((int)'\t', data.Get('\t').CodePointRange.FirstCodePoint);
 		}
 
 		[TestMethod]
