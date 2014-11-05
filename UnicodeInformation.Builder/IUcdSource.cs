@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
-	public interface IUcdSource
+	public interface IUcdSource : IDisposable
 	{
 		Task<Stream> OpenDataFileAsync(string fileName);
 	}

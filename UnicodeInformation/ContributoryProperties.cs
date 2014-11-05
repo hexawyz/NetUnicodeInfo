@@ -10,6 +10,7 @@ namespace System.Unicode
 	[Flags]
 	public enum ContributoryProperties : int
 	{
+		None = 0x00000000,
 		[ValueName("ASCII_Hex_Digit"), Display(Name = "ASCII_Hex_Digit", Description = "ASCII characters commonly used for the representation of hexadecimal numbers.")]
 		AsciiHexDigit = 0x00000001,
 		[ValueName("Bidi_Control"), Display(Name = "Bidi_Control", Description = "Format control characters which have specific functions in the Unicode Bidirectional Algorithm [UAX9].")]

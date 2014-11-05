@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +12,17 @@ namespace System.Unicode
 {
 	public sealed class UnicodeData
 	{
+		private static readonly UnicodeData @default = ReadEmbeddedUnicodeData();
+		public static UnicodeData Default { get { return @default; } }
+
+		private static UnicodeData ReadEmbeddedUnicodeData()
+		{
+			using (var stream = new DeflateStream(typeof(UnicodeData).GetTypeInfo().Assembly.GetManifestResourceStream("System.Unicode.ucd.dat"), CompressionMode.Decompress, false))
+			{
+				return FromStream(stream);
+			}
+		}
+
 		private readonly Version unicodeVersion;
 		private readonly UnicodeCharacterData[] characterData;
 
@@ -81,11 +94,6 @@ namespace System.Unicode
 				null
 			);
         }
-
-		//private static int ReadInt24(BinaryReader reader)
-		//{
-		//	return reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
-		//}
 
 #if DEBUG
 		internal static int ReadCodePoint(BinaryReader reader)

@@ -26,6 +26,11 @@ namespace System.Unicode.Builder
 			this.baseUri = baseUri;
         }
 
+		public void Dispose()
+		{
+			httpClient.Dispose();
+		}
+
 		public Task<Stream> OpenDataFileAsync(string fileName)
 		{
 			return httpClient.GetStreamAsync(baseUri + fileName);

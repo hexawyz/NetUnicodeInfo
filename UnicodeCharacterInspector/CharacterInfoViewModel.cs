@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Unicode;
 
 namespace UnicodeCharacterInspector
 {
@@ -11,7 +12,7 @@ namespace UnicodeCharacterInspector
 	{
 		private string character;
 		private int codePoint;
-		private UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory('\0');
+		private UnicodeCharacterData characterData = UnicodeData.Default.Get(0);
 
 		public CharacterInfoViewModel()
 		{
@@ -39,17 +40,20 @@ namespace UnicodeCharacterInspector
 					if ((character = value) != null)
 					{
 						codePoint = char.ConvertToUtf32(character, 0);
-						category = CharUnicodeInfo.GetUnicodeCategory(character, 0);
+						characterData = UnicodeData.Default.Get(codePoint);
 					}
 					else
 					{
 						codePoint = 0;
-						category = CharUnicodeInfo.GetUnicodeCategory('\0');
+						characterData = UnicodeData.Default.Get(0);
                     }
 
 					NotifyPropertyChanged();
 					NotifyPropertyChanged("CodePoint");
+					NotifyPropertyChanged("Name");
+					NotifyPropertyChanged("OldName");
 					NotifyPropertyChanged("Category");
+					NotifyPropertyChanged("ContributoryProperties");
 				}
 			}
 		}
@@ -59,9 +63,24 @@ namespace UnicodeCharacterInspector
 			get { return character != null ? codePoint : null as int?; }
 		}
 
+		public string Name
+		{
+			get { return character != null && characterData != null ? characterData.Name : null; }
+		}
+
+		public string OldName
+		{
+			get { return character != null && characterData != null ? characterData.OldName : null; }
+		}
+
 		public UnicodeCategory? Category
 		{
-			get { return character != null ? category : null as UnicodeCategory?; }
+			get { return character != null ? characterData != null ? characterData.Category : UnicodeCategory.OtherNotAssigned : null as UnicodeCategory?; }
+		}
+
+		public ContributoryProperties? ContributoryProperties
+		{
+			get { return character != null ? characterData != null ? characterData.ContributoryProperties : 0 : null as ContributoryProperties?; }
 		}
 	}
 }

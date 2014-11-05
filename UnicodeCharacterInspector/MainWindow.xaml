@@ -27,25 +27,47 @@
 			<Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource ResourceKey={x:Type ListBox}}">
 				<Setter Property="Margin" Value="3" />
 			</Style>
+			<Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource ResourceKey={x:Type ScrollViewer}}">
+				<Setter Property="Margin" Value="3" />
+			</Style>
 		</Grid.Resources>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="150" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<TextBox Grid.ColumnSpan="3" MaxLines="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
-		<ListBox Grid.Row="1" Grid.RowSpan="4" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}" />
+		<TextBox Grid.ColumnSpan="2" MaxLines="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
+		<ListBox Grid.Row="1" Grid.RowSpan="3" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}" />
 		<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Label Grid.Row="2" Grid.Column="1" Content="Code point" />
-		<TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SelectedCharacterInfo.CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
-		<Label Grid.Row="3" Grid.Column="1" Content="Category" />
-		<TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SelectedCharacterInfo.Category}" VerticalAlignment="Center" />
+		<ScrollViewer Grid.Row="2" Grid.Column="1">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width ="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Label Grid.Row="0" Grid.Column="0" Content="Code point" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCharacterInfo.CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
+				<Label Grid.Row="1" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Name, Converter={StaticResource NullToVisibilityConverter}}" Content="Name" />
+				<TextBlock Grid.Row="1" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Name, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Name}" VerticalAlignment="Center" />
+				<Label Grid.Row="2" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.OldName, Converter={StaticResource NullToVisibilityConverter}}" Content="Old Name" />
+				<TextBlock Grid.Row="2" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.OldName, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.OldName}" VerticalAlignment="Center" />
+				<Label Grid.Row="3" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Content="Category" />
+				<TextBlock Grid.Row="3" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Category}" VerticalAlignment="Center" />
+				<Label Grid.Row="4" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Content="Contributory Properties" />
+				<TextBlock Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" VerticalAlignment="Center" />
+			</Grid>
+		</ScrollViewer>
     </Grid>
 </Window>

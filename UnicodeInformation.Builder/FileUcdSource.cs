@@ -17,6 +17,10 @@ namespace System.Unicode.Builder
 			this.baseDirectory = Path.GetFullPath(baseDirectory);
 		}
 
+		public void Dispose()
+		{
+		}
+
 		public Task<Stream> OpenDataFileAsync(string fileName)
 		{
 			return Task.FromResult<Stream>(File.OpenRead(Path.Combine(baseDirectory, fileName)));
