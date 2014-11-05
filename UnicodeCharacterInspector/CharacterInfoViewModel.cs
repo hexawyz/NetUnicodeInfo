@@ -52,9 +52,11 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged("CodePoint");
 					NotifyPropertyChanged("Name");
 					NotifyPropertyChanged("OldName");
+					NotifyPropertyChanged("Category");
+					NotifyPropertyChanged("CanonicalCombiningClass");
+					NotifyPropertyChanged("BidirectionalClass");
 					NotifyPropertyChanged("NumericType");
 					NotifyPropertyChanged("NumericValue");
-					NotifyPropertyChanged("Category");
 					NotifyPropertyChanged("ContributoryProperties");
 				}
 			}
@@ -78,6 +80,16 @@ namespace UnicodeCharacterInspector
 		public UnicodeCategory? Category
 		{
 			get { return character != null ? characterData != null ? characterData.Category : UnicodeCategory.OtherNotAssigned : null as UnicodeCategory?; }
+		}
+
+		public CanonicalCombiningClass? CanonicalCombiningClass
+		{
+			get { return character != null ? characterData != null ? characterData.CanonicalCombiningClass : 0 : null as CanonicalCombiningClass?; }
+		}
+
+		public BidirectionalClass? BidirectionalClass
+		{
+			get { return character != null && characterData != null ? characterData.BidirectionalClass : null as BidirectionalClass?; }
 		}
 
 		public UnicodeNumericType? NumericType
