@@ -123,6 +123,7 @@ namespace System.Unicode.Builder
 								{
 									throw new InvalidDataException("Invalid value for field 6 of code point " + characterData.CodePointRange.ToString() + ".");
 								}
+								characterData.NumericType = UnicodeNumericType.Decimal;
 							}
 							else
 							{

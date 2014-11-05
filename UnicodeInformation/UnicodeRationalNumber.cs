@@ -37,7 +37,7 @@ namespace System.Unicode
 
 		public override string ToString()
 		{
-			return !IsDefaultValue ? Numerator.ToString() + "/" + Denominator.ToString() : string.Empty;
+			return !IsDefaultValue ? Denominator != 1 ? Numerator.ToString() + "/" + Denominator.ToString() : Numerator.ToString() : string.Empty;
 		}
 
 		public bool Equals(UnicodeRationalNumber other)

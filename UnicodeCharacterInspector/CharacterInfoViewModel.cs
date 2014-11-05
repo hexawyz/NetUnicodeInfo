@@ -52,6 +52,8 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged("CodePoint");
 					NotifyPropertyChanged("Name");
 					NotifyPropertyChanged("OldName");
+					NotifyPropertyChanged("NumericType");
+					NotifyPropertyChanged("NumericValue");
 					NotifyPropertyChanged("Category");
 					NotifyPropertyChanged("ContributoryProperties");
 				}
@@ -76,6 +78,16 @@ namespace UnicodeCharacterInspector
 		public UnicodeCategory? Category
 		{
 			get { return character != null ? characterData != null ? characterData.Category : UnicodeCategory.OtherNotAssigned : null as UnicodeCategory?; }
+		}
+
+		public UnicodeNumericType? NumericType
+		{
+			get { return character != null ? characterData != null ? characterData.NumericType : UnicodeNumericType.None : null as UnicodeNumericType?; }
+		}
+
+		public UnicodeRationalNumber? NumericValue
+		{
+			get { return character != null && characterData != null && characterData.NumericType != UnicodeNumericType.None ? characterData.NumericValue : null as UnicodeRationalNumber?; }
 		}
 
 		public ContributoryProperties? ContributoryProperties

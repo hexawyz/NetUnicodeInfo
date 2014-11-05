@@ -55,18 +55,24 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
-				<Label Grid.Row="0" Grid.Column="0" Content="Code point" />
-				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCharacterInfo.CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
+				<Label Grid.Row="0" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CodePoint, Converter={StaticResource NullToVisibilityConverter}}"  Content="Code Point" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CodePoint, Converter={StaticResource NullToVisibilityConverter}}"  Text="{Binding SelectedCharacterInfo.CodePoint, StringFormat=U+{0:X4}, TargetNullValue={x:Static System:String.Empty}}" VerticalAlignment="Center" />
 				<Label Grid.Row="1" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Name, Converter={StaticResource NullToVisibilityConverter}}" Content="Name" />
 				<TextBlock Grid.Row="1" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Name, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Name}" VerticalAlignment="Center" />
 				<Label Grid.Row="2" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.OldName, Converter={StaticResource NullToVisibilityConverter}}" Content="Old Name" />
 				<TextBlock Grid.Row="2" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.OldName, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.OldName}" VerticalAlignment="Center" />
 				<Label Grid.Row="3" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Content="Category" />
 				<TextBlock Grid.Row="3" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Category}" VerticalAlignment="Center" />
-				<Label Grid.Row="4" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Content="Contributory Properties" />
-				<TextBlock Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" VerticalAlignment="Center" />
+				<Label Grid.Row="4" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource NullToVisibilityConverter}}" Content="Numeric Type" />
+				<TextBlock Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericType}" VerticalAlignment="Center" />
+				<Label Grid.Row="5" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Content="Numeric Value" />
+				<TextBlock Grid.Row="5" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericValue}" VerticalAlignment="Center" />
+				<Label Grid.Row="6" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Content="Contributory Properties" />
+				<TextBlock Grid.Row="6" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" VerticalAlignment="Center" />
 			</Grid>
 		</ScrollViewer>
     </Grid>
