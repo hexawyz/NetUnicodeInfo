@@ -117,7 +117,7 @@ namespace System.Unicode.Builder
 
 			using (var ucdSource = GetUcdSource(null, null, null))
 			{
-				data = UnicodeDataManager.BuildDataAsync(ucdSource).Result;
+				data = UnicodeDataProcessor.BuildDataAsync(ucdSource).Result;
 			}
 
 			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))

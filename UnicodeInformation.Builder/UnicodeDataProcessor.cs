@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
-	public class UnicodeDataManager
+	public class UnicodeDataProcessor
 	{
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
@@ -55,15 +55,18 @@ namespace System.Unicode.Builder
 
 							codePoint = new UnicodeCharacterRange(rangeStartCodePoint, codePoint.LastCodePoint);
 
-							name = name.Substring(1, name.Length - 8);
+							name = name.Substring(1, name.Length - 8).ToUpperInvariant(); // Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
 
 							rangeStartCodePoint = -1;
 						}
+						else if (name == "<control>")  // Ignore the name of the property for these code points, as it should really be empty by the spec.
+						{
+							// For control characters, we can derive a character label in of the form <control-NNNN>, which is not the character name.
+							name = null;
+						}
 						else
 						{
-							name = name.Substring(1, name.Length - 2);
-
-							if (codePoint.IsSingleCodePoint) name = name + "-" + codePoint.ToString();
+							throw new InvalidDataException("Unexpected code point name tag: " + name + ".");
 						}
 					}
 					else if (rangeStartCodePoint >= 0)

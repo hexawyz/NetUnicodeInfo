@@ -9,7 +9,7 @@
 		TextOptions.TextFormattingMode="Display"
         Title="Unicode character inspector"
 		Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-		Height="350" Width="525">
+		Height="450" Width="525">
 	<Window.DataContext>
 		<local:CharacterInspectorViewModel />
 	</Window.DataContext>

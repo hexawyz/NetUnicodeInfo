@@ -38,7 +38,7 @@ namespace System.Unicode.Tests
 		{
 			var source = new FileUcdSource(UcdDirectoryName);
 
-			var data = (await UnicodeDataManager.BuildDataAsync(source)).ToUnicodeData();
+			var data = (await UnicodeDataProcessor.BuildDataAsync(source)).ToUnicodeData();
 
 			Assert.AreEqual((int)'\t', data.Get('\t').CodePoint);
 		}
@@ -48,7 +48,7 @@ namespace System.Unicode.Tests
 		{
 			var source = new FileUcdSource(UcdDirectoryName);
 
-			var data = await UnicodeDataManager.BuildDataAsync(source);
+			var data = await UnicodeDataProcessor.BuildDataAsync(source);
 
 			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
 			{

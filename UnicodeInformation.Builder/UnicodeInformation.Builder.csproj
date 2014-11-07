@@ -62,7 +62,7 @@
     <Compile Include="UnicodeCharacterDataBuilder.cs" />
     <Compile Include="UnicodeDataBuilder.cs" />
     <Compile Include="UnicodeDataFileReader.cs" />
-    <Compile Include="UnicodeDataManager.cs" />
+    <Compile Include="UnicodeDataProcessor.cs" />
     <Compile Include="ZipUcdSource.cs" />
   </ItemGroup>
   <ItemGroup>
