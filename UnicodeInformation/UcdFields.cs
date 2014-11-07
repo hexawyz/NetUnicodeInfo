@@ -18,7 +18,7 @@ namespace System.Unicode
 		Category = 4,
 		CanonicalCombiningClass = 8,
 		BidirectionalClass = 16,
-		DecompositionType = 32,
+		DecompositionMapping = 32,
 
 		// NumericType / NumericValue : Not exactly a bit mask here… More like [0…3] << 6
 		NumericDecimal = 64,

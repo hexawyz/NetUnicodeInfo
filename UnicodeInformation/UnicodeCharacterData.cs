@@ -14,7 +14,8 @@ namespace System.Unicode
 		public readonly UnicodeCategory Category;
 		public readonly CanonicalCombiningClass CanonicalCombiningClass;
 		public readonly BidirectionalClass BidirectionalClass;
-		public readonly string DecompositionType;
+		public readonly CompatibilityFormattingTag DecompositionType;
+		public readonly string DecompositionMapping;
 		public readonly UnicodeNumericType NumericType;
 		private readonly UnicodeRationalNumber numericValue;
 		public readonly bool BidirectionalMirrored;
@@ -33,7 +34,8 @@ namespace System.Unicode
 			UnicodeCategory category,
 			CanonicalCombiningClass canonicalCombiningClass,
 			BidirectionalClass bidirectionalClass,
-			string decompositionType,
+			CompatibilityFormattingTag decompositionType,
+            string decompositionMapping,
 			UnicodeNumericType numericType,
 			UnicodeRationalNumber numericValue,
 			bool bidirectionalMirrored,
@@ -51,6 +53,7 @@ namespace System.Unicode
 			this.CanonicalCombiningClass = canonicalCombiningClass;
 			this.BidirectionalClass = bidirectionalClass;
 			this.DecompositionType = decompositionType;
+			this.DecompositionMapping = decompositionMapping;
 			this.NumericType = numericType;
 			this.numericValue = numericValue;
 			this.BidirectionalMirrored = bidirectionalMirrored;

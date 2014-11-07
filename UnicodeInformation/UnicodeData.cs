@@ -64,7 +64,8 @@ namespace System.Unicode
 			var category = (fields & UcdFields.Category) != 0 ? (UnicodeCategory)reader.ReadByte() : UnicodeCategory.OtherNotAssigned;
 			var canonicalCombiningClass = (fields & UcdFields.CanonicalCombiningClass) != 0 ? (CanonicalCombiningClass)reader.ReadByte() : CanonicalCombiningClass.NotReordered;
 			var bidirectionalClass = (fields & UcdFields.BidirectionalClass) != 0 ? (BidirectionalClass)reader.ReadByte() : 0;
-			string decompositionType = (fields & UcdFields.DecompositionType) != 0 ? reader.ReadString() : null;
+			CompatibilityFormattingTag decompositionType = (fields & UcdFields.DecompositionMapping) != 0 ? (CompatibilityFormattingTag)reader.ReadByte() : CompatibilityFormattingTag.Canonical;
+			string decompositionMapping = (fields & UcdFields.DecompositionMapping) != 0 ? reader.ReadString() : null;
 			var numericType = (UnicodeNumericType)((int)(fields & UcdFields.NumericNumeric) >> 6);
 			UnicodeRationalNumber numericValue = numericType != UnicodeNumericType.None ?
 				new UnicodeRationalNumber(reader.ReadInt64(), reader.ReadByte()) :
@@ -83,6 +84,7 @@ namespace System.Unicode
 				canonicalCombiningClass,
 				bidirectionalClass,
 				decompositionType,
+				decompositionMapping,
 				numericType,
 				numericValue,
 				(fields & UcdFields.BidirectionalMirrored) != 0,

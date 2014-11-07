@@ -15,7 +15,7 @@ namespace System.Unicode.Builder
 		private UnicodeCategory category = UnicodeCategory.OtherNotAssigned;
 		private CanonicalCombiningClass canonicalCombiningClass;
 		private BidirectionalClass bidirectionalClass;
-		private string decompositionType;
+		private CharacterDecompositionMapping characterDecompositionMapping;
 		private UnicodeNumericType numericType;
 		private UnicodeRationalNumber numericValue;
 		private bool bidirectionalMirrored;
@@ -60,10 +60,10 @@ namespace System.Unicode.Builder
 			set { bidirectionalClass = value; }
 		}
 
-		public string DecompositionType
+		public CharacterDecompositionMapping CharacterDecompositionMapping
 		{
-			get { return decompositionType; }
-			set { decompositionType = value; }
+			get { return characterDecompositionMapping; }
+			set { characterDecompositionMapping = value; }
 		}
 
 		public UnicodeNumericType NumericType
@@ -136,7 +136,8 @@ namespace System.Unicode.Builder
 				category,
 				canonicalCombiningClass,
 				bidirectionalClass,
-				decompositionType,
+				characterDecompositionMapping.DecompositionType,
+				characterDecompositionMapping.DecompositionMapping,
 				numericType,
 				numericValue,
 				bidirectionalMirrored,
@@ -159,7 +160,7 @@ namespace System.Unicode.Builder
 			if (category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
 			if (canonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
 			/*if (bidirectionalClass != 0)*/fields |= UcdFields.BidirectionalClass;
-			if (decompositionType != null) fields |= UcdFields.DecompositionType;
+			if (characterDecompositionMapping.DecompositionMapping != null) fields |= UcdFields.DecompositionMapping;
 			fields |= (UcdFields)((int)numericType << 6);
 			if (bidirectionalMirrored) fields |= UcdFields.BidirectionalMirrored;
 			if (oldName != null) fields |= UcdFields.OldName;
@@ -177,7 +178,11 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.Category) != 0) writer.Write((byte)category);
 			if ((fields & UcdFields.CanonicalCombiningClass) != 0) writer.Write((byte)canonicalCombiningClass);
 			if ((fields & UcdFields.BidirectionalClass) != 0) writer.Write((byte)bidirectionalClass);
-			if ((fields & UcdFields.DecompositionType) != 0) writer.Write(decompositionType);
+			if ((fields & UcdFields.DecompositionMapping) != 0)
+			{
+				writer.Write((byte)characterDecompositionMapping.DecompositionType);
+				writer.Write(characterDecompositionMapping.DecompositionMapping);
+			}
 			if ((fields & UcdFields.NumericNumeric) != 0)
 			{
 				writer.Write(numericValue.Numerator);

@@ -89,7 +89,7 @@ namespace System.Unicode.Builder
 						throw new InvalidDataException(string.Format("Missing Bidi_Class property for code point(s) {0}.", codePoint));
 					}
 
-					characterData.DecompositionType = NullIfEmpty(reader.ReadField());
+					characterData.CharacterDecompositionMapping = CharacterDecompositionMapping.Parse(NullIfEmpty(reader.ReadField()));
 
 					string numericDecimalField = NullIfEmpty(reader.ReadField());
 					string numericDigitField = NullIfEmpty(reader.ReadField());

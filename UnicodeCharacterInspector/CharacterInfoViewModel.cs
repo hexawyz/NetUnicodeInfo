@@ -55,6 +55,8 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged("Category");
 					NotifyPropertyChanged("CanonicalCombiningClass");
 					NotifyPropertyChanged("BidirectionalClass");
+					NotifyPropertyChanged("DecompositionType");
+					NotifyPropertyChanged("DecompositionMapping");
 					NotifyPropertyChanged("NumericType");
 					NotifyPropertyChanged("NumericValue");
 					NotifyPropertyChanged("ContributoryProperties");
@@ -90,6 +92,16 @@ namespace UnicodeCharacterInspector
 		public BidirectionalClass? BidirectionalClass
 		{
 			get { return character != null && characterData != null ? characterData.BidirectionalClass : null as BidirectionalClass?; }
+		}
+
+		public CompatibilityFormattingTag? DecompositionType
+		{
+			get { return character != null && characterData != null && characterData.DecompositionMapping != null ? characterData.DecompositionType : null as CompatibilityFormattingTag?; }
+		}
+
+		public string DecompositionMapping
+		{
+			get { return character != null && characterData != null ? characterData.DecompositionMapping : null; }
 		}
 
 		public UnicodeNumericType? NumericType

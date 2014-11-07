@@ -31,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BidirectionalClass.cs" />
+    <Compile Include="CompatibilityFormattingTag.cs" />
     <Compile Include="ContributoryProperties.cs" />
     <Compile Include="CanonicalCombiningClass.cs" />
     <Compile Include="CodePointEnumerable.cs" />
