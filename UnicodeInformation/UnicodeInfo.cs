@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	public sealed class UnicodeData
+	public sealed class UnicodeInfo
 	{
-		private static readonly UnicodeData @default = ReadEmbeddedUnicodeData();
-		public static UnicodeData Default { get { return @default; } }
+		private static readonly UnicodeInfo @default = ReadEmbeddedUnicodeData();
+		public static UnicodeInfo Default { get { return @default; } }
 
-		private static UnicodeData ReadEmbeddedUnicodeData()
+		private static UnicodeInfo ReadEmbeddedUnicodeData()
 		{
-			using (var stream = new DeflateStream(typeof(UnicodeData).GetTypeInfo().Assembly.GetManifestResourceStream("System.Unicode.ucd.dat"), CompressionMode.Decompress, false))
+			using (var stream = new DeflateStream(typeof(UnicodeInfo).GetTypeInfo().Assembly.GetManifestResourceStream("System.Unicode.ucd.dat"), CompressionMode.Decompress, false))
 			{
 				return FromStream(stream);
 			}
@@ -26,7 +26,7 @@ namespace System.Unicode
 		private readonly Version unicodeVersion;
 		private readonly UnicodeCharacterData[] characterData;
 
-		public static UnicodeData FromStream(Stream stream)
+		public static UnicodeInfo FromStream(Stream stream)
 		{
 			using (var reader = new BinaryReader(stream, Encoding.UTF8))
 			{
@@ -50,7 +50,7 @@ namespace System.Unicode
 					entries[i] = ReadEntry(reader);
 				}
 
-				return new UnicodeData(unicodeVersion, entries);
+				return new UnicodeInfo(unicodeVersion, entries);
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace System.Unicode
             }
 		}
 
-		internal UnicodeData(Version unicodeVersion, UnicodeCharacterData[] characterData)
+		internal UnicodeInfo(Version unicodeVersion, UnicodeCharacterData[] characterData)
 		{
 			this.unicodeVersion = unicodeVersion;
 			this.characterData = characterData;
@@ -147,9 +147,9 @@ namespace System.Unicode
 			return null;
 		}
 
-		public UnicodeCharacterData Get(int codePoint)
+		public UnicodeCharInfo Get(int codePoint)
 		{
-			return FindCodePoint(codePoint);
+			return new UnicodeCharInfo(codePoint, FindCodePoint(codePoint));
 		}
 	}
 }

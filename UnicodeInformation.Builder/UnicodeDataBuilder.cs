@@ -121,14 +121,14 @@ namespace System.Unicode.Builder
 			}
 		}
 
-		public UnicodeData ToUnicodeData()
+		public UnicodeInfo ToUnicodeData()
 		{
 			var finalData = new UnicodeCharacterData[entryCount];
 
 			for (int i = 0; i < finalData.Length; ++i)
 				finalData[i] = entries[i].ToCharacterData();
 
-			return new UnicodeData(unicodeVersion, finalData);
+			return new UnicodeInfo(unicodeVersion, finalData);
 		}
 
 		public void WriteToStream(Stream stream)

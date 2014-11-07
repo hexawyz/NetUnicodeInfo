@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	public sealed class UnicodeCharacterData
+	internal sealed class UnicodeCharacterData
 	{
 		public readonly UnicodeCharacterRange CodePointRange;
 		public readonly string Name;

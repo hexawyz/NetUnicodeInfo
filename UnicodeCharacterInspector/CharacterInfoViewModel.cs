@@ -12,7 +12,7 @@ namespace UnicodeCharacterInspector
 	{
 		private string character;
 		private int codePoint;
-		private UnicodeCharacterData characterData = UnicodeData.Default.Get(0);
+		private UnicodeCharInfo characterInfo = UnicodeInfo.Default.Get(0);
 
 		public CharacterInfoViewModel()
 		{
@@ -40,12 +40,12 @@ namespace UnicodeCharacterInspector
 					if ((character = value) != null)
 					{
 						codePoint = char.ConvertToUtf32(character, 0);
-						characterData = UnicodeData.Default.Get(codePoint);
+						characterInfo = UnicodeInfo.Default.Get(codePoint);
 					}
 					else
 					{
 						codePoint = 0;
-						characterData = UnicodeData.Default.Get(0);
+						characterInfo = UnicodeInfo.Default.Get(0);
                     }
 
 					NotifyPropertyChanged();
@@ -71,52 +71,52 @@ namespace UnicodeCharacterInspector
 
 		public string Name
 		{
-			get { return character != null && characterData != null ? characterData.Name : null; }
+			get { return character != null ? characterInfo.Name : null; }
 		}
 
 		public string OldName
 		{
-			get { return character != null && characterData != null ? characterData.OldName : null; }
+			get { return character != null ? characterInfo.OldName : null; }
 		}
 
 		public UnicodeCategory? Category
 		{
-			get { return character != null ? characterData != null ? characterData.Category : UnicodeCategory.OtherNotAssigned : null as UnicodeCategory?; }
+			get { return character != null ? characterInfo.Category : null as UnicodeCategory?; }
 		}
 
 		public CanonicalCombiningClass? CanonicalCombiningClass
 		{
-			get { return character != null ? characterData != null ? characterData.CanonicalCombiningClass : 0 : null as CanonicalCombiningClass?; }
+			get { return character != null ? characterInfo.CanonicalCombiningClass : null as CanonicalCombiningClass?; }
 		}
 
 		public BidirectionalClass? BidirectionalClass
 		{
-			get { return character != null && characterData != null ? characterData.BidirectionalClass : null as BidirectionalClass?; }
+			get { return character != null ? characterInfo.BidirectionalClass : null as BidirectionalClass?; }
 		}
 
 		public CompatibilityFormattingTag? DecompositionType
 		{
-			get { return character != null && characterData != null && characterData.DecompositionMapping != null ? characterData.DecompositionType : null as CompatibilityFormattingTag?; }
+			get { return character != null && characterInfo.DecompositionMapping != null ? characterInfo.DecompositionType : null as CompatibilityFormattingTag?; }
 		}
 
 		public string DecompositionMapping
 		{
-			get { return character != null && characterData != null ? characterData.DecompositionMapping : null; }
+			get { return character != null ? characterInfo.DecompositionMapping : null; }
 		}
 
 		public UnicodeNumericType? NumericType
 		{
-			get { return character != null ? characterData != null ? characterData.NumericType : UnicodeNumericType.None : null as UnicodeNumericType?; }
+			get { return character != null ? characterInfo.NumericType : null as UnicodeNumericType?; }
 		}
 
 		public UnicodeRationalNumber? NumericValue
 		{
-			get { return character != null && characterData != null && characterData.NumericType != UnicodeNumericType.None ? characterData.NumericValue : null as UnicodeRationalNumber?; }
+			get { return character != null && characterInfo.NumericType != UnicodeNumericType.None ? characterInfo.NumericValue : null as UnicodeRationalNumber?; }
 		}
 
 		public ContributoryProperties? ContributoryProperties
 		{
-			get { return character != null ? characterData != null ? characterData.ContributoryProperties : 0 : null as ContributoryProperties?; }
+			get { return character != null ? characterInfo.ContributoryProperties : null as ContributoryProperties?; }
 		}
 	}
 }

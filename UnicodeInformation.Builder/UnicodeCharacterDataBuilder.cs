@@ -127,7 +127,7 @@ namespace System.Unicode.Builder
 			this.category = UnicodeCategory.OtherNotAssigned;
 		}
 
-		public UnicodeCharacterData ToCharacterData()
+		internal UnicodeCharacterData ToCharacterData()
 		{
 			return new UnicodeCharacterData
 			(
