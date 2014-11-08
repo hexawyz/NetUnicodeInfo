@@ -40,7 +40,7 @@ namespace System.Unicode.Tests
 
 			var data = (await UnicodeDataProcessor.BuildDataAsync(source)).ToUnicodeData();
 
-			Assert.AreEqual((int)'\t', data.Get('\t').CodePoint);
+			Assert.AreEqual((int)'\t', data.GetCharInfo('\t').CodePoint);
 		}
 
 		[TestMethod]

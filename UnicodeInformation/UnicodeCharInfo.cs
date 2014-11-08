@@ -11,6 +11,7 @@ namespace System.Unicode
 	{
 		private readonly int codePoint;
 		private readonly UnicodeCharacterData characterData;
+		private readonly string block;
 
 		public int CodePoint { get { return codePoint; } }
 
@@ -25,6 +26,7 @@ namespace System.Unicode
 		}
 
         public UnicodeCategory Category { get { return characterData.Category; } }
+        public string Block { get { return block; } }
 		public CanonicalCombiningClass CanonicalCombiningClass { get { return characterData.CanonicalCombiningClass; } }
 		public BidirectionalClass BidirectionalClass { get { return characterData.BidirectionalClass; } }
 		public CompatibilityFormattingTag DecompositionType { get { return characterData.DecompositionType; } }
@@ -38,10 +40,11 @@ namespace System.Unicode
 		public string SimpleTitleCaseMapping { get { return characterData.SimpleTitleCaseMapping; } }
 		public ContributoryProperties ContributoryProperties { get { return characterData.ContributoryProperties; } }
 
-		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData characterData)
+		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData characterData, string block)
 		{
 			this.codePoint = codePoint;
 			this.characterData = characterData;
+			this.block = block;
 		}
 	}
 }

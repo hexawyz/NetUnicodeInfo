@@ -17,7 +17,7 @@ namespace System.Unicode
 
 		private static UnicodeInfo ReadEmbeddedUnicodeData()
 		{
-			using (var stream = new DeflateStream(typeof(UnicodeInfo).GetTypeInfo().Assembly.GetManifestResourceStream("System.Unicode.ucd.dat"), CompressionMode.Decompress, false))
+			using (var stream = new DeflateStream(typeof(UnicodeInfo).GetTypeInfo().Assembly.GetManifestResourceStream("ucd.dat"), CompressionMode.Decompress, false))
 			{
 				return FromStream(stream);
 			}
@@ -25,6 +25,7 @@ namespace System.Unicode
 
 		private readonly Version unicodeVersion;
 		private readonly UnicodeCharacterData[] characterData;
+		private readonly UnicodeBlock[] blockEntries;
 
 		public static UnicodeInfo FromStream(Stream stream)
 		{
@@ -43,18 +44,25 @@ namespace System.Unicode
 
 				var unicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
-				var entries = new UnicodeCharacterData[ReadCodePoint(reader)];
+				var characterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
 
-				for (int i = 0; i < entries.Length; ++i)
+				for (int i = 0; i < characterDataEntries.Length; ++i)
 				{
-					entries[i] = ReadEntry(reader);
+					characterDataEntries[i] = ReadCharacterDataEntry(reader);
 				}
 
-				return new UnicodeInfo(unicodeVersion, entries);
+				var blockEntries = new UnicodeBlock[reader.ReadByte()];
+
+				for (int i = 0; i < blockEntries.Length; ++i)
+				{
+					blockEntries[i] = ReadBlockEntry(reader);
+                }
+
+				return new UnicodeInfo(unicodeVersion, characterDataEntries, blockEntries);
 			}
 		}
 
-		private static UnicodeCharacterData ReadEntry(BinaryReader reader)
+		private static UnicodeCharacterData ReadCharacterDataEntry(BinaryReader reader)
 		{
 			var fields = (UcdFields)reader.ReadUInt16();
 
@@ -97,6 +105,11 @@ namespace System.Unicode
 			);
         }
 
+		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
+		{
+			return new UnicodeBlock(new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
+		}
+
 #if DEBUG
 		internal static int ReadCodePoint(BinaryReader reader)
 #else
@@ -120,10 +133,11 @@ namespace System.Unicode
             }
 		}
 
-		internal UnicodeInfo(Version unicodeVersion, UnicodeCharacterData[] characterData)
+		internal UnicodeInfo(Version unicodeVersion, UnicodeCharacterData[] characterData, UnicodeBlock[] blockEntries)
 		{
 			this.unicodeVersion = unicodeVersion;
 			this.characterData = characterData;
+			this.blockEntries = blockEntries;
         }
 
 		public Version UnicodeVersion { get { return unicodeVersion; } }
@@ -147,9 +161,40 @@ namespace System.Unicode
 			return null;
 		}
 
-		public UnicodeCharInfo Get(int codePoint)
+		private int FindBlockIndex(int codePoint)
 		{
-			return new UnicodeCharInfo(codePoint, FindCodePoint(codePoint));
+			int minIndex = 0;
+			int maxIndex = blockEntries.Length - 1;
+
+			do
+			{
+				int index = (minIndex + maxIndex) >> 1;
+
+				int Δ = blockEntries[index].CodePointRange.CompareCodePoint(codePoint);
+
+				if (Δ == 0) return index;
+				else if (Δ < 0) maxIndex = index - 1;
+				else minIndex = index + 1;
+			} while (minIndex <= maxIndex);
+
+			return -1;
 		}
+
+		private string GetBlockName(int codePoint)
+		{
+			int i = FindBlockIndex(codePoint);
+
+			return i >= 0 ? blockEntries[i].Name : null;
+        }
+
+		public UnicodeCharInfo GetCharInfo(int codePoint)
+		{
+			return new UnicodeCharInfo(codePoint, FindCodePoint(codePoint), GetBlockName(codePoint));
+		}
+
+		public UnicodeBlock[] GetBlocks()
+		{
+			return (UnicodeBlock[])blockEntries.Clone();
+        }
 	}
 }

@@ -12,7 +12,7 @@ namespace UnicodeCharacterInspector
 	{
 		private string character;
 		private int codePoint;
-		private UnicodeCharInfo characterInfo = UnicodeInfo.Default.Get(0);
+		private UnicodeCharInfo characterInfo = UnicodeInfo.Default.GetCharInfo(0);
 
 		public CharacterInfoViewModel()
 		{
@@ -40,12 +40,12 @@ namespace UnicodeCharacterInspector
 					if ((character = value) != null)
 					{
 						codePoint = char.ConvertToUtf32(character, 0);
-						characterInfo = UnicodeInfo.Default.Get(codePoint);
+						characterInfo = UnicodeInfo.Default.GetCharInfo(codePoint);
 					}
 					else
 					{
 						codePoint = 0;
-						characterInfo = UnicodeInfo.Default.Get(0);
+						characterInfo = UnicodeInfo.Default.GetCharInfo(0);
                     }
 
 					NotifyPropertyChanged();
@@ -53,6 +53,7 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged("Name");
 					NotifyPropertyChanged("OldName");
 					NotifyPropertyChanged("Category");
+					NotifyPropertyChanged("Block");
 					NotifyPropertyChanged("CanonicalCombiningClass");
 					NotifyPropertyChanged("BidirectionalClass");
 					NotifyPropertyChanged("DecompositionType");
@@ -82,6 +83,11 @@ namespace UnicodeCharacterInspector
 		public UnicodeCategory? Category
 		{
 			get { return character != null ? characterInfo.Category : null as UnicodeCategory?; }
+		}
+
+		public string Block
+		{
+			get { return character != null ? characterInfo.Block : null; }
 		}
 
 		public CanonicalCombiningClass? CanonicalCombiningClass

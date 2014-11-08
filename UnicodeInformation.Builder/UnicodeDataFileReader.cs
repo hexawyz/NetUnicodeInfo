@@ -9,12 +9,12 @@ namespace System.Unicode.Builder
 {
 	public class UnicodeDataFileReader : IDisposable
 	{
-		private struct AsciiCharBuffer
+		private struct Utf8Buffer
 		{
 			private readonly UnicodeDataFileReader reader;
 			private int length;
 
-			public AsciiCharBuffer(UnicodeDataFileReader reader)
+			public Utf8Buffer(UnicodeDataFileReader reader)
 			{
 				this.reader = reader;
 				this.length = 0;
@@ -25,8 +25,8 @@ namespace System.Unicode.Builder
 			private void EnsureExtraCapacity(int count)
 			{
 				if (count < 0) throw new ArgumentOutOfRangeException("requiredExtraCapacity");
-				if (reader.charBuffer.Length < checked(length + count))
-					Array.Resize(ref reader.charBuffer, Math.Max(length + count, reader.charBuffer.Length << 1));
+				if (reader.utf8StringBuffer.Length < checked(length + count))
+					Array.Resize(ref reader.utf8StringBuffer, Math.Max(length + count, reader.utf8StringBuffer.Length << 1));
 			}
 
 			public void Append(byte[] value, int startIndex, int count)
@@ -37,27 +37,23 @@ namespace System.Unicode.Builder
 
 				EnsureExtraCapacity(value.Length);
 
-				var buffer = reader.charBuffer;
+				var buffer = reader.utf8StringBuffer;
 
 				for (int i = startIndex; i < count; ++i)
 				{
-					byte b = value[i];
-
-					if (b > 127) throw new InvalidDataException(string.Format("Unexpected character value: {0}.", b));
-
-					buffer[length++] = (char)b;
+					buffer[length++] = value[i];
 				}
 			}
 
 			public override string ToString()
 			{
-				return length > 0 ? new string(reader.charBuffer, 0, length) : string.Empty;
+				return length > 0 ? Encoding.UTF8.GetString(reader.utf8StringBuffer, 0, length) : string.Empty;
 			}
 		}
 
 		private readonly Stream stream;
 		private readonly byte[] byteBuffer;
-		private char[] charBuffer;
+		private byte[] utf8StringBuffer;
 		private int index;
 		private int length;
 		private bool hasField = false;
@@ -72,7 +68,7 @@ namespace System.Unicode.Builder
 		{
 			this.stream = stream;
 			this.byteBuffer = new byte[8192];
-			this.charBuffer = new char[100];
+			this.utf8StringBuffer = new byte[100];
 			this.leaveOpen = leaveOpen;
 		}
 
@@ -156,7 +152,7 @@ namespace System.Unicode.Builder
 				}
 			}
 
-			var buffer = new AsciiCharBuffer(this);
+			var buffer = new Utf8Buffer(this);
 			int startOffset;
 			int endOffset;
 

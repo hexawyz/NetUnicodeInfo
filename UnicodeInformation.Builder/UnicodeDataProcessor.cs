@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
-	public class UnicodeDataProcessor
+	internal class UnicodeDataProcessor
 	{
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
+		public const string BlocksFileName = "Blocks.txt";
 
 		private static string ParseSimpleCaseMapping(string mapping)
 		{
@@ -23,12 +24,21 @@ namespace System.Unicode.Builder
 		private static string NullIfEmpty(string s)
 		{
 			return string.IsNullOrEmpty(s) ? null : s;
-        }
+		}
 
-		public static async Task<UnicodeDataBuilder> BuildDataAsync(IUcdSource ucdSource)
+		public static async Task<UnicodeInfoBuilder> BuildDataAsync(IUcdSource ucdSource)
 		{
-			var builder = new UnicodeDataBuilder(new Version(7, 0));
+			var builder = new UnicodeInfoBuilder(new Version(7, 0));
 
+			await ProcessUnicodeDataFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
+
+			return builder;
+		}
+
+		private static async Task ProcessUnicodeDataFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		{
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(UnicodeDataFileName).ConfigureAwait(false)))
 			{
 				int rangeStartCodePoint = -1;
@@ -55,11 +65,11 @@ namespace System.Unicode.Builder
 
 							codePoint = new UnicodeCharacterRange(rangeStartCodePoint, codePoint.LastCodePoint);
 
-							name = name.Substring(1, name.Length - 8).ToUpperInvariant(); // Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
+							name = name.Substring(1, name.Length - 8).ToUpperInvariant();   // Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
 
 							rangeStartCodePoint = -1;
 						}
-						else if (name == "<control>")  // Ignore the name of the property for these code points, as it should really be empty by the spec.
+						else if (name == "<control>")	// Ignore the name of the property for these code points, as it should really be empty by the spec.
 						{
 							// For control characters, we can derive a character label in of the form <control-NNNN>, which is not the character name.
 							name = null;
@@ -70,7 +80,7 @@ namespace System.Unicode.Builder
 						}
 					}
 					else if (rangeStartCodePoint >= 0)
-                    {
+					{
 						throw new InvalidDataException("Invalid range data in UnicodeData.txt.");
 					}
 
@@ -142,7 +152,10 @@ namespace System.Unicode.Builder
 					builder.Insert(characterData);
 				}
 			}
-			
+		}
+
+		private static async Task ProcessPropListFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		{
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(PropListFileName).ConfigureAwait(false)))
 			{
 				while (reader.MoveToNextLine())
@@ -156,8 +169,17 @@ namespace System.Unicode.Builder
 					}
 				}
 			}
+		}
 
-			return builder;
+		private static async Task ProcessBlocksFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(BlocksFileName).ConfigureAwait(false)))
+			{
+				while (reader.MoveToNextLine())
+				{
+					builder.AddBlockEntry(new UnicodeBlock(UnicodeCharacterRange.Parse(reader.ReadField()), reader.ReadField().Trim()));
+				}
+			}
 		}
 	}
 }

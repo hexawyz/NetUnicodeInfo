@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
-	public class UnicodeDataBuilder
+	internal class UnicodeInfoBuilder
 	{
 		private readonly Version unicodeVersion;
 		private UnicodeCharacterDataBuilder[] entries = new UnicodeCharacterDataBuilder[10000];
 		private int entryCount;
+		private List<UnicodeBlock> blockEntries = new List<UnicodeBlock>(100);
 
-		public UnicodeDataBuilder(Version unicodeVersion)
+		public UnicodeInfoBuilder(Version unicodeVersion)
 		{
 			this.unicodeVersion = unicodeVersion;
 		}
@@ -121,6 +122,11 @@ namespace System.Unicode.Builder
 			}
 		}
 
+		public void AddBlockEntry(UnicodeBlock block)
+		{
+			blockEntries.Add(block);
+        }
+
 		public UnicodeInfo ToUnicodeData()
 		{
 			var finalData = new UnicodeCharacterData[entryCount];
@@ -128,7 +134,14 @@ namespace System.Unicode.Builder
 			for (int i = 0; i < finalData.Length; ++i)
 				finalData[i] = entries[i].ToCharacterData();
 
-			return new UnicodeInfo(unicodeVersion, finalData);
+			return new UnicodeInfo(unicodeVersion, finalData, blockEntries.ToArray());
+		}
+
+		private void WriteUnicodeBlockToFile(BinaryWriter writer, UnicodeBlock block)
+		{
+			writer.WriteCodePoint(block.CodePointRange.FirstCodePoint);
+			writer.WriteCodePoint(block.CodePointRange.LastCodePoint);
+			writer.Write(block.Name);
 		}
 
 		public void WriteToStream(Stream stream)
@@ -143,6 +156,10 @@ namespace System.Unicode.Builder
 				{
 					entries[i].WriteToFile(writer);
 				}
+				if (blockEntries.Count > 255) throw new InvalidOperationException("There are too many block entries. The file format needs to be upgraded.");
+				writer.Write((byte)blockEntries.Count);
+				for (int i = 0; i < blockEntries.Count; ++i)
+					WriteUnicodeBlockToFile(writer, blockEntries[i]);
 			}
 		}
 

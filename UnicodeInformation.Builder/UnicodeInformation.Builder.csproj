@@ -60,7 +60,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnicodeCharacterDataBuilder.cs" />
-    <Compile Include="UnicodeDataBuilder.cs" />
+    <Compile Include="UnicodeInfoBuilder.cs" />
     <Compile Include="UnicodeDataFileReader.cs" />
     <Compile Include="UnicodeDataProcessor.cs" />
     <Compile Include="ZipUcdSource.cs" />

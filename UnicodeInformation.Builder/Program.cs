@@ -18,6 +18,7 @@ namespace System.Unicode.Builder
 		{
 			"UnicodeData.txt",
 			"PropList.txt",
+			"Blocks.txt",
 			"Jamo.txt"
 		};
 
@@ -113,7 +114,7 @@ namespace System.Unicode.Builder
 
 		private static void Main(string[] args)
 		{
-			UnicodeDataBuilder data;
+			UnicodeInfoBuilder data;
 
 			using (var ucdSource = GetUcdSource(null, null, null))
 			{

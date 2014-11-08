@@ -69,6 +69,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 				<Label Grid.Row="0" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CodePoint, Converter={StaticResource NullToVisibilityConverter}}" Content="Code Point" />
@@ -79,20 +80,22 @@
 				<TextBlock Grid.Row="2" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.OldName, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.OldName}" />
 				<Label Grid.Row="3" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Content="Category" />
 				<TextBlock Grid.Row="3" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Category}" />
-				<Label Grid.Row="4" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Content="Canonical Combining Class" />
-				<TextBlock Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CanonicalCombiningClass}" />
-				<Label Grid.Row="5" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Content="Bidirectional Class" />
-				<TextBlock Grid.Row="5" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.BidirectionalClass}" />
-				<Label Grid.Row="6" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Content="Decomposition Type" />
-				<TextBlock Grid.Row="6" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionType}" />
-				<Label Grid.Row="7" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Content="Decomposition Mapping" />
-				<TextBlock Grid.Row="7" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionMapping}" />
-				<Label Grid.Row="8" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource NullToVisibilityConverter}}" Content="Numeric Type" />
-				<TextBlock Grid.Row="8" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericType}" />
-				<Label Grid.Row="9" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Content="Numeric Value" />
-				<TextBlock Grid.Row="9" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericValue}" />
-				<Label Grid.Row="10" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Content="Contributory Properties" />
-				<TextBlock Grid.Row="10" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" />
+				<Label Grid.Row="4" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Block, Converter={StaticResource NullToVisibilityConverter}}" Content="Block" />
+				<TextBlock Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Block, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Block}" />
+				<Label Grid.Row="5" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Content="Canonical Combining Class" />
+				<TextBlock Grid.Row="5" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CanonicalCombiningClass}" />
+				<Label Grid.Row="6" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Content="Bidirectional Class" />
+				<TextBlock Grid.Row="6" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.BidirectionalClass}" />
+				<Label Grid.Row="7" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Content="Decomposition Type" />
+				<TextBlock Grid.Row="7" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionType}" />
+				<Label Grid.Row="8" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Content="Decomposition Mapping" />
+				<TextBlock Grid.Row="8" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionMapping}" />
+				<Label Grid.Row="9" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource NullToVisibilityConverter}}" Content="Numeric Type" />
+				<TextBlock Grid.Row="9" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericType}" />
+				<Label Grid.Row="10" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Content="Numeric Value" />
+				<TextBlock Grid.Row="10" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericValue}" />
+				<Label Grid.Row="11" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Content="Contributory Properties" />
+				<TextBlock Grid.Row="11" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" />
 			</Grid>
 		</ScrollViewer>
     </Grid>
