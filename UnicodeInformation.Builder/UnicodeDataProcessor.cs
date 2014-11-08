@@ -12,6 +12,7 @@ namespace System.Unicode.Builder
 	{
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
+		public const string DerivedCorePropertiesFileName = "DerivedCoreProperties.txt";
 		public const string BlocksFileName = "Blocks.txt";
 
 		private static string ParseSimpleCaseMapping(string mapping)
@@ -32,6 +33,7 @@ namespace System.Unicode.Builder
 
 			await ProcessUnicodeDataFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
 
 			return builder;
@@ -162,8 +164,25 @@ namespace System.Unicode.Builder
 				{
 					ContributoryProperties property;
 
-					var range = UnicodeCharacterRange.Parse(reader.ReadField().TrimEnd());
-					if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadField().Trim(), out property))
+					var range = UnicodeCharacterRange.Parse(reader.ReadTrimmedField());
+					if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out property))
+					{
+						builder.SetProperties(property, range);
+					}
+				}
+			}
+		}
+
+		private static async Task ProcessDerivedCorePropertiesFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(DerivedCorePropertiesFileName).ConfigureAwait(false)))
+			{
+				while (reader.MoveToNextLine())
+				{
+					CoreProperties property;
+
+					var range = UnicodeCharacterRange.Parse(reader.ReadTrimmedField());
+					if (EnumHelper<CoreProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out property))
 					{
 						builder.SetProperties(property, range);
 					}
@@ -177,7 +196,7 @@ namespace System.Unicode.Builder
 			{
 				while (reader.MoveToNextLine())
 				{
-					builder.AddBlockEntry(new UnicodeBlock(UnicodeCharacterRange.Parse(reader.ReadField()), reader.ReadField().Trim()));
+					builder.AddBlockEntry(new UnicodeBlock(UnicodeCharacterRange.Parse(reader.ReadField()), reader.ReadTrimmedField()));
 				}
 			}
 		}

@@ -24,8 +24,9 @@ namespace System.Unicode
 		public readonly string SimpleLowerCaseMapping;
 		public readonly string SimpleTitleCaseMapping;
 		public readonly ContributoryProperties ContributoryProperties;
+		public readonly CoreProperties CoreProperties;
 
-		public readonly int[] RelatedCodePoints;
+		public readonly int[] RelatedCodePoints; // NB: It seems that parsing NamesList is required in order to provide data for this field ?
 
 		internal UnicodeCharacterData
 		(
@@ -44,6 +45,7 @@ namespace System.Unicode
 			string simpleLowerCaseMapping,
 			string simpleTitleCaseMapping,
 			ContributoryProperties contributoryProperties,
+			CoreProperties coreProperties,
             int[] relatedCodePoints
 		)
 		{
@@ -62,6 +64,7 @@ namespace System.Unicode
 			this.SimpleLowerCaseMapping = simpleLowerCaseMapping;
 			this.SimpleTitleCaseMapping = simpleTitleCaseMapping;
 			this.ContributoryProperties = contributoryProperties;
+			this.CoreProperties = coreProperties;
 			this.RelatedCodePoints = relatedCodePoints;
         }
 

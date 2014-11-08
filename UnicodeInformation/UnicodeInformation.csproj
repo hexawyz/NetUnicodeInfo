@@ -53,9 +53,9 @@
       <Link>System.Unicode.snk</Link>
     </None>
     <None Include="app.config" />
-		<EmbeddedResource Include="ucd.dat">
-			<LogicalName>ucd.dat</LogicalName>
-		</EmbeddedResource>
+    <EmbeddedResource Include="ucd.dat">
+      <LogicalName>ucd.dat</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BidirectionalClass.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="CanonicalCombiningClass.cs" />
     <Compile Include="CodePointEnumerable.cs" />
     <Compile Include="CodePointEnumerator.cs" />
+    <Compile Include="CoreProperties.cs" />
     <Compile Include="UcdFields.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

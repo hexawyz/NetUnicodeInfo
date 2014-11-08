@@ -83,6 +83,7 @@ namespace System.Unicode
 			string simpleLowerCaseMapping = (fields & UcdFields.SimpleLowerCaseMapping) != 0 ? reader.ReadString() : null;
 			string simpleTitleCaseMapping = (fields & UcdFields.SimpleTitleCaseMapping) != 0 ? reader.ReadString() : null;
 			ContributoryProperties contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
+			CoreProperties coreProperties = (fields & UcdFields.CoreProperties) != 0 ? (CoreProperties)ReadInt24(reader) : 0;
 
 			return new UnicodeCharacterData
 			(
@@ -101,13 +102,19 @@ namespace System.Unicode
 				simpleLowerCaseMapping,
 				simpleTitleCaseMapping,
 				contributoryProperties,
-				null
+				coreProperties,
+                null
 			);
         }
 
 		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
 		{
 			return new UnicodeBlock(new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
+		}
+
+		private static int ReadInt24(BinaryReader reader)
+		{
+			return reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
 		}
 
 #if DEBUG

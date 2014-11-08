@@ -32,6 +32,8 @@ namespace System.Unicode
 		SimpleUpperCaseMapping = 1024,
 		SimpleLowerCaseMapping = 2048,
 		SimpleTitleCaseMapping = 4096,
+
 		ContributoryProperties = 8192,
+		CoreProperties = 16384,
 	}
 }

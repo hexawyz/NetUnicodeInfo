@@ -49,6 +49,20 @@ namespace System.Unicode.Builder
 			{
 				return length > 0 ? Encoding.UTF8.GetString(reader.utf8StringBuffer, 0, length) : string.Empty;
 			}
+
+			public string ToTrimmedString()
+			{
+				if (length == 0) return string.Empty;
+
+				var buffer = reader.utf8StringBuffer;
+                int start = 0;
+				int end = length;
+
+				while (buffer[start] == ' ') if (++start == length) return string.Empty;
+				while (buffer[--end] == ' ') ;
+
+				return length > 0 ? Encoding.UTF8.GetString(reader.utf8StringBuffer, start, end - start + 1) : string.Empty;
+			}
 		}
 
 		private readonly Stream stream;
@@ -128,10 +142,7 @@ namespace System.Unicode.Builder
 			return hasField;
         }
 
-		/// <summary>Reads the next data field.</summary>
-		/// <remarks>This method will return <see langword="null"/> on end of line.</remarks>
-		/// <returns>The text value of the read field, if available; <see langword="null"/> otherwise.</returns>
-		public string ReadField()
+		private string ReadFieldInternal(bool trim)
 		{
 			if (length == 0) throw new InvalidOperationException();
 
@@ -193,7 +204,23 @@ namespace System.Unicode.Builder
 				}
 			} while (RefillBuffer());
 
-			return buffer.ToString();
+			return trim ? buffer.ToTrimmedString() : buffer.ToString();
+        }
+
+		/// <summary>Reads the next data field.</summary>
+		/// <remarks>This method will return <see langword="null"/> on end of line.</remarks>
+		/// <returns>The text value of the read field, if available; <see langword="null"/> otherwise.</returns>
+		public string ReadField()
+		{
+			return ReadFieldInternal(false);
+		}
+
+		/// <summary>Reads the next data field as a trimmed value.</summary>
+		/// <remarks>This method will return <see langword="null"/> on end of line.</remarks>
+		/// <returns>The trimmed text value of the read field, if available; <see langword="null"/> otherwise.</returns>
+		public string ReadTrimmedField()
+		{
+			return ReadFieldInternal(true);
 		}
 
 		/// <summary>Skips the next data field.</summary>

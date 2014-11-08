@@ -39,6 +39,7 @@ namespace System.Unicode
 		public string SimpleLowerCaseMapping { get { return characterData.SimpleLowerCaseMapping; } }
 		public string SimpleTitleCaseMapping { get { return characterData.SimpleTitleCaseMapping; } }
 		public ContributoryProperties ContributoryProperties { get { return characterData.ContributoryProperties; } }
+		public CoreProperties CoreProperties { get { return characterData.CoreProperties; } }
 
 		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData characterData, string block)
 		{

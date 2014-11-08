@@ -11,6 +11,8 @@ namespace System.Unicode.Builder
 {
 	internal class Program
 	{
+		public const string UnihanDirectoryName = "Unihan";
+		public const string UnihanArchiveName = "Unihan.zip";
 		public const string UcdDirectoryName = "UCD";
 		public const string UcdArchiveName = "UCD.zip";
 
@@ -18,7 +20,8 @@ namespace System.Unicode.Builder
 		{
 			"UnicodeData.txt",
 			"PropList.txt",
-			"Blocks.txt",
+			"DerivedCoreProperties.txt",
+            "Blocks.txt",
 			"Jamo.txt"
 		};
 

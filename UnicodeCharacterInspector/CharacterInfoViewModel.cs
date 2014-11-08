@@ -61,6 +61,7 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged("NumericType");
 					NotifyPropertyChanged("NumericValue");
 					NotifyPropertyChanged("ContributoryProperties");
+					NotifyPropertyChanged("CoreProperties");
 				}
 			}
 		}
@@ -123,6 +124,11 @@ namespace UnicodeCharacterInspector
 		public ContributoryProperties? ContributoryProperties
 		{
 			get { return character != null ? characterInfo.ContributoryProperties : null as ContributoryProperties?; }
+		}
+
+		public CoreProperties? CoreProperties
+		{
+			get { return character != null ? characterInfo.CoreProperties : null as CoreProperties?; }
 		}
 	}
 }

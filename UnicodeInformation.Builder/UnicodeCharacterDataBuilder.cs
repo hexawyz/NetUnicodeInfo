@@ -24,6 +24,7 @@ namespace System.Unicode.Builder
 		private string simpleLowerCaseMapping;
 		private string simpleTitleCaseMapping;
 		private ContributoryProperties contributoryProperties;
+		private CoreProperties coreProperties;
 
 		private List<int> relatedCodePoints = new List<int>();
 
@@ -114,6 +115,12 @@ namespace System.Unicode.Builder
 			set { contributoryProperties = value; }
 		}
 
+		public CoreProperties CoreProperties
+		{
+			get { return coreProperties; }
+			set { coreProperties = value; }
+		}
+
 		public ICollection<int> RelatedCodePoints { get { return relatedCodePoints; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
@@ -146,6 +153,7 @@ namespace System.Unicode.Builder
 				simpleLowerCaseMapping,
 				simpleTitleCaseMapping,
 				contributoryProperties,
+				coreProperties,
 				relatedCodePoints.Count > 0 ? relatedCodePoints.ToArray() : null
 			);
 		}
@@ -168,6 +176,7 @@ namespace System.Unicode.Builder
 			if (simpleLowerCaseMapping != null) fields |= UcdFields.SimpleLowerCaseMapping;
 			if (simpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
 			if (contributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
+			if (coreProperties != 0) fields |= UcdFields.CoreProperties;
 
 			writer.Write((ushort)fields);
 
@@ -193,6 +202,7 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.SimpleLowerCaseMapping) != 0) writer.Write(simpleLowerCaseMapping);
 			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(simpleTitleCaseMapping);
 			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)contributoryProperties);
+			if ((fields & UcdFields.CoreProperties) != 0) writer.WriteUInt24((int)coreProperties);
 		}
 	}
 }

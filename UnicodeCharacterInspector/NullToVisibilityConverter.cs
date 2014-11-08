@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace UnicodeCharacterInspector
 {
-	class NullToVisibilityConverter : IValueConverter
+	internal sealed class NullToVisibilityConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

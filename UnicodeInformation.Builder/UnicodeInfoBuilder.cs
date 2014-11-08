@@ -122,6 +122,37 @@ namespace System.Unicode.Builder
 			}
 		}
 
+		public void SetProperties(CoreProperties property, UnicodeCharacterRange codePointRange)
+		{
+			int firstIndex = FindCodePoint(codePointRange.FirstCodePoint);
+			int lastIndex = FindCodePoint(codePointRange.LastCodePoint);
+
+			if (firstIndex < 0 && lastIndex < 0)
+			{
+				Insert(new UnicodeCharacterDataBuilder(codePointRange) { CoreProperties = property });
+				return;
+			}
+
+			if (firstIndex < 0
+				|| lastIndex < 0
+				|| entries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
+				|| entries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
+			{
+				throw new InvalidOperationException();
+			}
+
+			int i = firstIndex;
+
+			while (true)
+			{
+				entries[i].CoreProperties |= property;
+
+				if (i == lastIndex) break;
+
+				++i;
+			}
+		}
+
 		public void AddBlockEntry(UnicodeBlock block)
 		{
 			blockEntries.Add(block);
