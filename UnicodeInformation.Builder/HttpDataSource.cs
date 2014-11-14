@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
-	public class HttpUcdSource : IUcdSource
+	public class HttpDataSource : IDataSource
 	{
 		public static readonly Uri UnicodeCharacterDataUri = new Uri("http://www.unicode.org/Public/UCD/latest/ucd/", UriKind.Absolute);
 
 		private readonly HttpClient httpClient;
 		private readonly Uri baseUri;
 
-		public HttpUcdSource()
+		public HttpDataSource()
 			: this(UnicodeCharacterDataUri)
 		{
 		}
 
-		public HttpUcdSource(Uri baseUri)
+		public HttpDataSource(Uri baseUri)
 		{
 			this.httpClient = new HttpClient();
 			this.baseUri = baseUri;

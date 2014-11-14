@@ -8,11 +8,11 @@ using System.Unicode;
 
 namespace System.Unicode.Builder
 {
-	public sealed class FileUcdSource : IUcdSource
+	public sealed class FileDataSource : IDataSource
 	{
 		private readonly string baseDirectory;
 
-		public FileUcdSource(string baseDirectory)
+		public FileDataSource(string baseDirectory)
 		{
 			this.baseDirectory = Path.GetFullPath(baseDirectory);
 		}

@@ -27,7 +27,7 @@ namespace System.Unicode.Builder
 			return string.IsNullOrEmpty(s) ? null : s;
 		}
 
-		public static async Task<UnicodeInfoBuilder> BuildDataAsync(IUcdSource ucdSource)
+		public static async Task<UnicodeInfoBuilder> BuildDataAsync(IDataSource ucdSource, IDataSource unihanSource)
 		{
 			var builder = new UnicodeInfoBuilder(new Version(7, 0));
 
@@ -39,7 +39,7 @@ namespace System.Unicode.Builder
 			return builder;
 		}
 
-		private static async Task ProcessUnicodeDataFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		private static async Task ProcessUnicodeDataFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(UnicodeDataFileName).ConfigureAwait(false)))
 			{
@@ -156,7 +156,7 @@ namespace System.Unicode.Builder
 			}
 		}
 
-		private static async Task ProcessPropListFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		private static async Task ProcessPropListFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(PropListFileName).ConfigureAwait(false)))
 			{
@@ -173,7 +173,7 @@ namespace System.Unicode.Builder
 			}
 		}
 
-		private static async Task ProcessDerivedCorePropertiesFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		private static async Task ProcessDerivedCorePropertiesFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(DerivedCorePropertiesFileName).ConfigureAwait(false)))
 			{
@@ -190,7 +190,7 @@ namespace System.Unicode.Builder
 			}
 		}
 
-		private static async Task ProcessBlocksFile(IUcdSource ucdSource, UnicodeInfoBuilder builder)
+		private static async Task ProcessBlocksFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
 			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(BlocksFileName).ConfigureAwait(false)))
 			{

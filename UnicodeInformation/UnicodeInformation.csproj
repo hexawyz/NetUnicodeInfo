@@ -76,7 +76,10 @@
     <Compile Include="UnicodeCharacterRange.cs" />
     <Compile Include="UnicodeCharInfo.cs" />
     <Compile Include="UnicodeInfo.cs" />
+    <Compile Include="UnihanNumericType.cs" />
     <Compile Include="UnicodeNumericType.cs" />
+    <Compile Include="UnihanCharacterData.cs" />
+    <Compile Include="UnihanFields.cs" />
     <Compile Include="ValueNameAttribute.cs" />
     <Compile Include="UnicodeRationalNumber.cs" />
   </ItemGroup>

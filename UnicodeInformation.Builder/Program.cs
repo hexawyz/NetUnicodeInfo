@@ -13,7 +13,7 @@ namespace System.Unicode.Builder
 	{
 		public const string UnihanDirectoryName = "Unihan";
 		public const string UnihanArchiveName = "Unihan.zip";
-		public const string UcdDirectoryName = "UCD";
+		public const string directoryName = "UCD";
 		public const string UcdArchiveName = "UCD.zip";
 
 		public static readonly string[] ucdRequiredFiles = new[]
@@ -22,32 +22,39 @@ namespace System.Unicode.Builder
 			"PropList.txt",
 			"DerivedCoreProperties.txt",
             "Blocks.txt",
-			"Jamo.txt"
+			"Jamo.txt",
 		};
 
-		private static byte[] DownloadUcdArchive()
+		public static readonly string[] unihanRequiredFiles = new[]
+		{
+			"Unihan_NumericValues.txt",
+			"Unihan_Readings.txt",
+			"Unihan_Variants.txt",
+		};
+
+		private static byte[] DownloadDataArchive(string archiveName)
 		{
 			using (var httpClient = new HttpClient())
 			{
-				return httpClient.GetByteArrayAsync(HttpUcdSource.UnicodeCharacterDataUri + UcdArchiveName).Result;
+				return httpClient.GetByteArrayAsync(HttpDataSource.UnicodeCharacterDataUri + archiveName).Result;
             }
 		}
 
-		internal static IUcdSource GetUcdSource(bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
+		internal static IDataSource GetDataSource(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
 		{
 			string baseDirectory = Environment.CurrentDirectory;
-			string ucdDirectory = Path.Combine(baseDirectory, UcdDirectoryName);
-			string ucdArchiveFileName = Path.Combine(baseDirectory, UcdArchiveName);
+			string dataDirectory = Path.Combine(baseDirectory, Program.directoryName);
+			string dataArchiveFileName = Path.Combine(baseDirectory, archiveName);
 
 			if (shouldDownload != true)
 			{
-				bool hasValidDirectory = Directory.Exists(ucdDirectory);
+				bool hasValidDirectory = Directory.Exists(dataDirectory);
 
 				if (hasValidDirectory)
 				{
-					foreach (string ucdRequiredFile in ucdRequiredFiles)
+					foreach (string requiredFile in requiredFiles)
 					{
-						if (!File.Exists(Path.Combine(ucdDirectory, ucdRequiredFile)))
+						if (!File.Exists(Path.Combine(dataDirectory, requiredFile)))
 						{
 							hasValidDirectory = false;
 							break;
@@ -57,47 +64,47 @@ namespace System.Unicode.Builder
 
 				if (hasValidDirectory)
 				{
-					return new FileUcdSource(ucdDirectory);
+					return new FileDataSource(dataDirectory);
 				}
 
-				if (File.Exists(ucdArchiveFileName))
+				if (File.Exists(dataArchiveFileName))
 				{
 					if (shouldExtract == true)
 					{
-						ZipFile.ExtractToDirectory(ucdArchiveFileName, ucdDirectory);
-						return new FileUcdSource(ucdDirectory);
+						ZipFile.ExtractToDirectory(dataArchiveFileName, dataDirectory);
+						return new FileDataSource(dataDirectory);
 					}
 					else
 					{
-						return new ZipUcdSource(File.OpenRead(ucdArchiveFileName));
+						return new ZipDataSource(File.OpenRead(dataArchiveFileName));
 					}
 				}
             }
 
 			if (shouldDownload != false)
 			{
-				var ucdArchiveData = DownloadUcdArchive();
+				var dataArchiveData = DownloadDataArchive(archiveName);
 
 				if (shouldSaveArchive == true)
 				{
-					var stream = File.Open(ucdArchiveFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+					var stream = File.Open(dataArchiveFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
 					try
 					{
-						stream.Write(ucdArchiveData, 0, ucdArchiveData.Length);
-						ucdArchiveData = null; // Release the reference now, since we won't need it anymore.
+						stream.Write(dataArchiveData, 0, dataArchiveData.Length);
+						dataArchiveData = null; // Release the reference now, since we won't need it anymore.
 
 						if (shouldExtract == true)
 						{
 							using (var archive = new ZipArchive(stream, ZipArchiveMode.Read, false))
 							{
-								archive.ExtractToDirectory(ucdDirectory);
+								archive.ExtractToDirectory(dataDirectory);
 
-								return new FileUcdSource(ucdDirectory);
+								return new FileDataSource(dataDirectory);
 							}
 						}
 						else
 						{
-							return new ZipUcdSource(stream);
+							return new ZipDataSource(stream);
 						}
 					}
 					catch
@@ -108,7 +115,7 @@ namespace System.Unicode.Builder
 				}
 				else
 				{
-					return new ZipUcdSource(new MemoryStream(ucdArchiveData));
+					return new ZipDataSource(new MemoryStream(dataArchiveData));
 				}
 			}
 
@@ -119,9 +126,10 @@ namespace System.Unicode.Builder
 		{
 			UnicodeInfoBuilder data;
 
-			using (var ucdSource = GetUcdSource(null, null, null))
+			using (var ucdSource = GetDataSource(UcdArchiveName, directoryName, ucdRequiredFiles, null, null, null))
+			using (var unihanSource = GetDataSource(UnihanArchiveName, UnihanDirectoryName, unihanRequiredFiles, null, null, null))
 			{
-				data = UnicodeDataProcessor.BuildDataAsync(ucdSource).Result;
+				data = UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource).Result;
 			}
 
 			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
-	public sealed class ZipUcdSource : IUcdSource
+	public sealed class ZipDataSource : IDataSource
 	{
 		private readonly ZipArchive archive;
 
-		public ZipUcdSource(Stream stream)
+		public ZipDataSource(Stream stream)
 		{
 			archive = new ZipArchive(stream, ZipArchiveMode.Read, false);
 		}

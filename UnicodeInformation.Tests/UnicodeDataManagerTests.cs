@@ -23,12 +23,19 @@ namespace System.Unicode.Tests
 			{
 				Directory.CreateDirectory(directoryName);
 
-				var fileName = Path.Combine(directoryName, "UCD.zip");
+				string ucdFileName = Path.Combine(directoryName, "UCD.zip");
+				string unihanFileName = Path.Combine(directoryName, "Unihan.zip");
 
-				if (!File.Exists(fileName))
+				if (!File.Exists(ucdFileName))
 				{
-					new WebClient().DownloadFile("http://www.unicode.org/Public/UCD/latest/ucd/UCD.zip", fileName);
-					ZipFile.ExtractToDirectory(fileName, directoryName);
+					new WebClient().DownloadFile("http://www.unicode.org/Public/UCD/latest/ucd/UCD.zip", ucdFileName);
+					ZipFile.ExtractToDirectory(ucdFileName, directoryName);
+				}
+
+				if (!File.Exists(unihanFileName))
+				{
+					new WebClient().DownloadFile("http://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip", unihanFileName);
+					ZipFile.ExtractToDirectory(unihanFileName, directoryName);
 				}
 			}
 		}
@@ -36,9 +43,9 @@ namespace System.Unicode.Tests
 		[TestMethod]
 		public async Task BuildDataAsync()
 		{
-			var source = new FileUcdSource(UcdDirectoryName);
+			var source = new FileDataSource(UcdDirectoryName);
 
-			var data = (await UnicodeDataProcessor.BuildDataAsync(source)).ToUnicodeData();
+			var data = (await UnicodeDataProcessor.BuildDataAsync(source, source)).ToUnicodeData();
 
 			Assert.AreEqual((int)'\t', data.GetCharInfo('\t').CodePoint);
 		}
@@ -46,9 +53,9 @@ namespace System.Unicode.Tests
 		[TestMethod]
 		public async Task BuildAndWriteDataAsync()
 		{
-			var source = new FileUcdSource(UcdDirectoryName);
+			var source = new FileDataSource(UcdDirectoryName);
 
-			var data = await UnicodeDataProcessor.BuildDataAsync(source);
+			var data = await UnicodeDataProcessor.BuildDataAsync(source, source);
 
 			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
 			{
