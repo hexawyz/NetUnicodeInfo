@@ -13,6 +13,9 @@
 	<Window.DataContext>
 		<local:CharacterInspectorViewModel />
 	</Window.DataContext>
+	<Window.Resources>
+		<local:StringToUtf32Converter x:Key="StringToUtf32Converter" />
+	</Window.Resources>
     <Grid Margin="10">
 		<Grid.Resources>
 			<Style TargetType="{x:Type Label}" BasedOn="{StaticResource ResourceKey={x:Type Label}}">
@@ -34,17 +37,23 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="150" />
+			<ColumnDefinition Width="120" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<TextBox Grid.ColumnSpan="2" MaxLines="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
-		<ListBox Grid.Row="1" Grid.RowSpan="3" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}" />
-		<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		<ListBox Grid.Row="1" Grid.RowSpan="3" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock><Run Text="{Binding Mode=OneWay}" /> <Run Text="{Binding Mode=OneWay, Converter={StaticResource StringToUtf32Converter}, StringFormat=U+{0:X4}}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" FontStyle="Italic" /></TextBlock>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<TextBlock Grid.Row="1" Grid.Column="1" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
 		<ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
 			<Grid>
 				<Grid.Resources>
 					<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ResourceKey={x:Type TextBlock}}">
-						<Setter Property="VerticalAlignment" Value="Center" />
+						<Setter Property="VerticalAlignment" Value="Top" />
 						<Setter Property="Margin" Value="6" />
 					</Style>
 				</Grid.Resources>
