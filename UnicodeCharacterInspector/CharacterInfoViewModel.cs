@@ -11,6 +11,7 @@ namespace UnicodeCharacterInspector
 	internal sealed class CharacterInfoViewModel : BindableObject
 	{
 		private string character;
+		private string displayText;
 		private int codePoint;
 		private UnicodeCharInfo characterInfo = UnicodeInfo.GetCharInfo(0);
 
@@ -49,6 +50,7 @@ namespace UnicodeCharacterInspector
                     }
 
 					NotifyPropertyChanged();
+					UpdateDisplayText();
 					NotifyPropertyChanged(nameof(CodePoint));
 					NotifyPropertyChanged(nameof(Name));
 					NotifyPropertyChanged(nameof(OldName));
@@ -76,6 +78,18 @@ namespace UnicodeCharacterInspector
 				}
 			}
 		}
+
+		private void UpdateDisplayText()
+		{
+			string oldValue = displayText;
+
+			displayText = character != null ? UnicodeInfo.GetDisplayText(characterInfo) : null;
+
+			if (displayText != oldValue)
+				NotifyPropertyChanged(nameof(DisplayText));
+		}
+
+		public string DisplayText { get { return displayText; } }
 
 		public int? CodePoint
 		{

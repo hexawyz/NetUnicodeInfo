@@ -262,6 +262,27 @@ namespace System.Unicode
 			return new UnicodeCharInfo(codePoint, FindUnicodeCodePoint(codePoint), FindUnihanCodePoint(codePoint), GetBlockName(codePoint));
 		}
 
+		public static UnicodeCategory GetCategory(int codePoint)
+		{
+			var charInfo = FindUnicodeCodePoint(codePoint);
+
+			return charInfo != null ? charInfo.Category : UnicodeCategory.OtherNotAssigned;
+        }
+
+		public static string GetDisplayText(UnicodeCharInfo charInfo)
+		{
+			if (charInfo.CodePoint <= 0x0020) return ((char)(0x2400 + charInfo.CodePoint)).ToString();
+			else if (charInfo.Category == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(charInfo.CodePoint);
+			else return char.ConvertFromUtf32(charInfo.CodePoint);
+        }
+
+		public static string GetDisplayText(int codePoint)
+		{
+			if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString();
+			else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
+			else return char.ConvertFromUtf32(codePoint);
+        }
+
 		public static UnicodeBlock[] GetBlocks()
 		{
 			return (UnicodeBlock[])blocks.Clone();

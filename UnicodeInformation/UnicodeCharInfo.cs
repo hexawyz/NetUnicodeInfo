@@ -26,8 +26,8 @@ namespace System.Unicode
             }
 		}
 
-        public UnicodeCategory Category { get { return unicodeCharacterData.Category; } }
-        public string Block { get { return block; } }
+        public UnicodeCategory Category { get { return unicodeCharacterData != null ? unicodeCharacterData.Category : UnicodeCategory.OtherNotAssigned; } }
+        public string Block { get { return block ?? "No_Block"; } }
 		public CanonicalCombiningClass CanonicalCombiningClass { get { return unicodeCharacterData.CanonicalCombiningClass; } }
 		public BidirectionalClass BidirectionalClass { get { return unicodeCharacterData.BidirectionalClass; } }
 		public CompatibilityFormattingTag DecompositionType { get { return unicodeCharacterData.DecompositionType; } }

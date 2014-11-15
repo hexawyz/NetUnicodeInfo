@@ -13,9 +13,6 @@
 	<Window.DataContext>
 		<local:CharacterInspectorViewModel />
 	</Window.DataContext>
-	<Window.Resources>
-		<local:StringToUtf32Converter x:Key="StringToUtf32Converter" />
-	</Window.Resources>
     <Grid Margin="10">
 		<Grid.Resources>
 			<Style TargetType="{x:Type Label}" BasedOn="{StaticResource ResourceKey={x:Type Label}}">
@@ -40,15 +37,15 @@
 			<ColumnDefinition Width="120" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<TextBox Grid.ColumnSpan="2" MaxLines="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
+		<TextBox Grid.ColumnSpan="2" ScrollViewer.VerticalScrollBarVisibility="Auto" MinLines="1" MaxLines="5" AcceptsReturn="True" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
 		<ListBox Grid.Row="1" Grid.RowSpan="3" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock><Run Text="{Binding Mode=OneWay}" /> <Run Text="{Binding Mode=OneWay, Converter={StaticResource StringToUtf32Converter}, StringFormat=U+{0:X4}}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" FontStyle="Italic" /></TextBlock>
+					<TextBlock><Run Text="{Binding DisplayText, Mode=OneWay}" /> <Run Text="{Binding CodePoint, Mode=OneWay, StringFormat=U+{0:X4}}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" FontStyle="Italic" /></TextBlock>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-		<TextBlock Grid.Row="1" Grid.Column="1" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.Character}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		<TextBlock Grid.Row="1" Grid.Column="1" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.DisplayText}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
 		<ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
 			<Grid>
 				<Grid.Resources>

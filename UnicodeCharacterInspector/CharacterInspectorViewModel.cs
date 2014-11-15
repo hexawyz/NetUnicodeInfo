@@ -12,7 +12,21 @@ namespace UnicodeCharacterInspector
 {
 	internal sealed class CharacterInspectorViewModel : BindableObject
 	{
-		private class CharacterCollection : INotifyCollectionChanged, IList<string>
+		public sealed class CharacterViewModel
+		{
+			public int CodePoint { get; }
+			public string Character { get; }
+			public string DisplayText { get; }
+
+			public CharacterViewModel(int codePoint)
+			{
+				CodePoint = codePoint;
+				Character = char.ConvertFromUtf32(codePoint);
+				DisplayText = UnicodeInfo.GetDisplayText(codePoint);
+            }
+		}
+
+		private class CharacterCollection : INotifyCollectionChanged, IList<CharacterViewModel>
 		{
 			public event NotifyCollectionChangedEventHandler CollectionChanged
 			{
@@ -27,17 +41,17 @@ namespace UnicodeCharacterInspector
 				this.owner = owner;
 			}
 
-			public string this[int index]
+			public CharacterViewModel this[int index]
 			{
 				get
 				{
 					if (index < 0 || index >= owner.characterCount) throw new IndexOutOfRangeException();
 
-					return owner.characters[index];
+					return new CharacterViewModel(owner.codePoints[index]);
 				}
 			}
 
-			string IList<string>.this[int index]
+			CharacterViewModel IList<CharacterViewModel>.this[int index]
 			{
 				get { return this[index]; }
 				set { throw new NotSupportedException(); }
@@ -45,28 +59,38 @@ namespace UnicodeCharacterInspector
 
 			public int Count { get { return owner.characterCount; } }
 
-			bool ICollection<string>.IsReadOnly { get { return true; } }
+			bool ICollection<CharacterViewModel>.IsReadOnly { get { return true; } }
 
-			void ICollection<string>.Add(string item) { throw new NotSupportedException(); }
-			void IList<string>.Insert(int index, string item) { throw new NotSupportedException(); }
+			void ICollection<CharacterViewModel>.Add(CharacterViewModel item) { throw new NotSupportedException(); }
+			void IList<CharacterViewModel>.Insert(int index, CharacterViewModel item) { throw new NotSupportedException(); }
 
-			bool ICollection<string>.Remove(string item) { throw new NotSupportedException(); }
-			void IList<string>.RemoveAt(int index) { throw new NotSupportedException(); }
+			bool ICollection<CharacterViewModel>.Remove(CharacterViewModel item) { throw new NotSupportedException(); }
+			void IList<CharacterViewModel>.RemoveAt(int index) { throw new NotSupportedException(); }
 
-			void ICollection<string>.Clear() { throw new NotSupportedException(); }
+			void ICollection<CharacterViewModel>.Clear() { throw new NotSupportedException(); }
 
-			public int IndexOf(string item) { return Array.IndexOf(owner.characters, item); }
-			public bool Contains(string item) { return Array.IndexOf(owner.characters, item) >= 0; }
+			public int IndexOf(CharacterViewModel item) { return Array.IndexOf(owner.codePoints, item); }
+			public bool Contains(CharacterViewModel item) { return Array.IndexOf(owner.codePoints, item) >= 0; }
 
-			public void CopyTo(string[] array, int arrayIndex) { owner.characters.CopyTo(array, arrayIndex); }
+			public void CopyTo(CharacterViewModel[] array, int arrayIndex)
+			{
+				if (array == null) throw new ArgumentNullException("array");
+				if (arrayIndex < 0) throw new ArgumentOutOfRangeException("arrayIndex");
+				if (array.Length < arrayIndex + owner.codePoints.Length) throw new ArgumentException();
 
-			public IEnumerator<string> GetEnumerator()
+				for (int i = 0, j = arrayIndex; i < owner.codePoints.Length; ++i, ++j)
+				{
+					array[j] = new CharacterViewModel(owner.codePoints[i]);
+				}
+			}
+
+			public IEnumerator<CharacterViewModel> GetEnumerator()
 			{
 				int length = owner.characterCount;
-				var array = owner.characters;
+				var array = owner.codePoints;
 
 				for (int i = 0; i < length; ++i)
-					yield return array[i];
+					yield return new CharacterViewModel(array[i]);
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
@@ -76,7 +100,7 @@ namespace UnicodeCharacterInspector
 
 		private string text;
 		private int selectedCharacterIndex = -1;
-		private string[] characters = new string[1024];
+		private int[] codePoints = new int[1024];
 		private int characterCount;
 		private CharacterInfoViewModel selectedCharacterInfo = new CharacterInfoViewModel();
 		private readonly CharacterCollection characterCollection;
@@ -121,18 +145,9 @@ namespace UnicodeCharacterInspector
 				{
 					foreach (int codePoint in value.AsCodePointEnumerable())
 					{
-						if (index >= characters.Length) Array.Resize(ref characters, characters.Length * 2);
+						if (index >= codePoints.Length) Array.Resize(ref codePoints, codePoints.Length * 2);
 
-						// We don't replace pre-existing elements if they already have the correct value.
-						// This should help a bit with GC, by making new string elements as short-lived as possible.
-						string oldCodePointValue = characters[index];
-
-						if (oldCodePointValue == null || char.ConvertToUtf32(oldCodePointValue, 0) != codePoint)
-						{
-							characters[index] = char.ConvertFromUtf32(codePoint);
-						}
-
-						++index;
+						codePoints[index++] = codePoint;
 					}
 				}
 				characterCount = index;
@@ -145,21 +160,21 @@ namespace UnicodeCharacterInspector
 				NotifyCollectionChanged(NotifyCollectionChangedAction.Reset);
 				if (!keepSelectedIndex)
 				{
-					NotifyPropertyChanged("SelectedCharacterIndex");
-					NotifyPropertyChanged("SelectedCharacter");
+					NotifyPropertyChanged(nameof(SelectedCharacterIndex));
+					NotifyPropertyChanged(nameof(SelectedCharacter));
 					selectedCharacterInfo.Character = null;
 				}
             }
 		}
 
-		public ICollection<string> Characters { get { return characterCollection; } }
+		public ICollection<CharacterViewModel> Characters { get { return characterCollection; } }
 
 		public int SelectedCharacterIndex
 		{
 			get { return selectedCharacterIndex; }
 			set
 			{
-				if (selectedCharacterIndex < -1 || selectedCharacterIndex >= characters.Length)
+				if (selectedCharacterIndex < -1 || selectedCharacterIndex >= codePoints.Length)
 					throw new ArgumentOutOfRangeException("value");
 
 				if (value != selectedCharacterIndex)
@@ -171,15 +186,18 @@ namespace UnicodeCharacterInspector
 					string newSelectedCharacter = SelectedCharacter;
 
 					NotifyPropertyChanged();
-					if (newSelectedCharacter != oldSelectedCharacter) NotifyPropertyChanged("SelectedCharacter");
-					selectedCharacterInfo.Character = newSelectedCharacter;
+					if (newSelectedCharacter != oldSelectedCharacter)
+					{
+						selectedCharacterInfo.Character = newSelectedCharacter;
+						NotifyPropertyChanged(nameof(SelectedCharacter));
+					}
 				}
 			}
 		}
 
 		public string SelectedCharacter
 		{
-			get { return selectedCharacterIndex >= 0 ? characters[selectedCharacterIndex] : null; }
+			get { return selectedCharacterIndex >= 0 ? char.ConvertFromUtf32(codePoints[selectedCharacterIndex]) : null; }
 		}
 
 		public CharacterInfoViewModel SelectedCharacterInfo
