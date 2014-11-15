@@ -269,8 +269,8 @@ namespace System.Unicode.Builder
 		{
 			using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
 			{
-				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 0 });
-				writer.Write((ushort)7);
+				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 1 });
+				writer.Write((ushort)7); // Hardcode Unicode 7.0
 				writer.Write((byte)0);
 				writer.WriteCodePoint(ucdEntryCount);
 				for (int i = 0; i < ucdEntryCount; ++i)

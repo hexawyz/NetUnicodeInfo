@@ -34,9 +34,7 @@ namespace System.Unicode
 
 				byte formatVersion = reader.ReadByte();
 
-#if !DEBUG
 				if (formatVersion != 1) throw new InvalidDataException();
-#endif
 
 				var unicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
