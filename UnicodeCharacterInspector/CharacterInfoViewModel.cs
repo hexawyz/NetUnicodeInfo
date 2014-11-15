@@ -49,19 +49,30 @@ namespace UnicodeCharacterInspector
                     }
 
 					NotifyPropertyChanged();
-					NotifyPropertyChanged("CodePoint");
-					NotifyPropertyChanged("Name");
-					NotifyPropertyChanged("OldName");
-					NotifyPropertyChanged("Category");
-					NotifyPropertyChanged("Block");
-					NotifyPropertyChanged("CanonicalCombiningClass");
-					NotifyPropertyChanged("BidirectionalClass");
-					NotifyPropertyChanged("DecompositionType");
-					NotifyPropertyChanged("DecompositionMapping");
-					NotifyPropertyChanged("NumericType");
-					NotifyPropertyChanged("NumericValue");
-					NotifyPropertyChanged("ContributoryProperties");
-					NotifyPropertyChanged("CoreProperties");
+					NotifyPropertyChanged(nameof(CodePoint));
+					NotifyPropertyChanged(nameof(Name));
+					NotifyPropertyChanged(nameof(OldName));
+					NotifyPropertyChanged(nameof(Definition));
+					NotifyPropertyChanged(nameof(Category));
+					NotifyPropertyChanged(nameof(Block));
+					NotifyPropertyChanged(nameof(CanonicalCombiningClass));
+					NotifyPropertyChanged(nameof(BidirectionalClass));
+					NotifyPropertyChanged(nameof(DecompositionType));
+					NotifyPropertyChanged(nameof(DecompositionMapping));
+					NotifyPropertyChanged(nameof(NumericType));
+					NotifyPropertyChanged(nameof(UnihanNumericType));
+					NotifyPropertyChanged(nameof(NumericValue));
+					NotifyPropertyChanged(nameof(ContributoryProperties));
+					NotifyPropertyChanged(nameof(CoreProperties));
+					NotifyPropertyChanged(nameof(MandarinReading));
+					NotifyPropertyChanged(nameof(CantoneseReading));
+					NotifyPropertyChanged(nameof(JapaneseKunReading));
+					NotifyPropertyChanged(nameof(JapaneseOnReading));
+					NotifyPropertyChanged(nameof(KoreanReading));
+					NotifyPropertyChanged(nameof(HangulReading));
+					NotifyPropertyChanged(nameof(VietnameseReading));
+					NotifyPropertyChanged(nameof(SimplifiedVariant));
+					NotifyPropertyChanged(nameof(TraditionalVariant));
 				}
 			}
 		}
@@ -79,6 +90,11 @@ namespace UnicodeCharacterInspector
 		public string OldName
 		{
 			get { return character != null ? characterInfo.OldName : null; }
+		}
+
+		public string Definition
+		{
+			get { return character != null ? characterInfo.Definition : null; }
 		}
 
 		public UnicodeCategory? Category
@@ -116,6 +132,11 @@ namespace UnicodeCharacterInspector
 			get { return character != null ? characterInfo.NumericType : null as UnicodeNumericType?; }
 		}
 
+		public UnihanNumericType? UnihanNumericType
+		{
+			get { return character != null ? characterInfo.UnihanNumericType : null as UnihanNumericType?; }
+		}
+
 		public UnicodeRationalNumber? NumericValue
 		{
 			get { return character != null && characterInfo.NumericType != UnicodeNumericType.None ? characterInfo.NumericValue : null as UnicodeRationalNumber?; }
@@ -129,6 +150,51 @@ namespace UnicodeCharacterInspector
 		public CoreProperties? CoreProperties
 		{
 			get { return character != null ? characterInfo.CoreProperties : null as CoreProperties?; }
+		}
+
+		public string MandarinReading
+		{
+			get { return character != null ? characterInfo.MandarinReading : null; }
+		}
+
+		public string CantoneseReading
+		{
+			get { return character != null ? characterInfo.CantoneseReading : null; }
+		}
+
+		public string JapaneseKunReading
+		{
+			get { return character != null ? characterInfo.JapaneseKunReading : null; }
+		}
+
+		public string JapaneseOnReading
+		{
+			get { return character != null ? characterInfo.JapaneseOnReading : null; }
+		}
+
+		public string KoreanReading
+		{
+			get { return character != null ? characterInfo.KoreanReading : null; }
+		}
+
+		public string HangulReading
+		{
+			get { return character != null ? characterInfo.HangulReading : null; }
+		}
+
+		public string VietnameseReading
+		{
+			get { return character != null ? characterInfo.VietnameseReading : null; }
+		}
+
+		public string SimplifiedVariant
+		{
+			get { return character != null ? characterInfo.SimplifiedVariant : null; }
+		}
+
+		public string TraditionalVariant
+		{
+			get { return character != null ? characterInfo.TraditionalVariant : null; }
 		}
 	}
 }

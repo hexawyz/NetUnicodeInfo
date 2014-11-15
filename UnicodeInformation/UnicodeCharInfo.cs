@@ -10,7 +10,8 @@ namespace System.Unicode
 	public struct UnicodeCharInfo
 	{
 		private readonly int codePoint;
-		private readonly UnicodeCharacterData characterData;
+		private readonly UnicodeCharacterData unicodeCharacterData;
+		private readonly UnihanCharacterData unihanCharacterData;
 		private readonly string block;
 
 		public int CodePoint { get { return codePoint; } }
@@ -19,32 +20,46 @@ namespace System.Unicode
 		{
 			get
 			{
-				return characterData.Name == null || characterData.CodePointRange.IsSingleCodePoint ?
-					characterData.Name :
-					characterData.Name + "-" + codePoint.ToString("X4");
+				return unicodeCharacterData.Name == null || unicodeCharacterData.CodePointRange.IsSingleCodePoint ?
+					unicodeCharacterData.Name :
+					unicodeCharacterData.Name + "-" + codePoint.ToString("X4");
             }
 		}
 
-        public UnicodeCategory Category { get { return characterData.Category; } }
+        public UnicodeCategory Category { get { return unicodeCharacterData.Category; } }
         public string Block { get { return block; } }
-		public CanonicalCombiningClass CanonicalCombiningClass { get { return characterData.CanonicalCombiningClass; } }
-		public BidirectionalClass BidirectionalClass { get { return characterData.BidirectionalClass; } }
-		public CompatibilityFormattingTag DecompositionType { get { return characterData.DecompositionType; } }
-		public string DecompositionMapping { get { return characterData.DecompositionMapping; } }
-		public UnicodeNumericType NumericType { get { return characterData.NumericType; } }
-		public UnicodeRationalNumber? NumericValue { get { return characterData.NumericValue; } }
-		public bool BidirectionalMirrored { get { return characterData.BidirectionalMirrored; } }
-		public string OldName { get { return characterData.OldName; } }
-		public string SimpleUpperCaseMapping { get { return characterData.SimpleUpperCaseMapping; } }
-		public string SimpleLowerCaseMapping { get { return characterData.SimpleLowerCaseMapping; } }
-		public string SimpleTitleCaseMapping { get { return characterData.SimpleTitleCaseMapping; } }
-		public ContributoryProperties ContributoryProperties { get { return characterData.ContributoryProperties; } }
-		public CoreProperties CoreProperties { get { return characterData.CoreProperties; } }
+		public CanonicalCombiningClass CanonicalCombiningClass { get { return unicodeCharacterData.CanonicalCombiningClass; } }
+		public BidirectionalClass BidirectionalClass { get { return unicodeCharacterData.BidirectionalClass; } }
+		public CompatibilityFormattingTag DecompositionType { get { return unicodeCharacterData.DecompositionType; } }
+		public string DecompositionMapping { get { return unicodeCharacterData.DecompositionMapping; } }
+		public UnicodeNumericType NumericType { get { return unihanCharacterData != null ? unihanCharacterData.NumericType != UnihanNumericType.None ? UnicodeNumericType.Numeric : UnicodeNumericType.None : unicodeCharacterData.NumericType; } }
+		public UnihanNumericType UnihanNumericType { get { return unihanCharacterData != null ? unihanCharacterData.NumericType : UnihanNumericType.None; } }
+		public UnicodeRationalNumber? NumericValue { get { return unihanCharacterData != null && unihanCharacterData.NumericType != UnihanNumericType.None ? new UnicodeRationalNumber(unihanCharacterData.NumericValue, 1) : unicodeCharacterData.NumericValue; } }
+		public bool BidirectionalMirrored { get { return unicodeCharacterData.BidirectionalMirrored; } }
+		public string OldName { get { return unicodeCharacterData.OldName; } }
+		public string SimpleUpperCaseMapping { get { return unicodeCharacterData.SimpleUpperCaseMapping; } }
+		public string SimpleLowerCaseMapping { get { return unicodeCharacterData.SimpleLowerCaseMapping; } }
+		public string SimpleTitleCaseMapping { get { return unicodeCharacterData.SimpleTitleCaseMapping; } }
+		public ContributoryProperties ContributoryProperties { get { return unicodeCharacterData.ContributoryProperties; } }
+		public CoreProperties CoreProperties { get { return unicodeCharacterData.CoreProperties; } }
 
-		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData characterData, string block)
+		public string Definition { get { return unihanCharacterData?.Definition; } }
+		public string MandarinReading { get { return unihanCharacterData?.MandarinReading; } }
+		public string CantoneseReading { get { return unihanCharacterData?.CantoneseReading; } }
+		public string JapaneseKunReading { get { return unihanCharacterData?.JapaneseKunReading; } }
+		public string JapaneseOnReading { get { return unihanCharacterData?.JapaneseOnReading; } }
+		public string KoreanReading { get { return unihanCharacterData?.KoreanReading; } }
+		public string HangulReading { get { return unihanCharacterData?.HangulReading; } }
+		public string VietnameseReading { get { return unihanCharacterData?.VietnameseReading; } }
+
+		public string SimplifiedVariant { get { return unihanCharacterData?.SimplifiedVariant; } }
+		public string TraditionalVariant { get { return unihanCharacterData?.TraditionalVariant; } }
+
+		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData unicodeCharacterData, UnihanCharacterData unihanCharacterData, string block)
 		{
 			this.codePoint = codePoint;
-			this.characterData = characterData;
+			this.unicodeCharacterData = unicodeCharacterData;
+			this.unihanCharacterData = unihanCharacterData;
 			this.block = block;
 		}
 	}

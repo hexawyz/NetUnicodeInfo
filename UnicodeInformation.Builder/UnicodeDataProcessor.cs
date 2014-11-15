@@ -14,6 +14,9 @@ namespace System.Unicode.Builder
 		public const string PropListFileName = "PropList.txt";
 		public const string DerivedCorePropertiesFileName = "DerivedCoreProperties.txt";
 		public const string BlocksFileName = "Blocks.txt";
+		public const string UnihanReadingsFileName = "Unihan_Readings.txt";
+		public const string UnihanVariantsFileName = "Unihan_Variants.txt";
+		public const string UnihanNumericValuesFileName = "Unihan_NumericValues.txt";
 
 		private static string ParseSimpleCaseMapping(string mapping)
 		{
@@ -35,13 +38,16 @@ namespace System.Unicode.Builder
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessUnihanReadings(unihanSource, builder).ConfigureAwait(false);
+			await ProcessUnihanVariants(unihanSource, builder).ConfigureAwait(false);
+			await ProcessUnihanNumericValues(unihanSource, builder).ConfigureAwait(false);
 
 			return builder;
 		}
 
 		private static async Task ProcessUnicodeDataFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
-			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(UnicodeDataFileName).ConfigureAwait(false)))
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(UnicodeDataFileName).ConfigureAwait(false), ';'))
 			{
 				int rangeStartCodePoint = -1;
 
@@ -158,7 +164,7 @@ namespace System.Unicode.Builder
 
 		private static async Task ProcessPropListFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
-			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(PropListFileName).ConfigureAwait(false)))
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(PropListFileName).ConfigureAwait(false), ';'))
 			{
 				while (reader.MoveToNextLine())
 				{
@@ -175,7 +181,7 @@ namespace System.Unicode.Builder
 
 		private static async Task ProcessDerivedCorePropertiesFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
-			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(DerivedCorePropertiesFileName).ConfigureAwait(false)))
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(DerivedCorePropertiesFileName).ConfigureAwait(false), ';'))
 			{
 				while (reader.MoveToNextLine())
 				{
@@ -192,11 +198,132 @@ namespace System.Unicode.Builder
 
 		private static async Task ProcessBlocksFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
-			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(BlocksFileName).ConfigureAwait(false)))
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(BlocksFileName).ConfigureAwait(false), ';'))
 			{
 				while (reader.MoveToNextLine())
 				{
 					builder.AddBlockEntry(new UnicodeBlock(UnicodeCharacterRange.Parse(reader.ReadField()), reader.ReadTrimmedField()));
+				}
+			}
+		}
+
+		private static async Task ProcessUnihanReadings(IDataSource unihanDataSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnihanDataFileReader(await unihanDataSource.OpenDataFileAsync(UnihanReadingsFileName).ConfigureAwait(false)))
+			{
+				while (reader.Read())
+				{
+					// This statement is used to skip unhandled properties entirely.
+					switch (reader.PropertyName)
+					{
+						case UnihanProperty.kDefinition:
+						case UnihanProperty.kMandarin:
+						case UnihanProperty.kCantonese:
+						case UnihanProperty.kJapaneseKun:
+						case UnihanProperty.kJapaneseOn:
+						case UnihanProperty.kKorean:
+						case UnihanProperty.kHangul:
+						case UnihanProperty.kVietnamese:
+							break;
+						default:
+							// Ignore unhandled properties for now.
+							continue;
+					}
+
+					// This entry will only be created if there is meaningful data.
+					var entry = builder.GetUnihan(reader.CodePoint);
+
+					switch (reader.PropertyName)
+					{
+						case UnihanProperty.kDefinition:
+							entry.Definition = reader.PropertyValue;
+							break;
+						case UnihanProperty.kMandarin:
+							entry.MandarinReading = reader.PropertyValue;
+							break;
+						case UnihanProperty.kCantonese:
+							entry.CantoneseReading = reader.PropertyValue;
+							break;
+						case UnihanProperty.kJapaneseKun:
+							entry.JapaneseKunReading = reader.PropertyValue;
+							break;
+						case UnihanProperty.kJapaneseOn:
+							entry.JapaneseOnReading = reader.PropertyValue;
+							break;
+						case UnihanProperty.kKorean:
+							entry.KoreanReading = reader.PropertyValue;
+							break;
+						case UnihanProperty.kHangul:
+							entry.HangulReading = reader.PropertyValue;
+							break;
+						case UnihanProperty.kVietnamese:
+							entry.VietnameseReading = reader.PropertyValue;
+							break;
+						default:
+							throw new InvalidOperationException();
+					}
+				}
+			}
+		}
+
+		private static async Task ProcessUnihanVariants(IDataSource unihanDataSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnihanDataFileReader(await unihanDataSource.OpenDataFileAsync(UnihanVariantsFileName).ConfigureAwait(false)))
+			{
+				while (reader.Read())
+				{
+					// This statement is used to skip unhandled properties entirely.
+					switch (reader.PropertyName)
+					{
+						case UnihanProperty.kSimplifiedVariant:
+						case UnihanProperty.kTraditionalVariant:
+							break;
+						default:
+							// Ignore unhandled properties for now.
+							continue;
+					}
+
+					var entry = builder.GetUnihan(reader.CodePoint);
+
+					switch (reader.PropertyName)
+					{
+						case UnihanProperty.kSimplifiedVariant:
+							entry.SimplifiedVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
+							break;
+						case UnihanProperty.kTraditionalVariant:
+							entry.TraditionalVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
+							break;
+						default:
+							throw new InvalidOperationException();
+					}
+				}
+			}
+		}
+
+		private static async Task ProcessUnihanNumericValues(IDataSource unihanDataSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnihanDataFileReader(await unihanDataSource.OpenDataFileAsync(UnihanNumericValuesFileName).ConfigureAwait(false)))
+			{
+				while (reader.Read())
+				{
+					var entry = builder.GetUnihan(reader.CodePoint);
+
+					switch (reader.PropertyName)
+					{
+						case UnihanProperty.kAccountingNumeric:
+							entry.NumericType = UnihanNumericType.Accounting;
+							break;
+						case UnihanProperty.kOtherNumeric:
+							entry.NumericType = UnihanNumericType.Other;
+							break;
+						case UnihanProperty.kPrimaryNumeric:
+							entry.NumericType = UnihanNumericType.Primary;
+							break;
+						default:
+							throw new InvalidDataException("Unrecognized property name: " + reader.PropertyName + ".");
+					}
+
+					entry.NumericValue = long.Parse(reader.PropertyValue);
 				}
 			}
 		}

@@ -46,7 +46,7 @@ namespace System.Unicode.Builder
 				if (c == ' ') ++index;
 				else
 				{
-					int codePoint = ParseCodePoint(s, ref index);
+					int codePoint = HexCodePoint.Parse(s, ref index);
 
 					if (codePoint < 0x10000)
 						buffer[charIndex++] = (char)codePoint;
@@ -64,31 +64,6 @@ namespace System.Unicode.Builder
 			}
 
 			return new CharacterDecompositionMapping(tag, new string(buffer, 0, charIndex));
-		}
-
-		private static int ParseCodePoint(string s, ref int index)
-		{
-			int i = index;
-			int accum = 0;
-
-			while (i < s.Length)
-			{
-				char c = s[i];
-
-				if (c == ' ') break;
-
-				accum <<= 4;
-
-				if (c >= '0' && c <= '9') accum |= c - '0';
-				else if (c >= 'A' && c <= 'F') accum |= c - 'A' + 0xA;
-				else if (c >= 'a' && c <= 'f') accum |= c - 'a' + 0xA;
-				else throw new FormatException();
-
-				++i;
-			}
-
-			index = i;
-			return accum;
 		}
 	}
 }

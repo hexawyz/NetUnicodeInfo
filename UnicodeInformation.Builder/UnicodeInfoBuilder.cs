@@ -10,8 +10,10 @@ namespace System.Unicode.Builder
 	internal class UnicodeInfoBuilder
 	{
 		private readonly Version unicodeVersion;
-		private UnicodeCharacterDataBuilder[] entries = new UnicodeCharacterDataBuilder[10000];
-		private int entryCount;
+		private UnicodeCharacterDataBuilder[] ucdEntries = new UnicodeCharacterDataBuilder[10000];
+		private int ucdEntryCount;
+		private UnihanCharacterDataBuilder[] unihanEntries = new UnihanCharacterDataBuilder[10000];
+		private int unihanEntryCount;
 		private List<UnicodeBlock> blockEntries = new List<UnicodeBlock>(100);
 
 		public UnicodeInfoBuilder(Version unicodeVersion)
@@ -19,18 +21,18 @@ namespace System.Unicode.Builder
 			this.unicodeVersion = unicodeVersion;
 		}
 
-		private int FindCodePoint(int codePoint)
+		private int FindUcdCodePoint(int codePoint)
 		{
-			if (entryCount == 0) return -1;
+			if (ucdEntryCount == 0) return -1;
 
 			int minIndex = 0;
-			int maxIndex = entryCount - 1;
+			int maxIndex = ucdEntryCount - 1;
 
 			do
 			{
 				int index = (minIndex + maxIndex) >> 1;
 
-				int Δ = entries[index].CodePointRange.CompareCodePoint(codePoint);
+				int Δ = ucdEntries[index].CodePointRange.CompareCodePoint(codePoint);
 
 				if (Δ == 0) return index;
 				else if (Δ < 0) maxIndex = index - 1;
@@ -40,61 +42,144 @@ namespace System.Unicode.Builder
 			return -1;
 		}
 
-		private int FindInsertionPoint(int startCodePoint, int endCodePoint)
+		private int FindUcdInsertionPoint(int startCodePoint, int endCodePoint)
 		{
 			int minIndex;
 			int maxIndex;
 
-			if (entryCount == 0 || entries[maxIndex = entryCount - 1].CodePointRange.LastCodePoint < startCodePoint) return entryCount;
-			else if (endCodePoint < entries[minIndex = 0].CodePointRange.FirstCodePoint) return 0;
-			else if (entryCount == 1) return -1;
+			if (ucdEntryCount == 0 || ucdEntries[maxIndex = ucdEntryCount - 1].CodePointRange.LastCodePoint < startCodePoint) return ucdEntryCount;
+			else if (endCodePoint < ucdEntries[minIndex = 0].CodePointRange.FirstCodePoint) return 0;
+			else if (ucdEntryCount == 1) return -1;
 
 			do
 			{
 				int index = (minIndex + maxIndex) >> 1;
 
-				int Δ = entries[index].CodePointRange.CompareCodePoint(startCodePoint);
+				int Δ = ucdEntries[index].CodePointRange.CompareCodePoint(startCodePoint);
 
 				if (Δ == 0) return -1;
 				else if (Δ < 0) maxIndex = index;
 				else minIndex = index;
 			} while (maxIndex - minIndex > 1);
 
-			if (entries[maxIndex].CodePointRange.FirstCodePoint < endCodePoint) return -1;
+			if (ucdEntries[maxIndex].CodePointRange.FirstCodePoint < endCodePoint) return -1;
+			else return maxIndex;
+		}
+
+		private int FindUnihanCodePoint(int codePoint)
+		{
+			if (unihanEntryCount == 0) return -1;
+
+			int minIndex = 0;
+			int maxIndex = unihanEntryCount - 1;
+
+			do
+			{
+				int index = (minIndex + maxIndex) >> 1;
+
+				int Δ = codePoint - unihanEntries[index].CodePoint;
+
+				if (Δ == 0) return index;
+				else if (Δ < 0) maxIndex = index - 1;
+				else minIndex = index + 1;
+			} while (minIndex <= maxIndex);
+
+			return -1;
+		}
+
+		private int FindUnihanInsertionPoint(int codePoint)
+		{
+			int minIndex;
+			int maxIndex;
+
+			if (unihanEntryCount == 0 || unihanEntries[maxIndex = unihanEntryCount - 1].CodePoint < codePoint) return unihanEntryCount;
+			else if (codePoint < unihanEntries[minIndex = 0].CodePoint) return 0;
+			else if (unihanEntryCount == 1) return -1;
+
+			do
+			{
+				int index = (minIndex + maxIndex) >> 1;
+
+				int Δ = codePoint - unihanEntries[index].CodePoint;
+
+				if (Δ == 0) return -1;
+				else if (Δ < 0) maxIndex = index;
+				else minIndex = index;
+			} while (maxIndex - minIndex > 1);
+
+			if (unihanEntries[maxIndex].CodePoint < codePoint) return -1;
 			else return maxIndex;
 		}
 
 		public void Insert(UnicodeCharacterDataBuilder data)
 		{
-			int insertionPoint = FindInsertionPoint(data.CodePointRange.FirstCodePoint, data.CodePointRange.LastCodePoint);
+			int insertionPoint = FindUcdInsertionPoint(data.CodePointRange.FirstCodePoint, data.CodePointRange.LastCodePoint);
 
 			if (insertionPoint < 0) throw new InvalidOperationException("The specified range overlaps with pre-existing ranges.");
 
-			if (insertionPoint >= entries.Length)
+			if (insertionPoint >= ucdEntries.Length)
 			{
-				Array.Resize(ref entries, entries.Length << 1);
+				Array.Resize(ref ucdEntries, ucdEntries.Length << 1);
 			}
 
-			if (insertionPoint < entryCount)
+			if (insertionPoint < ucdEntryCount)
 			{
-				Array.Copy(entries, insertionPoint, entries, insertionPoint + 1, entryCount - insertionPoint);
+				Array.Copy(ucdEntries, insertionPoint, ucdEntries, insertionPoint + 1, ucdEntryCount - insertionPoint);
 			}
 
-			entries[insertionPoint] = data;
-			++entryCount;
+			ucdEntries[insertionPoint] = data;
+			++ucdEntryCount;
 		}
 
-		public UnicodeCharacterDataBuilder Get(int codePoint)
+		private void Insert(UnihanCharacterDataBuilder data)
 		{
-			int index = FindCodePoint(codePoint);
+			int insertionPoint = FindUnihanInsertionPoint(data.CodePoint);
 
-			return index >= 0 ? entries[index] : null;
+			if (insertionPoint < 0) throw new InvalidOperationException("The specified range overlaps with pre-existing ranges.");
+
+			if (insertionPoint >= unihanEntries.Length)
+			{
+				Array.Resize(ref unihanEntries, unihanEntries.Length << 1);
+			}
+
+			if (insertionPoint < unihanEntryCount)
+			{
+				Array.Copy(unihanEntries, insertionPoint, unihanEntries, insertionPoint + 1, unihanEntryCount - insertionPoint);
+			}
+
+			unihanEntries[insertionPoint] = data;
+			++unihanEntryCount;
+		}
+
+		public UnicodeCharacterDataBuilder GetUcd(int codePoint)
+		{
+			int index = FindUcdCodePoint(codePoint);
+
+			return index >= 0 ? ucdEntries[index] : null;
+		}
+
+		public UnihanCharacterDataBuilder GetUnihan(int codePoint)
+		{
+			int index = FindUnihanCodePoint(codePoint);
+
+			if (index >= 0)
+			{
+				return unihanEntries[index];
+			}
+			else
+			{
+				var data = new UnihanCharacterDataBuilder(codePoint);
+
+				Insert(data);
+
+				return data;
+			}
 		}
 
 		public void SetProperties(ContributoryProperties property, UnicodeCharacterRange codePointRange)
 		{
-			int firstIndex = FindCodePoint(codePointRange.FirstCodePoint);
-			int lastIndex = FindCodePoint(codePointRange.LastCodePoint);
+			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
+			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
 
 			if (firstIndex < 0 && lastIndex < 0)
 			{
@@ -104,8 +189,8 @@ namespace System.Unicode.Builder
 
 			if (firstIndex < 0
 				|| lastIndex < 0
-				|| entries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
-				|| entries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
+				|| ucdEntries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
+				|| ucdEntries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
 			{
 				throw new InvalidOperationException();
 			}
@@ -114,7 +199,7 @@ namespace System.Unicode.Builder
 
 			while (true)
 			{
-				entries[i].ContributoryProperties |= property;
+				ucdEntries[i].ContributoryProperties |= property;
 
 				if (i == lastIndex) break;
 
@@ -124,8 +209,8 @@ namespace System.Unicode.Builder
 
 		public void SetProperties(CoreProperties property, UnicodeCharacterRange codePointRange)
 		{
-			int firstIndex = FindCodePoint(codePointRange.FirstCodePoint);
-			int lastIndex = FindCodePoint(codePointRange.LastCodePoint);
+			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
+			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
 
 			if (firstIndex < 0 && lastIndex < 0)
 			{
@@ -135,8 +220,8 @@ namespace System.Unicode.Builder
 
 			if (firstIndex < 0
 				|| lastIndex < 0
-				|| entries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
-				|| entries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
+				|| ucdEntries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
+				|| ucdEntries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
 			{
 				throw new InvalidOperationException();
 			}
@@ -145,7 +230,7 @@ namespace System.Unicode.Builder
 
 			while (true)
 			{
-				entries[i].CoreProperties |= property;
+				ucdEntries[i].CoreProperties |= property;
 
 				if (i == lastIndex) break;
 
@@ -160,12 +245,17 @@ namespace System.Unicode.Builder
 
 		public UnicodeInfo ToUnicodeData()
 		{
-			var finalData = new UnicodeCharacterData[entryCount];
+			var finalUnicodeData = new UnicodeCharacterData[ucdEntryCount];
 
-			for (int i = 0; i < finalData.Length; ++i)
-				finalData[i] = entries[i].ToCharacterData();
+			for (int i = 0; i < finalUnicodeData.Length; ++i)
+				finalUnicodeData[i] = ucdEntries[i].ToCharacterData();
 
-			return new UnicodeInfo(unicodeVersion, finalData, blockEntries.ToArray());
+			var finalUnihanData = new UnihanCharacterData[unihanEntryCount];
+
+			for (int i = 0; i < finalUnihanData.Length; ++i)
+				finalUnihanData[i] = unihanEntries[i].ToCharacterData();
+
+			return new UnicodeInfo(unicodeVersion, finalUnicodeData, finalUnihanData, blockEntries.ToArray());
 		}
 
 		private void WriteUnicodeBlockToFile(BinaryWriter writer, UnicodeBlock block)
@@ -182,15 +272,22 @@ namespace System.Unicode.Builder
 				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 0 });
 				writer.Write((ushort)7);
 				writer.Write((byte)0);
-				writer.WriteCodePoint(entryCount);
-				for (int i = 0; i < entryCount; ++i)
+				writer.WriteCodePoint(ucdEntryCount);
+				for (int i = 0; i < ucdEntryCount; ++i)
 				{
-					entries[i].WriteToFile(writer);
+					ucdEntries[i].WriteToFile(writer);
 				}
 				if (blockEntries.Count > 255) throw new InvalidOperationException("There are too many block entries. The file format needs to be upgraded.");
 				writer.Write((byte)blockEntries.Count);
 				for (int i = 0; i < blockEntries.Count; ++i)
+				{
 					WriteUnicodeBlockToFile(writer, blockEntries[i]);
+				}
+				writer.WriteCodePoint(unihanEntryCount);
+				for (int i = 0; i < unihanEntryCount; ++i)
+				{
+					unihanEntries[i].WriteToFile(writer);
+				}
 			}
 		}
 

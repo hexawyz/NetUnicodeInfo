@@ -6,5 +6,6 @@
     <Application.Resources>
          <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
          <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+         <local:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
     </Application.Resources>
 </Application>

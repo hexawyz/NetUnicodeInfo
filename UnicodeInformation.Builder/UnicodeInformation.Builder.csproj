@@ -53,6 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryWriterExtensions.cs" />
+    <Compile Include="UnihanProperty.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UnihanProperty.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HexCodePoint.cs" />
+    <Compile Include="UnihanCharacterDataBuilder.cs" />
+    <Compile Include="UnihanDataFileReader.cs" />
+    <Compile Include="Utf8Buffer.cs" />
     <Compile Include="CharacterDecompositionMapping.cs" />
     <Compile Include="FileDataSource.cs" />
     <Compile Include="HttpDataSource.cs" />
@@ -76,6 +85,15 @@
       <Project>{cb722958-a1c4-4121-804b-7d5a671491b1}</Project>
       <Name>UnicodeInformation</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UnihanProperty.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UnihanProperty.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

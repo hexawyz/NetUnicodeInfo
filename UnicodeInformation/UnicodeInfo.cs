@@ -23,10 +23,6 @@ namespace System.Unicode
 			}
 		}
 
-		private readonly Version unicodeVersion;
-		private readonly UnicodeCharacterData[] characterData;
-		private readonly UnicodeBlock[] blockEntries;
-
 		public static UnicodeInfo FromStream(Stream stream)
 		{
 			using (var reader = new BinaryReader(stream, Encoding.UTF8))
@@ -44,11 +40,11 @@ namespace System.Unicode
 
 				var unicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
-				var characterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
+				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
 
-				for (int i = 0; i < characterDataEntries.Length; ++i)
+				for (int i = 0; i < unicodeCharacterDataEntries.Length; ++i)
 				{
-					characterDataEntries[i] = ReadCharacterDataEntry(reader);
+					unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader);
 				}
 
 				var blockEntries = new UnicodeBlock[reader.ReadByte()];
@@ -56,13 +52,20 @@ namespace System.Unicode
 				for (int i = 0; i < blockEntries.Length; ++i)
 				{
 					blockEntries[i] = ReadBlockEntry(reader);
-                }
+				}
 
-				return new UnicodeInfo(unicodeVersion, characterDataEntries, blockEntries);
+				var unihanCharacterDataEntries = new UnihanCharacterData[ReadCodePoint(reader)];
+
+				for (int i = 0; i < unihanCharacterDataEntries.Length; ++i)
+				{
+					unihanCharacterDataEntries[i] = ReadUnihanCharacterDataEntry(reader);
+				}
+
+				return new UnicodeInfo(unicodeVersion, unicodeCharacterDataEntries, unihanCharacterDataEntries, blockEntries);
 			}
 		}
 
-		private static UnicodeCharacterData ReadCharacterDataEntry(BinaryReader reader)
+		private static UnicodeCharacterData ReadUnicodeCharacterDataEntry(BinaryReader reader)
 		{
 			var fields = (UcdFields)reader.ReadUInt16();
 
@@ -107,6 +110,46 @@ namespace System.Unicode
 			);
         }
 
+		private static UnihanCharacterData ReadUnihanCharacterDataEntry(BinaryReader reader)
+		{
+			var fields = (UnihanFields)reader.ReadUInt16();
+
+			int codePoint = UnihanCharacterData.UnpackCodePoint(ReadCodePoint(reader));
+
+			var numericType = (UnihanNumericType)((int)(fields & UnihanFields.OtherNumeric));
+			long numericValue = numericType != UnihanNumericType.None ?
+				reader.ReadInt64() :
+				0;
+
+			string definition = (fields & UnihanFields.Definition) != 0 ? reader.ReadString() : null;
+			string mandarinReading = (fields & UnihanFields.MandarinReading) != 0 ? reader.ReadString() : null;
+			string cantoneseReading = (fields & UnihanFields.CantoneseReading) != 0 ? reader.ReadString() : null;
+			string japaneseKunReading = (fields & UnihanFields.JapaneseKunReading) != 0 ? reader.ReadString() : null;
+			string japaneseOnReading = (fields & UnihanFields.JapaneseOnReading) != 0 ? reader.ReadString() : null;
+			string koreanReading = (fields & UnihanFields.KoreanReading) != 0 ? reader.ReadString() : null;
+			string hangulReading = (fields & UnihanFields.HangulReading) != 0 ? reader.ReadString() : null;
+			string vietnameseReading = (fields & UnihanFields.VietnameseReading) != 0 ? reader.ReadString() : null;
+			string simplifiedVariant = (fields & UnihanFields.SimplifiedVariant) != 0 ? reader.ReadString() : null;
+			string traditionalVariant = (fields & UnihanFields.TraditionalVariant) != 0 ? reader.ReadString() : null;
+
+			return new UnihanCharacterData
+			(
+				codePoint,
+				numericType,
+				numericValue,
+				definition,
+				mandarinReading,
+				cantoneseReading,
+				japaneseKunReading,
+				japaneseOnReading,
+				koreanReading,
+				hangulReading,
+				vietnameseReading,
+				simplifiedVariant,
+				traditionalVariant
+			);
+		}
+
 		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
 		{
 			return new UnicodeBlock(new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
@@ -140,27 +183,57 @@ namespace System.Unicode
             }
 		}
 
-		internal UnicodeInfo(Version unicodeVersion, UnicodeCharacterData[] characterData, UnicodeBlock[] blockEntries)
+		private readonly Version unicodeVersion;
+		private readonly UnicodeCharacterData[] unicodeCharacterData;
+		private readonly UnihanCharacterData[] unihanCharacterData;
+		private readonly UnicodeBlock[] blockEntries;
+
+		internal UnicodeInfo(Version unicodeVersion, UnicodeCharacterData[] unicodeCharacterData, UnihanCharacterData[] unihanCharacterData, UnicodeBlock[] blockEntries)
 		{
 			this.unicodeVersion = unicodeVersion;
-			this.characterData = characterData;
+			this.unicodeCharacterData = unicodeCharacterData;
+			this.unihanCharacterData = unihanCharacterData;
 			this.blockEntries = blockEntries;
         }
 
 		public Version UnicodeVersion { get { return unicodeVersion; } }
 
-		private UnicodeCharacterData FindCodePoint(int codePoint)
+		private UnicodeCharacterData FindUnicodeCodePoint(int codePoint)
 		{
 			int minIndex = 0;
-			int maxIndex = characterData.Length - 1;
+			int maxIndex = unicodeCharacterData.Length - 1;
 
 			do
 			{
 				int index = (minIndex + maxIndex) >> 1;
 
-				int Δ = characterData[index].CodePointRange.CompareCodePoint(codePoint);
+				int Δ = unicodeCharacterData[index].CodePointRange.CompareCodePoint(codePoint);
 
-				if (Δ == 0) return characterData[index];
+				if (Δ == 0) return unicodeCharacterData[index];
+				else if (Δ < 0) maxIndex = index - 1;
+				else minIndex = index + 1;
+			} while (minIndex <= maxIndex);
+
+			return null;
+		}
+
+		private UnihanCharacterData FindUnihanCodePoint(int codePoint)
+		{
+			int minIndex;
+			int maxIndex;
+
+			if (unihanCharacterData.Length == 0 || codePoint < unihanCharacterData[minIndex = 0].CodePoint || codePoint > unihanCharacterData[maxIndex = unicodeCharacterData.Length - 1].CodePoint)
+			{
+				return null;
+			}
+
+			do
+			{
+				int index = (minIndex + maxIndex) >> 1;
+
+				int Δ = codePoint - unihanCharacterData[index].CodePoint;
+
+				if (Δ == 0) return unihanCharacterData[index];
 				else if (Δ < 0) maxIndex = index - 1;
 				else minIndex = index + 1;
 			} while (minIndex <= maxIndex);
@@ -196,7 +269,7 @@ namespace System.Unicode
 
 		public UnicodeCharInfo GetCharInfo(int codePoint)
 		{
-			return new UnicodeCharInfo(codePoint, FindCodePoint(codePoint), GetBlockName(codePoint));
+			return new UnicodeCharInfo(codePoint, FindUnicodeCodePoint(codePoint), FindUnihanCodePoint(codePoint), GetBlockName(codePoint));
 		}
 
 		public UnicodeBlock[] GetBlocks()

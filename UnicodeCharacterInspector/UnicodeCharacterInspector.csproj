@@ -69,6 +69,7 @@
     <Compile Include="BindableObject.cs" />
     <Compile Include="CharacterInfoViewModel.cs" />
     <Compile Include="CharacterInspectorViewModel.cs" />
+    <Compile Include="ZeroToVisibilityConverter.cs" />
     <Compile Include="StringToUtf32Converter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

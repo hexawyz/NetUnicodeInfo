@@ -10,7 +10,7 @@ namespace System.Unicode
 	{
 		public readonly int CodePoint;
 		public readonly UnihanNumericType NumericType;
-		public readonly ulong NumericValue;
+		public readonly long NumericValue;
 		public readonly string Definition;
 		public readonly string MandarinReading;
 		public readonly string CantoneseReading;
@@ -21,6 +21,38 @@ namespace System.Unicode
 		public readonly string VietnameseReading;
 		public readonly string SimplifiedVariant;
 		public readonly string TraditionalVariant;
+
+		internal UnihanCharacterData
+		(
+			int codePoint,
+			UnihanNumericType numericType,
+			long numericValue,
+			string definition,
+			string mandarinReading,
+			string cantoneseReading,
+			string japaneseKunReading,
+			string japaneseOnReading,
+			string koreanReading,
+			string hangulReading,
+			string vietnameseReading,
+			string simplifiedVariant,
+			string traditionalVariant
+		)
+		{
+			CodePoint = codePoint;
+			NumericType = numericType;
+			NumericValue = numericValue;
+			Definition = definition;
+			MandarinReading = mandarinReading;
+			CantoneseReading = cantoneseReading;
+			JapaneseKunReading = japaneseKunReading;
+			JapaneseOnReading = japaneseOnReading;
+			KoreanReading = koreanReading;
+			HangulReading = hangulReading;
+			VietnameseReading = vietnameseReading;
+			SimplifiedVariant = simplifiedVariant;
+			TraditionalVariant = traditionalVariant;
+		}
 
 		internal static int PackCodePoint(int codePoint)
 		{

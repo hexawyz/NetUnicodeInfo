@@ -66,7 +66,7 @@ namespace System.Unicode.Tests
 			{
 				var readData = UnicodeInfo.FromStream(stream);
 
-				Assert.AreEqual((int)'\t', data.Get('\t').CodePointRange.FirstCodePoint);
+				Assert.AreEqual((int)'\t', data.GetUcd('\t').CodePointRange.FirstCodePoint);
 			}
         }
 

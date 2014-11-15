@@ -10,9 +10,9 @@ namespace System.Unicode
 	internal enum UnihanFields : ushort
 	{
 		// NumericType / NumericValue : Not exactly a bit mask here…
-		AccountingNumeric = 1,
-		OtherNumeric = 2,
-		PrimaryNumeric = 3,
+		PrimaryNumeric = 1,
+		AccountingNumeric = 2,
+		OtherNumeric = 3,
 
 		Definition = 4,
 		MandarinReading = 8,

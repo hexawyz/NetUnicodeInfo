@@ -10,11 +10,11 @@ namespace System.Unicode
 	public enum UnihanNumericType : byte
 	{
 		None = 0,
-		[ValueName("kAccountingNumeric")]
-		Accounting = 1,
-		[ValueName("kOtherNumeric")]
-		Other = 2,
 		[ValueName("kPrimaryNumeric")]
-		Primary = 3
+		Primary = 1,
+		[ValueName("kAccountingNumeric")]
+		Accounting = 2,
+		[ValueName("kOtherNumeric")]
+		Other = 3,
 	}
 }
