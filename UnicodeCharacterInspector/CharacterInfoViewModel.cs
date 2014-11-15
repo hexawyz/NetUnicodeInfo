@@ -12,7 +12,7 @@ namespace UnicodeCharacterInspector
 	{
 		private string character;
 		private int codePoint;
-		private UnicodeCharInfo characterInfo = UnicodeInfo.Default.GetCharInfo(0);
+		private UnicodeCharInfo characterInfo = UnicodeInfo.GetCharInfo(0);
 
 		public CharacterInfoViewModel()
 		{
@@ -40,12 +40,12 @@ namespace UnicodeCharacterInspector
 					if ((character = value) != null)
 					{
 						codePoint = char.ConvertToUtf32(character, 0);
-						characterInfo = UnicodeInfo.Default.GetCharInfo(codePoint);
+						characterInfo = UnicodeInfo.GetCharInfo(codePoint);
 					}
 					else
 					{
 						codePoint = 0;
-						characterInfo = UnicodeInfo.Default.GetCharInfo(0);
+						characterInfo = UnicodeInfo.GetCharInfo(0);
                     }
 
 					NotifyPropertyChanged();

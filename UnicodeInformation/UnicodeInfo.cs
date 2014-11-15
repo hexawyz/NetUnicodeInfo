@@ -10,20 +10,22 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	public sealed class UnicodeInfo
+	public static class UnicodeInfo
 	{
-		private static readonly UnicodeInfo @default = ReadEmbeddedUnicodeData();
-		public static UnicodeInfo Default { get { return @default; } }
+		private static readonly Version unicodeVersion;
+		private static readonly UnicodeCharacterData[] unicodeCharacterData;
+		private static readonly UnihanCharacterData[] unihanCharacterData;
+		private static readonly UnicodeBlock[] blocks;
 
-		private static UnicodeInfo ReadEmbeddedUnicodeData()
+		static UnicodeInfo()
 		{
 			using (var stream = new DeflateStream(typeof(UnicodeInfo).GetTypeInfo().Assembly.GetManifestResourceStream("ucd.dat"), CompressionMode.Decompress, false))
 			{
-				return FromStream(stream);
+				ReadFromStream(stream, out unicodeVersion, out unicodeCharacterData, out unihanCharacterData, out blocks);
 			}
 		}
 
-		public static UnicodeInfo FromStream(Stream stream)
+		internal static void ReadFromStream(Stream stream, out Version unicodeVersion, out UnicodeCharacterData[] unicodeCharacterData, out UnihanCharacterData[] unihanCharacterData, out UnicodeBlock[] blocks)
 		{
 			using (var reader = new BinaryReader(stream, Encoding.UTF8))
 			{
@@ -36,7 +38,7 @@ namespace System.Unicode
 
 				if (formatVersion != 1) throw new InvalidDataException();
 
-				var unicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
+				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
 				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
 
@@ -59,7 +61,10 @@ namespace System.Unicode
 					unihanCharacterDataEntries[i] = ReadUnihanCharacterDataEntry(reader);
 				}
 
-				return new UnicodeInfo(unicodeVersion, unicodeCharacterDataEntries, unihanCharacterDataEntries, blockEntries);
+				unicodeVersion = fileUnicodeVersion;
+				unicodeCharacterData = unicodeCharacterDataEntries;
+				unihanCharacterData = unihanCharacterDataEntries;
+				blocks = blockEntries;
 			}
 		}
 
@@ -181,22 +186,9 @@ namespace System.Unicode
             }
 		}
 
-		private readonly Version unicodeVersion;
-		private readonly UnicodeCharacterData[] unicodeCharacterData;
-		private readonly UnihanCharacterData[] unihanCharacterData;
-		private readonly UnicodeBlock[] blockEntries;
+		public static Version UnicodeVersion { get { return unicodeVersion; } }
 
-		internal UnicodeInfo(Version unicodeVersion, UnicodeCharacterData[] unicodeCharacterData, UnihanCharacterData[] unihanCharacterData, UnicodeBlock[] blockEntries)
-		{
-			this.unicodeVersion = unicodeVersion;
-			this.unicodeCharacterData = unicodeCharacterData;
-			this.unihanCharacterData = unihanCharacterData;
-			this.blockEntries = blockEntries;
-        }
-
-		public Version UnicodeVersion { get { return unicodeVersion; } }
-
-		private UnicodeCharacterData FindUnicodeCodePoint(int codePoint)
+		private static UnicodeCharacterData FindUnicodeCodePoint(int codePoint)
 		{
 			int minIndex = 0;
 			int maxIndex = unicodeCharacterData.Length - 1;
@@ -215,7 +207,7 @@ namespace System.Unicode
 			return null;
 		}
 
-		private UnihanCharacterData FindUnihanCodePoint(int codePoint)
+		private static UnihanCharacterData FindUnihanCodePoint(int codePoint)
 		{
 			int minIndex;
 			int maxIndex;
@@ -239,16 +231,16 @@ namespace System.Unicode
 			return null;
 		}
 
-		private int FindBlockIndex(int codePoint)
+		private static int FindBlockIndex(int codePoint)
 		{
 			int minIndex = 0;
-			int maxIndex = blockEntries.Length - 1;
+			int maxIndex = blocks.Length - 1;
 
 			do
 			{
 				int index = (minIndex + maxIndex) >> 1;
 
-				int Δ = blockEntries[index].CodePointRange.CompareCodePoint(codePoint);
+				int Δ = blocks[index].CodePointRange.CompareCodePoint(codePoint);
 
 				if (Δ == 0) return index;
 				else if (Δ < 0) maxIndex = index - 1;
@@ -258,21 +250,21 @@ namespace System.Unicode
 			return -1;
 		}
 
-		private string GetBlockName(int codePoint)
+		private static string GetBlockName(int codePoint)
 		{
 			int i = FindBlockIndex(codePoint);
 
-			return i >= 0 ? blockEntries[i].Name : null;
+			return i >= 0 ? blocks[i].Name : null;
         }
 
-		public UnicodeCharInfo GetCharInfo(int codePoint)
+		public static UnicodeCharInfo GetCharInfo(int codePoint)
 		{
 			return new UnicodeCharInfo(codePoint, FindUnicodeCodePoint(codePoint), FindUnihanCodePoint(codePoint), GetBlockName(codePoint));
 		}
 
-		public UnicodeBlock[] GetBlocks()
+		public static UnicodeBlock[] GetBlocks()
 		{
-			return (UnicodeBlock[])blockEntries.Clone();
+			return (UnicodeBlock[])blocks.Clone();
         }
 	}
 }

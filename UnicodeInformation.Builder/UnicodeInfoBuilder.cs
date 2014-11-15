@@ -243,20 +243,20 @@ namespace System.Unicode.Builder
 			blockEntries.Add(block);
         }
 
-		public UnicodeInfo ToUnicodeData()
-		{
-			var finalUnicodeData = new UnicodeCharacterData[ucdEntryCount];
+		//public UnicodeInfo ToUnicodeData()
+		//{
+		//	var finalUnicodeData = new UnicodeCharacterData[ucdEntryCount];
 
-			for (int i = 0; i < finalUnicodeData.Length; ++i)
-				finalUnicodeData[i] = ucdEntries[i].ToCharacterData();
+		//	for (int i = 0; i < finalUnicodeData.Length; ++i)
+		//		finalUnicodeData[i] = ucdEntries[i].ToCharacterData();
 
-			var finalUnihanData = new UnihanCharacterData[unihanEntryCount];
+		//	var finalUnihanData = new UnihanCharacterData[unihanEntryCount];
 
-			for (int i = 0; i < finalUnihanData.Length; ++i)
-				finalUnihanData[i] = unihanEntries[i].ToCharacterData();
+		//	for (int i = 0; i < finalUnihanData.Length; ++i)
+		//		finalUnihanData[i] = unihanEntries[i].ToCharacterData();
 
-			return new UnicodeInfo(unicodeVersion, finalUnicodeData, finalUnihanData, blockEntries.ToArray());
-		}
+		//	return new UnicodeInfo(unicodeVersion, finalUnicodeData, finalUnihanData, blockEntries.ToArray());
+		//}
 
 		private void WriteUnicodeBlockToFile(BinaryWriter writer, UnicodeBlock block)
 		{
