@@ -38,7 +38,7 @@ namespace UnicodeCharacterInspector
 				storage = value;
 				NotifyPropertyChanged(propertyName);
 				return true;
-            }
+			}
 			return false;
 		}
 	}

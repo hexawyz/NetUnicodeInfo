@@ -24,7 +24,7 @@ namespace System.Unicode.Builder
 		{
 			this.httpClient = new HttpClient();
 			this.baseUri = baseUri;
-        }
+		}
 
 		public void Dispose()
 		{

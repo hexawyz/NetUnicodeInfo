@@ -47,7 +47,7 @@ namespace UnicodeCharacterInspector
 					{
 						codePoint = 0;
 						characterInfo = UnicodeInfo.GetCharInfo(0);
-                    }
+					}
 
 					NotifyPropertyChanged();
 					UpdateDisplayText();

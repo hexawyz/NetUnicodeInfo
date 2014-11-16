@@ -37,7 +37,7 @@ namespace System.Unicode.Builder
 				if (Δ == 0) return index;
 				else if (Δ < 0) maxIndex = index - 1;
 				else minIndex = index + 1;
-            } while (minIndex <= maxIndex);
+			} while (minIndex <= maxIndex);
 
 			return -1;
 		}
@@ -241,7 +241,7 @@ namespace System.Unicode.Builder
 		public void AddBlockEntry(UnicodeBlock block)
 		{
 			blockEntries.Add(block);
-        }
+		}
 
 		//public UnicodeInfo ToUnicodeData()
 		//{

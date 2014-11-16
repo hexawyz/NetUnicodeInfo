@@ -66,10 +66,10 @@ namespace System.Unicode
 					if (codePoint < 0x2F800) return codePoint - 0x19400;
 					else if (codePoint < 0x30000) return codePoint - 0x10000;
 				}
-            }
+			}
 
 			throw new ArgumentOutOfRangeException("codePoint");
-        }
+		}
 
 		internal static int UnpackCodePoint(int packedCodePoint)
 		{

@@ -59,7 +59,7 @@ namespace System.Unicode.Builder
 						hasField = true;
 						goto Completed;
 					}
-                }
+				}
 				else
 				{
 					return false;
@@ -82,9 +82,9 @@ namespace System.Unicode.Builder
 			} while (RefillBuffer());
 
 			hasField = false;
-		Completed: ;
+			Completed:;
 			return hasField;
-        }
+		}
 
 		private string ReadFieldInternal(bool trim)
 		{
@@ -121,7 +121,7 @@ namespace System.Unicode.Builder
 					{
 						byte b = byteBuffer[index];
 
-						if (IsNewLineOrComment(b))   // NB: Do not advance to the next byte when end of line has been reached.
+						if (IsNewLineOrComment(b))	 // NB: Do not advance to the next byte when end of line has been reached.
 						{
 							endOffset = index;
 							hasField = false;
@@ -192,7 +192,7 @@ namespace System.Unicode.Builder
 				{
 					byte b = byteBuffer[index];
 
-					if (IsNewLineOrComment(b)) // NB: Do not advance to the next byte when end of line has been reached.
+					if (IsNewLineOrComment(b))   // NB: Do not advance to the next byte when end of line has been reached.
 					{
 						hasField = false;
 						return true;

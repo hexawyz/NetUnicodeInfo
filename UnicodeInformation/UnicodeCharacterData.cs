@@ -36,17 +36,17 @@ namespace System.Unicode
 			CanonicalCombiningClass canonicalCombiningClass,
 			BidirectionalClass bidirectionalClass,
 			CompatibilityFormattingTag decompositionType,
-            string decompositionMapping,
+			string decompositionMapping,
 			UnicodeNumericType numericType,
 			UnicodeRationalNumber numericValue,
 			bool bidirectionalMirrored,
 			string oldName,
-            string simpleUpperCaseMapping,
+			string simpleUpperCaseMapping,
 			string simpleLowerCaseMapping,
 			string simpleTitleCaseMapping,
 			ContributoryProperties contributoryProperties,
 			CoreProperties coreProperties,
-            int[] relatedCodePoints
+			int[] relatedCodePoints
 		)
 		{
 			this.CodePointRange = codePointRange;
@@ -66,7 +66,7 @@ namespace System.Unicode
 			this.ContributoryProperties = contributoryProperties;
 			this.CoreProperties = coreProperties;
 			this.RelatedCodePoints = relatedCodePoints;
-        }
+		}
 
 		public UnicodeRationalNumber? NumericValue { get { return NumericType != UnicodeNumericType.None ? numericValue : null as UnicodeRationalNumber?; } }
 	}

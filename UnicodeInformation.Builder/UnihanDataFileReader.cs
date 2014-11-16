@@ -22,7 +22,7 @@ namespace System.Unicode.Builder
 		public UnihanDataFileReader(Stream stream, bool leaveOpen)
 		{
 			reader = new UnicodeDataFileReader(stream, '\t', leaveOpen);
-        }
+		}
 
 		public void Dispose()
 		{

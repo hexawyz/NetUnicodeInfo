@@ -23,7 +23,7 @@ namespace UnicodeCharacterInspector
 				CodePoint = codePoint;
 				Character = char.ConvertFromUtf32(codePoint);
 				DisplayText = UnicodeInfo.GetDisplayText(codePoint);
-            }
+			}
 		}
 
 		private class CharacterCollection : INotifyCollectionChanged, IList<CharacterViewModel>
@@ -108,7 +108,7 @@ namespace UnicodeCharacterInspector
 		public CharacterInspectorViewModel()
 		{
 			characterCollection = new CharacterCollection(this);
-        }
+		}
 
 		private void NotifyCollectionChanged(NotifyCollectionChangedAction action)
 		{
@@ -164,7 +164,7 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged(nameof(SelectedCharacter));
 					selectedCharacterInfo.Character = null;
 				}
-            }
+			}
 		}
 
 		public ICollection<CharacterViewModel> Characters { get { return characterCollection; } }

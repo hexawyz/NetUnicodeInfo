@@ -73,7 +73,7 @@ namespace System.Unicode.Builder
 
 							codePoint = new UnicodeCharacterRange(rangeStartCodePoint, codePoint.LastCodePoint);
 
-							name = name.Substring(1, name.Length - 8).ToUpperInvariant();   // Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
+							name = name.Substring(1, name.Length - 8).ToUpperInvariant();	// Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
 
 							rangeStartCodePoint = -1;
 						}

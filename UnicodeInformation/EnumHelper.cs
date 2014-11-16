@@ -26,7 +26,7 @@ namespace System.Unicode
 				where attr.Name != null
 				select new KeyValuePair<string, T>(attr.Name, (T)field.GetValue(null))
 			).ToDictionary(kvp => kvp.Key, kvp => kvp.Value, StringComparer.OrdinalIgnoreCase);
-        }
+		}
 
 		public static bool TryGetNamedValue(string name, out T value)
 		{

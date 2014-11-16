@@ -52,7 +52,7 @@ namespace System.Unicode
 			if (firstCodePoint < 0 || firstCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException("firstCodePoint");
 			if (lastCodePoint < firstCodePoint || lastCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException("lastCodePoint");
 
-            FirstCodePoint = firstCodePoint;
+			FirstCodePoint = firstCodePoint;
 			LastCodePoint = lastCodePoint;
 		}
 
@@ -86,7 +86,7 @@ namespace System.Unicode
 			{
 				start = int.Parse(s.Substring(0, rangeSeparatorOffset), NumberStyles.HexNumber);
 				end = int.Parse(s.Substring(rangeSeparatorOffset + 2), NumberStyles.HexNumber);
-            }
+			}
 
 			return new UnicodeCharacterRange(start, end);
 		}

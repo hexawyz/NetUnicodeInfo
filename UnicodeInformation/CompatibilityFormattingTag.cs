@@ -10,7 +10,7 @@ namespace System.Unicode
 	public enum CompatibilityFormattingTag : byte
 	{
 		Canonical = 0,
-        [ValueName("font"), Display(Name = "font", Description = "Font variant (for example, a blackletter form)")]
+		[ValueName("font"), Display(Name = "font", Description = "Font variant (for example, a blackletter form)")]
 		Font,
 		[ValueName("noBreak"), Display(Name = "noBreak", Description = "No-break version of a space or hyphen")]
 		NoBreak,

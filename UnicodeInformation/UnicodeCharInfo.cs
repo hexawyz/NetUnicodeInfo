@@ -23,11 +23,11 @@ namespace System.Unicode
 				return unicodeCharacterData.Name == null || unicodeCharacterData.CodePointRange.IsSingleCodePoint ?
 					unicodeCharacterData.Name :
 					unicodeCharacterData.Name + "-" + codePoint.ToString("X4");
-            }
+			}
 		}
 
-        public UnicodeCategory Category { get { return unicodeCharacterData != null ? unicodeCharacterData.Category : UnicodeCategory.OtherNotAssigned; } }
-        public string Block { get { return block ?? "No_Block"; } }
+		public UnicodeCategory Category { get { return unicodeCharacterData != null ? unicodeCharacterData.Category : UnicodeCategory.OtherNotAssigned; } }
+		public string Block { get { return block ?? "No_Block"; } }
 		public CanonicalCombiningClass CanonicalCombiningClass { get { return unicodeCharacterData.CanonicalCombiningClass; } }
 		public BidirectionalClass BidirectionalClass { get { return unicodeCharacterData.BidirectionalClass; } }
 		public CompatibilityFormattingTag DecompositionType { get { return unicodeCharacterData.DecompositionType; } }

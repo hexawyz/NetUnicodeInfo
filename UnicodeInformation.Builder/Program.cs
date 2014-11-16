@@ -21,7 +21,7 @@ namespace System.Unicode.Builder
 			"UnicodeData.txt",
 			"PropList.txt",
 			"DerivedCoreProperties.txt",
-            "Blocks.txt",
+			"Blocks.txt",
 			"Jamo.txt",
 		};
 
@@ -37,7 +37,7 @@ namespace System.Unicode.Builder
 			using (var httpClient = new HttpClient())
 			{
 				return httpClient.GetByteArrayAsync(HttpDataSource.UnicodeCharacterDataUri + archiveName).Result;
-            }
+			}
 		}
 
 		internal static IDataSource GetDataSource(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
@@ -79,7 +79,7 @@ namespace System.Unicode.Builder
 						return new ZipDataSource(File.OpenRead(dataArchiveFileName));
 					}
 				}
-            }
+			}
 
 			if (shouldDownload != false)
 			{
@@ -91,7 +91,7 @@ namespace System.Unicode.Builder
 					try
 					{
 						stream.Write(dataArchiveData, 0, dataArchiveData.Length);
-						dataArchiveData = null; // Release the reference now, since we won't need it anymore.
+						dataArchiveData = null;	// Release the reference now, since we won't need it anymore.
 
 						if (shouldExtract == true)
 						{
@@ -120,7 +120,7 @@ namespace System.Unicode.Builder
 			}
 
 			throw new InvalidOperationException();
-        }
+		}
 
 		private static void Main(string[] args)
 		{
@@ -134,6 +134,6 @@ namespace System.Unicode.Builder
 
 			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
 				data.WriteToStream(stream);
-        }
+		}
 	}
 }

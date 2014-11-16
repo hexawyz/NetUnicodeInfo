@@ -167,7 +167,8 @@ namespace System.Unicode.Builder
 			if (name != null) fields |= UcdFields.Name;
 			if (category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
 			if (canonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
-			/*if (bidirectionalClass != 0)*/fields |= UcdFields.BidirectionalClass;
+			/*if (bidirectionalClass != 0)*/
+			fields |= UcdFields.BidirectionalClass;
 			if (characterDecompositionMapping.DecompositionMapping != null) fields |= UcdFields.DecompositionMapping;
 			fields |= (UcdFields)((int)numericType << 6);
 			if (bidirectionalMirrored) fields |= UcdFields.BidirectionalMirrored;

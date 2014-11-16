@@ -16,5 +16,5 @@ namespace System.Unicode
 			this.CodePointRange = codePointRange;
 			this.Name = name;
 		}
-    }
+	}
 }

@@ -16,7 +16,7 @@ namespace System.Unicode.Builder
 			byte[] buffer;
 
 			return new Utf8Buffer(bufferStack.TryPop(out buffer) ? buffer : new byte[100]);
-        }
+		}
 
 		private byte[] buffer;
 		private int length;

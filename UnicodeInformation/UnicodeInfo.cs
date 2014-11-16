@@ -74,7 +74,7 @@ namespace System.Unicode
 
 			var codePointRange = (fields & UcdFields.CodePointRange) != 0 ? new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)) : new UnicodeCharacterRange(ReadCodePoint(reader));
 
-            string name = (fields & UcdFields.Name) != 0 ? reader.ReadString() : null;
+			string name = (fields & UcdFields.Name) != 0 ? reader.ReadString() : null;
 			var category = (fields & UcdFields.Category) != 0 ? (UnicodeCategory)reader.ReadByte() : UnicodeCategory.OtherNotAssigned;
 			var canonicalCombiningClass = (fields & UcdFields.CanonicalCombiningClass) != 0 ? (CanonicalCombiningClass)reader.ReadByte() : CanonicalCombiningClass.NotReordered;
 			var bidirectionalClass = (fields & UcdFields.BidirectionalClass) != 0 ? (BidirectionalClass)reader.ReadByte() : 0;
@@ -109,9 +109,9 @@ namespace System.Unicode
 				simpleTitleCaseMapping,
 				contributoryProperties,
 				coreProperties,
-                null
+				null
 			);
-        }
+		}
 
 		private static UnihanCharacterData ReadUnihanCharacterDataEntry(BinaryReader reader)
 		{
@@ -183,7 +183,7 @@ namespace System.Unicode
 			else
 			{
 				return 0x40A0 + (((((b & 0x1F) << 8) | reader.ReadByte()) << 8) | reader.ReadByte());
-            }
+			}
 		}
 
 		public static Version UnicodeVersion { get { return unicodeVersion; } }
@@ -255,7 +255,7 @@ namespace System.Unicode
 			int i = FindBlockIndex(codePoint);
 
 			return i >= 0 ? blocks[i].Name : null;
-        }
+		}
 
 		public static UnicodeCharInfo GetCharInfo(int codePoint)
 		{
@@ -267,25 +267,25 @@ namespace System.Unicode
 			var charInfo = FindUnicodeCodePoint(codePoint);
 
 			return charInfo != null ? charInfo.Category : UnicodeCategory.OtherNotAssigned;
-        }
+		}
 
 		public static string GetDisplayText(UnicodeCharInfo charInfo)
 		{
 			if (charInfo.CodePoint <= 0x0020) return ((char)(0x2400 + charInfo.CodePoint)).ToString();
 			else if (charInfo.Category == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(charInfo.CodePoint);
 			else return char.ConvertFromUtf32(charInfo.CodePoint);
-        }
+		}
 
 		public static string GetDisplayText(int codePoint)
 		{
 			if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString();
 			else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
 			else return char.ConvertFromUtf32(codePoint);
-        }
+		}
 
 		public static UnicodeBlock[] GetBlocks()
 		{
 			return (UnicodeBlock[])blocks.Clone();
-        }
+		}
 	}
 }

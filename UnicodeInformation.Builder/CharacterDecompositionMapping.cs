@@ -36,7 +36,7 @@ namespace System.Unicode.Builder
 				index = 0;
 			}
 
-			var buffer = stackalloc char[36]; // From the Unicode docs, a decomposition cannot have more than 18 code points.
+			var buffer = stackalloc char[36];  // From the Unicode docs, a decomposition cannot have more than 18 code points.
 			int charIndex = 0;
 
 			while (index < s.Length && charIndex < 35)

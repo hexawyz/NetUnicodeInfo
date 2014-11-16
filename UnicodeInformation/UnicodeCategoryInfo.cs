@@ -50,10 +50,10 @@ namespace System.Unicode
 		{
 			var dictionary = new Dictionary<string, UnicodeCategory>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var info in categories)
+			foreach (var info in categories)
 			{
 				dictionary.Add(info.ShortName, info.Category);
-            }
+			}
 
 			return dictionary;
 		}
@@ -83,7 +83,7 @@ namespace System.Unicode
 		public static UnicodeCategoryInfo Get(UnicodeCategory category)
 		{
 			return categories[(int)category];
-        }
+		}
 
 		public static UnicodeCategoryInfo FromShortName(string name)
 		{
