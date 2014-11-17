@@ -73,6 +73,10 @@
     <Compile Include="BindableObject.cs" />
     <Compile Include="CharacterInfoViewModel.cs" />
     <Compile Include="CharacterInspectorViewModel.cs" />
+    <Compile Include="Placeholder.cs" />
+    <Compile Include="PlaceholderAdorner.cs">
+      <DependentUpon>Placeholder.cs</DependentUpon>
+    </Compile>
     <Compile Include="ZeroToVisibilityConverter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
