@@ -20,28 +20,30 @@ namespace System.Unicode
 		{
 			get
 			{
-				return unicodeCharacterData.Name == null || unicodeCharacterData.CodePointRange.IsSingleCodePoint ?
-					unicodeCharacterData.Name :
-					unicodeCharacterData.Name + "-" + codePoint.ToString("X4");
+				return unicodeCharacterData != null ?
+					unicodeCharacterData.Name == null || unicodeCharacterData.CodePointRange.IsSingleCodePoint ?
+						unicodeCharacterData.Name :
+						unicodeCharacterData.Name + "-" + codePoint.ToString("X4") :
+					null;
 			}
 		}
 
-		public UnicodeCategory Category { get { return unicodeCharacterData != null ? unicodeCharacterData.Category : UnicodeCategory.OtherNotAssigned; } }
+		public UnicodeCategory Category { get { return unicodeCharacterData?.Category ?? UnicodeCategory.OtherNotAssigned; } }
 		public string Block { get { return block ?? "No_Block"; } }
-		public CanonicalCombiningClass CanonicalCombiningClass { get { return unicodeCharacterData.CanonicalCombiningClass; } }
-		public BidirectionalClass BidirectionalClass { get { return unicodeCharacterData.BidirectionalClass; } }
-		public CompatibilityFormattingTag DecompositionType { get { return unicodeCharacterData.DecompositionType; } }
-		public string DecompositionMapping { get { return unicodeCharacterData.DecompositionMapping; } }
-		public UnicodeNumericType NumericType { get { return unihanCharacterData != null ? unihanCharacterData.NumericType != UnihanNumericType.None ? UnicodeNumericType.Numeric : UnicodeNumericType.None : unicodeCharacterData.NumericType; } }
+		public CanonicalCombiningClass CanonicalCombiningClass { get { return unicodeCharacterData?.CanonicalCombiningClass ?? CanonicalCombiningClass.NotReordered; } }
+		public BidirectionalClass BidirectionalClass { get { return unicodeCharacterData?.BidirectionalClass ?? BidirectionalClass.LeftToRight; } }
+		public CompatibilityFormattingTag DecompositionType { get { return unicodeCharacterData?.DecompositionType ?? CompatibilityFormattingTag.Canonical; } }
+		public string DecompositionMapping { get { return unicodeCharacterData?.DecompositionMapping; } }
+		public UnicodeNumericType NumericType { get { return unihanCharacterData != null ? unihanCharacterData.NumericType != UnihanNumericType.None ? UnicodeNumericType.Numeric : UnicodeNumericType.None : unicodeCharacterData?.NumericType ?? UnicodeNumericType.None; } }
 		public UnihanNumericType UnihanNumericType { get { return unihanCharacterData != null ? unihanCharacterData.NumericType : UnihanNumericType.None; } }
-		public UnicodeRationalNumber? NumericValue { get { return unihanCharacterData != null && unihanCharacterData.NumericType != UnihanNumericType.None ? new UnicodeRationalNumber(unihanCharacterData.NumericValue, 1) : unicodeCharacterData.NumericValue; } }
-		public bool BidirectionalMirrored { get { return unicodeCharacterData.BidirectionalMirrored; } }
-		public string OldName { get { return unicodeCharacterData.OldName; } }
-		public string SimpleUpperCaseMapping { get { return unicodeCharacterData.SimpleUpperCaseMapping; } }
-		public string SimpleLowerCaseMapping { get { return unicodeCharacterData.SimpleLowerCaseMapping; } }
-		public string SimpleTitleCaseMapping { get { return unicodeCharacterData.SimpleTitleCaseMapping; } }
-		public ContributoryProperties ContributoryProperties { get { return unicodeCharacterData.ContributoryProperties; } }
-		public CoreProperties CoreProperties { get { return unicodeCharacterData.CoreProperties; } }
+		public UnicodeRationalNumber? NumericValue { get { return unihanCharacterData != null && unihanCharacterData.NumericType != UnihanNumericType.None ? new UnicodeRationalNumber(unihanCharacterData.NumericValue, 1) : unicodeCharacterData?.NumericValue; } }
+		public bool BidirectionalMirrored { get { return unicodeCharacterData?.BidirectionalMirrored ?? false; } }
+		public string OldName { get { return unicodeCharacterData?.OldName; } }
+		public string SimpleUpperCaseMapping { get { return unicodeCharacterData?.SimpleUpperCaseMapping; } }
+		public string SimpleLowerCaseMapping { get { return unicodeCharacterData?.SimpleLowerCaseMapping; } }
+		public string SimpleTitleCaseMapping { get { return unicodeCharacterData?.SimpleTitleCaseMapping; } }
+		public ContributoryProperties ContributoryProperties { get { return unicodeCharacterData?.ContributoryProperties ?? 0; } }
+		public CoreProperties CoreProperties { get { return unicodeCharacterData?.CoreProperties ?? 0; } }
 
 		public string Definition { get { return unihanCharacterData?.Definition; } }
 		public string MandarinReading { get { return unihanCharacterData?.MandarinReading; } }
