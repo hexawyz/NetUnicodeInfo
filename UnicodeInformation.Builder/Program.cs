@@ -13,7 +13,7 @@ namespace System.Unicode.Builder
 	{
 		public const string UnihanDirectoryName = "Unihan";
 		public const string UnihanArchiveName = "Unihan.zip";
-		public const string directoryName = "UCD";
+		public const string UcdDirectoryName = "UCD";
 		public const string UcdArchiveName = "UCD.zip";
 
 		public static readonly string[] ucdRequiredFiles = new[]
@@ -32,9 +32,18 @@ namespace System.Unicode.Builder
 			"Unihan_Variants.txt",
 		};
 
+		private static HttpMessageHandler httpMessageHandler;
+
+		// The only purpose of this is for tests…
+		internal static HttpMessageHandler HttpMessageHandler
+		{
+			get { return httpMessageHandler ?? (httpMessageHandler = new HttpClientHandler()); }
+			set { httpMessageHandler = value != null ? value : new HttpClientHandler(); }
+		}
+
 		private static byte[] DownloadDataArchive(string archiveName)
 		{
-			using (var httpClient = new HttpClient())
+			using (var httpClient = new HttpClient(HttpMessageHandler))
 			{
 				return httpClient.GetByteArrayAsync(HttpDataSource.UnicodeCharacterDataUri + archiveName).Result;
 			}
@@ -43,7 +52,7 @@ namespace System.Unicode.Builder
 		internal static IDataSource GetDataSource(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
 		{
 			string baseDirectory = Environment.CurrentDirectory;
-			string dataDirectory = Path.Combine(baseDirectory, Program.directoryName);
+			string dataDirectory = Path.Combine(baseDirectory, UcdDirectoryName);
 			string dataArchiveFileName = Path.Combine(baseDirectory, archiveName);
 
 			if (shouldDownload != true)
@@ -126,7 +135,7 @@ namespace System.Unicode.Builder
 		{
 			UnicodeInfoBuilder data;
 
-			using (var ucdSource = GetDataSource(UcdArchiveName, directoryName, ucdRequiredFiles, null, null, null))
+			using (var ucdSource = GetDataSource(UcdArchiveName, UcdDirectoryName, ucdRequiredFiles, null, null, null))
 			using (var unihanSource = GetDataSource(UnihanArchiveName, UnihanDirectoryName, unihanRequiredFiles, null, null, null))
 			{
 				data = UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource).Result;
