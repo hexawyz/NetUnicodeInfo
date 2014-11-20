@@ -12,7 +12,9 @@ namespace System.Unicode
 {
 	public static class UnicodeInfo
 	{
-		private static readonly Version unicodeVersion;
+		public const string DefaultBlock = "No_Block";
+
+        private static readonly Version unicodeVersion;
 		private static readonly UnicodeCharacterData[] unicodeCharacterData;
 		private static readonly UnihanCharacterData[] unihanCharacterData;
 		private static readonly UnicodeBlock[] blocks;
@@ -250,11 +252,11 @@ namespace System.Unicode
 			return -1;
 		}
 
-		private static string GetBlockName(int codePoint)
+		public static string GetBlockName(int codePoint)
 		{
 			int i = FindBlockIndex(codePoint);
 
-			return i >= 0 ? blocks[i].Name : null;
+			return i >= 0 ? blocks[i].Name : DefaultBlock;
 		}
 
 		public static UnicodeCharInfo GetCharInfo(int codePoint)

@@ -20,7 +20,7 @@ namespace System.Unicode
 		public string Name { get { return name; } }
 
 		public UnicodeCategory Category { get { return unicodeCharacterData?.Category ?? UnicodeCategory.OtherNotAssigned; } }
-		public string Block { get { return block ?? "No_Block"; } }
+		public string Block { get { return block ?? UnicodeInfo.DefaultBlock; } }
 		public CanonicalCombiningClass CanonicalCombiningClass { get { return unicodeCharacterData?.CanonicalCombiningClass ?? CanonicalCombiningClass.NotReordered; } }
 		public BidirectionalClass BidirectionalClass { get { return unicodeCharacterData?.BidirectionalClass ?? BidirectionalClass.LeftToRight; } }
 		public CompatibilityFormattingTag DecompositionType { get { return unicodeCharacterData?.DecompositionType ?? CompatibilityFormattingTag.Canonical; } }

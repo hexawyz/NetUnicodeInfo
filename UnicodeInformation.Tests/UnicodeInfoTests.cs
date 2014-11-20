@@ -64,21 +64,24 @@ namespace UnicodeInformation.Tests
 			Assert.AreEqual("\u00E9", UnicodeInfo.GetDisplayText(0x00E9));
 		}
 
-		private static void AssertChar(int codePoint, UnicodeCategory category, string name)
+		private static void AssertChar(int codePoint, UnicodeCategory category, string name, string block)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
 			Assert.AreEqual(codePoint, info.CodePoint);
             Assert.AreEqual(category, info.Category);
 			Assert.AreEqual(name, info.Name);
+			Assert.AreEqual(block, UnicodeInfo.GetBlockName(codePoint));
+			Assert.AreEqual(block, info.Block);
 		}
 
 		[TestMethod]
 		public void CharacterInfoTest()
 		{
-			AssertChar(0x0041, UnicodeCategory.UppercaseLetter, "LATIN CAPITAL LETTER A");
-			AssertChar(0x1F600, UnicodeCategory.OtherSymbol, "GRINNING FACE");
-			AssertChar(0x00E9, UnicodeCategory.LowercaseLetter, "LATIN SMALL LETTER E WITH ACUTE");
-			AssertChar(0xD4DB, UnicodeCategory.OtherLetter, "HANGUL SYLLABLE PWILH");
+			AssertChar(0x0041, UnicodeCategory.UppercaseLetter, "LATIN CAPITAL LETTER A", "Basic Latin");
+			AssertChar(0x1F600, UnicodeCategory.OtherSymbol, "GRINNING FACE", "Emoticons");
+			AssertChar(0x00E9, UnicodeCategory.LowercaseLetter, "LATIN SMALL LETTER E WITH ACUTE", "Latin-1 Supplement");
+			AssertChar(0xD4DB, UnicodeCategory.OtherLetter, "HANGUL SYLLABLE PWILH", "Hangul Syllables");
+			AssertChar(0x1F574, UnicodeCategory.OtherSymbol, "MAN IN BUSINESS SUIT LEVITATING", "Miscellaneous Symbols and Pictographs");
 		}
 
 		[TestMethod]
@@ -139,6 +142,15 @@ namespace UnicodeInformation.Tests
 			Assert.AreEqual("HANGUL SYLLABLE PWAENG", UnicodeInfo.GetName(0xD439));
 			Assert.AreEqual("HANGUL SYLLABLE PANJ", UnicodeInfo.GetName(0xD311));
 			Assert.AreEqual("HANGUL SYLLABLE TOLM", UnicodeInfo.GetName(0xD1AA));
+		}
+
+		[TestMethod]
+		public void BlockNameTest()
+		{
+			Assert.AreEqual("Basic Latin", UnicodeInfo.GetBlockName(0x0041));
+			Assert.AreEqual("Miscellaneous Technical", UnicodeInfo.GetBlockName(0x2307));
+			Assert.AreEqual("Hangul Syllables", UnicodeInfo.GetBlockName(0xD311));
+			Assert.AreEqual("Miscellaneous Symbols and Pictographs", UnicodeInfo.GetBlockName(0x1F574));
 		}
 
 #if DEBUG
