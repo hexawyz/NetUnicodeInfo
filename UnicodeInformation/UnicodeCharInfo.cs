@@ -10,23 +10,14 @@ namespace System.Unicode
 	public struct UnicodeCharInfo
 	{
 		private readonly int codePoint;
+		private readonly string name;
 		private readonly UnicodeCharacterData unicodeCharacterData;
 		private readonly UnihanCharacterData unihanCharacterData;
 		private readonly string block;
 
 		public int CodePoint { get { return codePoint; } }
 
-		public string Name
-		{
-			get
-			{
-				return unicodeCharacterData != null ?
-					unicodeCharacterData.Name == null || unicodeCharacterData.CodePointRange.IsSingleCodePoint ?
-						unicodeCharacterData.Name :
-						unicodeCharacterData.Name + "-" + codePoint.ToString("X4") :
-					null;
-			}
-		}
+		public string Name { get { return name; } }
 
 		public UnicodeCategory Category { get { return unicodeCharacterData?.Category ?? UnicodeCategory.OtherNotAssigned; } }
 		public string Block { get { return block ?? "No_Block"; } }
@@ -60,7 +51,8 @@ namespace System.Unicode
 		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData unicodeCharacterData, UnihanCharacterData unihanCharacterData, string block)
 		{
 			this.codePoint = codePoint;
-			this.unicodeCharacterData = unicodeCharacterData;
+			this.name = UnicodeInfo.GetName(codePoint, unicodeCharacterData);
+            this.unicodeCharacterData = unicodeCharacterData;
 			this.unihanCharacterData = unihanCharacterData;
 			this.block = block;
 		}

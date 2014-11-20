@@ -78,6 +78,7 @@ namespace UnicodeInformation.Tests
 			AssertChar(0x0041, UnicodeCategory.UppercaseLetter, "LATIN CAPITAL LETTER A");
 			AssertChar(0x1F600, UnicodeCategory.OtherSymbol, "GRINNING FACE");
 			AssertChar(0x00E9, UnicodeCategory.LowercaseLetter, "LATIN SMALL LETTER E WITH ACUTE");
+			AssertChar(0xD4DB, UnicodeCategory.OtherLetter, "HANGUL SYLLABLE PWILH");
 		}
 
 		[TestMethod]
@@ -129,6 +130,15 @@ namespace UnicodeInformation.Tests
 			// Verify that all numbers are already in the list
 			foreach (var number in numbers)
 				Assert.AreEqual(false, hashSet.Add(number));
+		}
+
+		[TestMethod]
+		public void HangulNameTest()
+		{
+			Assert.AreEqual("HANGUL SYLLABLE PWILH", UnicodeInfo.GetName(0xD4DB));
+			Assert.AreEqual("HANGUL SYLLABLE PWAENG", UnicodeInfo.GetName(0xD439));
+			Assert.AreEqual("HANGUL SYLLABLE PANJ", UnicodeInfo.GetName(0xD311));
+			Assert.AreEqual("HANGUL SYLLABLE TOLM", UnicodeInfo.GetName(0xD1AA));
 		}
 
 #if DEBUG

@@ -264,9 +264,9 @@ namespace System.Unicode
 
 		public static UnicodeCategory GetCategory(int codePoint)
 		{
-			var charInfo = FindUnicodeCodePoint(codePoint);
+			var charData = FindUnicodeCodePoint(codePoint);
 
-			return charInfo != null ? charInfo.Category : UnicodeCategory.OtherNotAssigned;
+			return charData != null ? charData.Category : UnicodeCategory.OtherNotAssigned;
 		}
 
 		public static string GetDisplayText(UnicodeCharInfo charInfo)
@@ -282,6 +282,20 @@ namespace System.Unicode
 			else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
 			else return char.ConvertFromUtf32(codePoint);
 		}
+
+		public static string GetName(int codePoint)
+		{
+			if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
+			else return GetName(codePoint, FindUnicodeCodePoint(codePoint));
+        }
+
+		internal static string GetName(int codePoint, UnicodeCharacterData characterData)
+		{
+			if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
+			else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
+			else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
+			else return null;
+        }
 
 		public static UnicodeBlock[] GetBlocks()
 		{

@@ -65,6 +65,7 @@
     <Compile Include="CodePointEnumerable.cs" />
     <Compile Include="CodePointEnumerator.cs" />
     <Compile Include="CoreProperties.cs" />
+    <Compile Include="HangulInfo.cs" />
     <Compile Include="UcdFields.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
