@@ -8,7 +8,7 @@ namespace System.Unicode
 {
 	internal static class HangulInfo
 	{
-		// Constants defined at page 144 of the Unicode 7.0 Standard (3.12)
+		// Constants defined on page 144 of the Unicode 7.0 Standard (3.12)
 		private const ushort SBase = 0xAC00;
 		private const ushort LBase = 0x1100;
 		private const ushort VBase = 0x1161;
@@ -38,7 +38,6 @@ namespace System.Unicode
 			"LB", "LS", "LT", "LP", "LH", "M", "B", "BS",
 			"S", "SS", "NG", "J", "C", "K", "T", "P", "H"
 		};
-		private static int lIndex;
 
 		// Algorithm defined on page 150 of the Unicode 7.0 Standard (3.12)
 		internal static string GetHangulName(char codePoint)
