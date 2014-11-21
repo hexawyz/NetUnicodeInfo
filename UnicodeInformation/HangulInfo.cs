@@ -44,9 +44,9 @@ namespace System.Unicode
 		{
 			int sIndex = codePoint - SBase;
 
-			if (sIndex < 0 || sIndex >= SCount) throw new ArgumentOutOfRangeException("codePoint");
+			if (sIndex < 0 || sIndex >= SCount) throw new ArgumentOutOfRangeException(nameof(codePoint));
 
-            int lIndex = sIndex / NCount;
+			int lIndex = sIndex / NCount;
 			int vIndex = (sIndex % NCount) / TCount;
 			int tIndex = sIndex % TCount;
 
@@ -56,6 +56,6 @@ namespace System.Unicode
 		internal static bool IsHangul(int codePoint)
 		{
 			return codePoint >= SBase && codePoint <= SBase + SCount;
-        }
+		}
 	}
 }

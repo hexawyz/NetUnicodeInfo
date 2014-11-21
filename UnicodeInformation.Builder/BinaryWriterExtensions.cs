@@ -11,7 +11,7 @@ namespace System.Unicode.Builder
 	{
 		public static void WriteUInt24(this BinaryWriter writer, int value)
 		{
-			if (value < 0 || value > 0xFFFFFF) throw new ArgumentOutOfRangeException("value");
+			if (value < 0 || value > 0xFFFFFF) throw new ArgumentOutOfRangeException(nameof(value));
 
 			writer.Write((byte)(value));
 			writer.Write((byte)(value >> 8));
@@ -27,7 +27,7 @@ namespace System.Unicode.Builder
 		/// <param name="value">The value to write</param>
 		public static void WriteCodePoint(this BinaryWriter writer, int value)
 		{
-			if (value < 0 || value > 0x40407F) throw new ArgumentOutOfRangeException("value");
+			if (value < 0 || value > 0x40407F) throw new ArgumentOutOfRangeException(nameof(value));
 
 			if (value < 0xA0) writer.Write((byte)value);
 			else if (value < 0x20A0)
@@ -72,7 +72,7 @@ namespace System.Unicode.Builder
 		{
 			var bytes = Encoding.UTF8.GetBytes(name);
 			if (bytes.Length > 128) throw new InvalidOperationException("Did not expect UTF-8 encoded name to be longer than 128 bytes.");
-			writer.Write((byte)(name.Length - 1)); // The most significant bit will always be cleared, because it will be used for other cases.
+			writer.Write((byte)(name.Length - 1));   // The most significant bit will always be cleared, because it will be used for other cases.
 			writer.Write(bytes);
 		}
 
@@ -83,8 +83,8 @@ namespace System.Unicode.Builder
 		/// <param name="length">The length to write.</param>
 		public static void WritePackedLength(this BinaryWriter writer, byte extraBits, int length)
 		{
-			if (extraBits > 3) throw new ArgumentOutOfRangeException("extraBits");
-			if (length < 1 || length > 64) throw new ArgumentOutOfRangeException("length");
+			if (extraBits > 3) throw new ArgumentOutOfRangeException(nameof(extraBits));
+			if (length < 1 || length > 64) throw new ArgumentOutOfRangeException(nameof(length));
 
 			writer.Write((byte)((extraBits << 6) | (length - 1)));
 		}

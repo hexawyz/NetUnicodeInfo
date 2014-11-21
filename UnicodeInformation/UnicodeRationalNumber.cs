@@ -10,7 +10,7 @@ namespace System.Unicode
 	{
 		public static UnicodeRationalNumber Parse(string s)
 		{
-			if (s == null) throw new ArgumentNullException("s");
+			if (s == null) throw new ArgumentNullException(nameof(s));
 			if (s.Length == 0) throw new ArgumentException();
 
 			int fractionBarIndex = s.IndexOf('/');

@@ -40,16 +40,16 @@ namespace System.Unicode.Builder
 
 		private void EnsureExtraCapacity(int count)
 		{
-			if (count < 0) throw new ArgumentOutOfRangeException("requiredExtraCapacity");
+			if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
 			if (buffer.Length < checked(length + count))
 				Array.Resize(ref buffer, Math.Max(length + count, buffer.Length << 1));
 		}
 
 		public void Append(byte[] value, int startIndex, int count)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			if (startIndex >= value.Length) throw new ArgumentOutOfRangeException("startIndex");
-			if (checked(count += startIndex) > value.Length) throw new ArgumentOutOfRangeException("count");
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			if (startIndex >= value.Length) throw new ArgumentOutOfRangeException(nameof(startIndex));
+			if (checked(count += startIndex) > value.Length) throw new ArgumentOutOfRangeException(nameof(count));
 
 			EnsureExtraCapacity(value.Length);
 

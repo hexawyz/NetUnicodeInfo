@@ -68,7 +68,7 @@ namespace System.Unicode
 				}
 			}
 
-			throw new ArgumentOutOfRangeException("codePoint");
+			throw new ArgumentOutOfRangeException(nameof(codePoint));
 		}
 
 		internal static int UnpackCodePoint(int packedCodePoint)
@@ -81,7 +81,7 @@ namespace System.Unicode
 				else if (packedCodePoint < 0x1F800) return packedCodePoint - 0xFD00;
 				else if (packedCodePoint < 0x20000) return packedCodePoint + 0x10000;
 			}
-			throw new ArgumentOutOfRangeException("packedCodePoint");
+			throw new ArgumentOutOfRangeException(nameof(packedCodePoint));
 		}
 	}
 }

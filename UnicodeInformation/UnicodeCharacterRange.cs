@@ -41,7 +41,7 @@ namespace System.Unicode
 
 		public UnicodeCharacterRange(int codePoint)
 		{
-			if (codePoint < 0 || codePoint > 0x10FFFF) throw new ArgumentOutOfRangeException("codePoint");
+			if (codePoint < 0 || codePoint > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(codePoint));
 
 			FirstCodePoint = codePoint;
 			LastCodePoint = codePoint;
@@ -49,8 +49,8 @@ namespace System.Unicode
 
 		public UnicodeCharacterRange(int firstCodePoint, int lastCodePoint)
 		{
-			if (firstCodePoint < 0 || firstCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException("firstCodePoint");
-			if (lastCodePoint < firstCodePoint || lastCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException("lastCodePoint");
+			if (firstCodePoint < 0 || firstCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(firstCodePoint));
+			if (lastCodePoint < firstCodePoint || lastCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(lastCodePoint));
 
 			FirstCodePoint = firstCodePoint;
 			LastCodePoint = lastCodePoint;

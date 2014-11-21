@@ -15,7 +15,7 @@ namespace System.Unicode
 
 		public CodePointEnumerator(string text)
 		{
-			if (text == null) throw new ArgumentNullException("text");
+			if (text == null) throw new ArgumentNullException(nameof(text));
 
 			this.text = text;
 			this.current = 0;

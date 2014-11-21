@@ -74,8 +74,8 @@ namespace UnicodeCharacterInspector
 
 			public void CopyTo(CharacterViewModel[] array, int arrayIndex)
 			{
-				if (array == null) throw new ArgumentNullException("array");
-				if (arrayIndex < 0) throw new ArgumentOutOfRangeException("arrayIndex");
+				if (array == null) throw new ArgumentNullException(nameof(array));
+				if (arrayIndex < 0) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 				if (array.Length < arrayIndex + owner.codePoints.Length) throw new ArgumentException();
 
 				for (int i = 0, j = arrayIndex; i < owner.codePoints.Length; ++i, ++j)
@@ -175,7 +175,7 @@ namespace UnicodeCharacterInspector
 			set
 			{
 				if (selectedCharacterIndex < -1 || selectedCharacterIndex >= codePoints.Length)
-					throw new ArgumentOutOfRangeException("value");
+					throw new ArgumentOutOfRangeException(nameof(value));
 
 				if (value != selectedCharacterIndex)
 				{

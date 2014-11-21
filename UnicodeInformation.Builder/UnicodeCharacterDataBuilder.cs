@@ -46,7 +46,7 @@ namespace System.Unicode.Builder
 			{
 				if (!Enum.IsDefined(typeof(UnicodeCategory), value))
 				{
-					throw new ArgumentOutOfRangeException("value");
+					throw new ArgumentOutOfRangeException(nameof(value));
 				}
 				category = value;
 			}

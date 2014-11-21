@@ -18,6 +18,7 @@ namespace System.Unicode
 		public int CodePoint { get { return codePoint; } }
 
 		public string Name { get { return name; } }
+		public UnicodeNameAliasCollection NameAliases { get { return new UnicodeNameAliasCollection(unicodeCharacterData?.NameAliases); } }
 
 		public UnicodeCategory Category { get { return unicodeCharacterData?.Category ?? UnicodeCategory.OtherNotAssigned; } }
 		public string Block { get { return block ?? UnicodeInfo.DefaultBlock; } }
