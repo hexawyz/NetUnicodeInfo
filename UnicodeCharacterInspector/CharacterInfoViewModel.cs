@@ -53,6 +53,7 @@ namespace UnicodeCharacterInspector
 					UpdateDisplayText();
 					NotifyPropertyChanged(nameof(CodePoint));
 					NotifyPropertyChanged(nameof(Name));
+					NotifyPropertyChanged(nameof(NameAliases));
 					NotifyPropertyChanged(nameof(OldName));
 					NotifyPropertyChanged(nameof(Definition));
 					NotifyPropertyChanged(nameof(Category));
@@ -99,6 +100,11 @@ namespace UnicodeCharacterInspector
 		public string Name
 		{
 			get { return character != null ? characterInfo.Name : null; }
+		}
+
+		public UnicodeNameAliasCollection NameAliases
+		{
+			get { return characterInfo.NameAliases; }
 		}
 
 		public string OldName

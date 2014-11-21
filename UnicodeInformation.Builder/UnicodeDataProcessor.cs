@@ -13,6 +13,7 @@ namespace System.Unicode.Builder
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
 		public const string DerivedCorePropertiesFileName = "DerivedCoreProperties.txt";
+		public const string NameAliasesFileName = "NameAliases.txt";
 		public const string BlocksFileName = "Blocks.txt";
 		public const string UnihanReadingsFileName = "Unihan_Readings.txt";
 		public const string UnihanVariantsFileName = "Unihan_Variants.txt";
@@ -37,6 +38,7 @@ namespace System.Unicode.Builder
 			await ProcessUnicodeDataFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessNameAliasesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessUnihanReadings(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanVariants(unihanSource, builder).ConfigureAwait(false);
@@ -192,6 +194,26 @@ namespace System.Unicode.Builder
 					{
 						builder.SetProperties(property, range);
 					}
+				}
+			}
+		}
+
+		private static async Task ProcessNameAliasesFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(NameAliasesFileName).ConfigureAwait(false), ';'))
+			{
+				while (reader.MoveToNextLine())
+				{
+					var ucd = builder.GetUcd(int.Parse(reader.ReadField(), NumberStyles.HexNumber));
+
+					string name = reader.ReadField();
+					string kindName = reader.ReadField();
+					UnicodeNameAliasKind kind;
+
+					if (!EnumHelper<UnicodeNameAliasKind>.TryGetNamedValue(kindName, out kind))
+						throw new InvalidDataException("Unrecognized name alias: " + kindName + ".3");
+
+					ucd.NameAliases.Add(new UnicodeNameAlias(name, kind));
 				}
 			}
 		}
