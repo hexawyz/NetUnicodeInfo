@@ -43,7 +43,7 @@ namespace System.Unicode
 				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
 				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
-				byte[] nameBuffer = new byte[64];
+				byte[] nameBuffer = new byte[128];
 
 				for (int i = 0; i < unicodeCharacterDataEntries.Length; ++i)
 				{
@@ -85,23 +85,25 @@ namespace System.Unicode
 			{
 				int length = reader.ReadByte();
 				byte @case = (byte)(length & 0xC0);
-				length = (length & 0x3F) + 1;
 
-				if (@case < 0xC0) // These cases have an official name.
+				if (@case < 0x80)  // Handles the case where only the name is present.
 				{
-					if (@case != 0)
-					{
-					}
+					length = (length & 0x7F) + 1;
 					if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
 
 					name = Encoding.UTF8.GetString(nameBuffer, 0, length);
-					if (@case == 2) length = (reader.ReadByte() & 0x3F) + 1;
-					else length = @case;
 				}
-
-				if (length > 0) // These cases have official name aliases.
+				else
 				{
-					nameAliases = new UnicodeNameAlias[length];
+					nameAliases = new UnicodeNameAlias[(length & 0x3F) + 1];
+
+					if ((@case & 0x40) != 0)
+					{
+						length = reader.ReadByte() + 1;
+						if (length > 128) throw new InvalidDataException("Did not expect names longer than 128 bytes.");
+						if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
+						name = Encoding.UTF8.GetString(nameBuffer, 0, length);
+					}
 
 					for (int i = 0; i < nameAliases.Length; ++i)
 					{
@@ -111,7 +113,7 @@ namespace System.Unicode
 
 						if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
 						nameAliases[i] = new UnicodeNameAlias(Encoding.UTF8.GetString(nameBuffer, 0, length), aliasKind);
-                    }
+					}
 				}
 			}
 

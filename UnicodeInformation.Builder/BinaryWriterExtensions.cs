@@ -57,20 +57,22 @@ namespace System.Unicode.Builder
 		/// <param name="nameAlias">The name alias value to write.</param>
 		public static void WriteNameAliasToFile(this BinaryWriter writer, UnicodeNameAlias nameAlias)
 		{
-			WriteNameToFile(writer, (byte)(nameAlias.Kind - 1), nameAlias.Name);
+			// This method will stuff two extra bits together with the byte count, provided that this one doesn't exceed 64.
+			var bytes = Encoding.UTF8.GetBytes(nameAlias.Name);
+			if (bytes.Length > 64) throw new InvalidOperationException("Did not expect UTF-8 encoded name aliases to be longer than 64 bytes.");
+			writer.WritePackedLength((byte)(nameAlias.Kind - 1), nameAlias.Name.Length);
+			writer.Write(bytes);
 		}
 
 		/// <summary>Writes a character name, packing two information bits along with the length.</summary>
-		/// <remarks>We assume that character names will not exceed 64 bytes in length.</remarks>
+		/// <remarks>We assume that character names will not exceed 128 bytes in length.</remarks>
 		/// <param name="writer">The writer to use.</param>
-		/// <param name="extraBits">Extra bits to pack with the 6 bit length.</param>
 		/// <param name="name">The name to write.</param>
-		public static void WriteNameToFile(this BinaryWriter writer, byte extraBits, string name)
+		public static void WriteNamePropertyToFile(this BinaryWriter writer, string name)
 		{
-			// This method will stuff two extra bits together with the byte count, provided that this one doesn't exceed 64.
 			var bytes = Encoding.UTF8.GetBytes(name);
-			if (bytes.Length > 64) throw new InvalidOperationException("Did not expect UTF-8 encoded names to be longer than 64 bytes.");
-			writer.WritePackedLength(extraBits, name.Length);
+			if (bytes.Length > 128) throw new InvalidOperationException("Did not expect UTF-8 encoded name to be longer than 128 bytes.");
+			writer.Write((byte)(name.Length - 1)); // The most significant bit will always be cleared, because it will be used for other cases.
 			writer.Write(bytes);
 		}
 

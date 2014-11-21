@@ -193,28 +193,23 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.Name) != 0)
 			{
 				// We write the names by optimizing for the common case.
-				// i.e. Most characters have one name, and most of those characters have only one name.
-				// In the first byte, we will encode a 6bit length, along with two extra bits describing the structure:
-				// 00: The common case, this byte is the length of the name, and no other name follows.
-				// 01: This byte is the length of the name, and one alias follows.
-				// 10: This byte is the length of the name, and the number of aliases follows.
-				// 11: This byte is the number of aliases.
-
-				if (name == null)
-				{
-					writer.WritePackedLength(3, nameAliases.Count);
-				}
-				else
-				{
-					writer.WriteNameToFile((byte)(nameAliases.Count > 0 ? nameAliases.Count > 1 ? 2 : 1 : 0), name);
-				}
+				// i.e. Most characters have only one name.
+				// The first 8 bit sequence will encore either the length of the name property alone,
+				// or the number of aliases and a bit indicating the presence of the name property.
 
 				if (nameAliases.Count > 0)
 				{
-					if (name != null) writer.Write((byte)nameAliases.Count);
+					writer.WritePackedLength((byte)(name != null ? 3 : 2), nameAliases.Count);
+
+					if (name != null)
+						writer.WriteNamePropertyToFile(name);
 
 					foreach (var nameAlias in nameAliases)
 						writer.WriteNameAliasToFile(nameAlias);
+				}
+				else
+				{
+					writer.WriteNamePropertyToFile(name);
 				}
 			}
 			if ((fields & UcdFields.Category) != 0) writer.Write((byte)category);
