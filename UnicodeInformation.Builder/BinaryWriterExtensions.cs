@@ -57,11 +57,8 @@ namespace System.Unicode.Builder
 		/// <param name="nameAlias">The name alias value to write.</param>
 		public static void WriteNameAliasToFile(this BinaryWriter writer, UnicodeNameAlias nameAlias)
 		{
-			// This method will stuff two extra bits together with the byte count, provided that this one doesn't exceed 64.
-			var bytes = Encoding.UTF8.GetBytes(nameAlias.Name);
-			if (bytes.Length > 64) throw new InvalidOperationException("Did not expect UTF-8 encoded name aliases to be longer than 64 bytes.");
-			writer.WritePackedLength((byte)(nameAlias.Kind - 1), nameAlias.Name.Length);
-			writer.Write(bytes);
+			writer.Write(nameAlias.Name);
+			writer.Write((byte)nameAlias.Kind);
 		}
 
 		/// <summary>Writes a character name, packing two information bits along with the length.</summary>

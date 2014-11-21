@@ -104,7 +104,7 @@ namespace UnicodeCharacterInspector
 
 		public UnicodeNameAliasCollection NameAliases
 		{
-			get { return characterInfo.NameAliases; }
+			get { return character != null ? characterInfo.NameAliases : new UnicodeNameAliasCollection(); }
 		}
 
 		public string OldName

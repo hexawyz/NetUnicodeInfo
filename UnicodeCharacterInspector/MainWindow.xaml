@@ -53,6 +53,9 @@
 						<Setter Property="VerticalAlignment" Value="Top" />
 						<Setter Property="Margin" Value="6" />
 					</Style>
+					<Style TargetType="{x:Type ItemsControl}" BasedOn="{StaticResource ResourceKey={x:Type ItemsControl}}">
+						<Setter Property="Margin" Value="6" />
+					</Style>
 				</Grid.Resources>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width ="Auto" />
@@ -95,7 +98,9 @@
 				<ItemsControl Grid.Row="3" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NameAliases.Count, Converter={StaticResource ZeroToVisibilityConverter}}" ItemsSource="{Binding SelectedCharacterInfo.NameAliases}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<TextBlock TextWrapping="WrapWithOverflow" Text="{Binding}" />
+							<TextBlock TextWrapping="WrapWithOverflow">
+								<Run Text="{Binding Name, Mode=OneTime}" /> (<Run Text="{Binding Kind, Mode=OneTime}" />)
+							</TextBlock>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

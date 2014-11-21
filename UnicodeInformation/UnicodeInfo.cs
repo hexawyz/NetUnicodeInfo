@@ -107,12 +107,7 @@ namespace System.Unicode
 
 					for (int i = 0; i < nameAliases.Length; ++i)
 					{
-						length = reader.ReadByte();
-						UnicodeNameAliasKind aliasKind = (UnicodeNameAliasKind)((length >> 6) + 1);
-						length = (length & 0x3F) + 1;
-
-						if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
-						nameAliases[i] = new UnicodeNameAlias(Encoding.UTF8.GetString(nameBuffer, 0, length), aliasKind);
+						nameAliases[i] = new UnicodeNameAlias(reader.ReadString(), (UnicodeNameAliasKind)(reader.ReadByte()));
 					}
 				}
 			}
