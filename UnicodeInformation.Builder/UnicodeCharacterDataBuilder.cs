@@ -26,7 +26,8 @@ namespace System.Unicode.Builder
 		private ContributoryProperties contributoryProperties;
 		private CoreProperties coreProperties;
 
-		private List<int> relatedCodePoints = new List<int>();
+		private readonly List<UnicodeNameAlias> nameAliases = new List<UnicodeNameAlias>();
+		private readonly List<int> relatedCodePoints = new List<int>();
 
 		public UnicodeCharacterRange CodePointRange { get { return codePointRange; } }
 
@@ -35,6 +36,8 @@ namespace System.Unicode.Builder
 			get { return name; }
 			set { name = value; }
 		}
+
+		public ICollection<UnicodeNameAlias> NameAliases { get { return nameAliases; } }
 
 		public UnicodeCategory Category
 		{
@@ -138,33 +141,36 @@ namespace System.Unicode.Builder
 		{
 			return new UnicodeCharacterData
 			(
-				codePointRange,
+				CodePointRange,
 				Name,
-				category,
-				canonicalCombiningClass,
-				bidirectionalClass,
-				characterDecompositionMapping.DecompositionType,
-				characterDecompositionMapping.DecompositionMapping,
-				numericType,
-				numericValue,
-				bidirectionalMirrored,
-				oldName,
-				simpleUpperCaseMapping,
-				simpleLowerCaseMapping,
-				simpleTitleCaseMapping,
-				contributoryProperties,
-				coreProperties,
-				relatedCodePoints.Count > 0 ? relatedCodePoints.ToArray() : null
+				NameAliases.Count > 0 ? NameAliases.ToArray() : UnicodeNameAlias.EmptyArray,
+				Category,
+				CanonicalCombiningClass,
+				BidirectionalClass,
+				CharacterDecompositionMapping.DecompositionType,
+				CharacterDecompositionMapping.DecompositionMapping,
+				NumericType,
+				NumericValue,
+				BidirectionalMirrored,
+				OldName,
+				SimpleUpperCaseMapping,
+				SimpleLowerCaseMapping,
+				SimpleTitleCaseMapping,
+				ContributoryProperties,
+				CoreProperties,
+				RelatedCodePoints.Count > 0 ? RelatedCodePoints.ToArray() : null
 			);
 		}
 
 		internal void WriteToFile(BinaryWriter writer)
 		{
+			if (nameAliases.Count > 64) throw new InvalidDataException("Cannot handle more than 64 name aliases.");
+
 			UcdFields fields = default(UcdFields);
 
 			if (!codePointRange.IsSingleCodePoint) fields = UcdFields.CodePointRange;
 
-			if (name != null) fields |= UcdFields.Name;
+			if (name != null || nameAliases.Count > 0) fields |= UcdFields.Name; // This field combines name and alias.
 			if (category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
 			if (canonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
 			/*if (bidirectionalClass != 0)*/
@@ -184,7 +190,33 @@ namespace System.Unicode.Builder
 			writer.WriteCodePoint(codePointRange.FirstCodePoint);
 			if ((fields & UcdFields.CodePointRange) != 0) writer.WriteCodePoint(CodePointRange.LastCodePoint);
 
-			if ((fields & UcdFields.Name) != 0) writer.Write(name);
+			if ((fields & UcdFields.Name) != 0)
+			{
+				// We write the names by optimizing for the common case.
+				// i.e. Most characters have one name, and most of those characters have only one name.
+				// In the first byte, we will encode a 6bit length, along with two extra bits describing the structure:
+				// 00: The common case, this byte is the length of the name, and no other name follows.
+				// 01: This byte is the length of the name, and one alias follows.
+				// 10: This byte is the length of the name, and the number of aliases follows.
+				// 11: This byte is the number of aliases.
+
+				if (name == null)
+				{
+					writer.WritePackedLength(3, nameAliases.Count);
+				}
+				else
+				{
+					writer.WriteNameToFile((byte)(nameAliases.Count > 0 ? nameAliases.Count > 1 ? 2 : 1 : 0), name);
+				}
+
+				if (nameAliases.Count > 0)
+				{
+					if (name != null) writer.Write((byte)nameAliases.Count);
+
+					foreach (var nameAlias in nameAliases)
+						writer.WriteNameAliasToFile(nameAlias);
+				}
+			}
 			if ((fields & UcdFields.Category) != 0) writer.Write((byte)category);
 			if ((fields & UcdFields.CanonicalCombiningClass) != 0) writer.Write((byte)canonicalCombiningClass);
 			if ((fields & UcdFields.BidirectionalClass) != 0) writer.Write((byte)bidirectionalClass);

@@ -77,6 +77,8 @@
     <Compile Include="UnicodeCharacterRange.cs" />
     <Compile Include="UnicodeCharInfo.cs" />
     <Compile Include="UnicodeInfo.cs" />
+    <Compile Include="UnicodeNameAlias.cs" />
+    <Compile Include="UnicodeNameAliasKind.cs" />
     <Compile Include="UnihanNumericType.cs" />
     <Compile Include="UnicodeNumericType.cs" />
     <Compile Include="UnihanCharacterData.cs" />

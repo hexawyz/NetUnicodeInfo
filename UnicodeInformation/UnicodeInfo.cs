@@ -31,7 +31,7 @@ namespace System.Unicode
 		{
 			using (var reader = new BinaryReader(stream, Encoding.UTF8))
 			{
-				if (reader.ReadByte() != 'U'
+                if (reader.ReadByte() != 'U'
 					| reader.ReadByte() != 'C'
 					| reader.ReadByte() != 'D')
 					throw new InvalidDataException();
@@ -43,10 +43,11 @@ namespace System.Unicode
 				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
 				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
+				byte[] nameBuffer = new byte[64];
 
 				for (int i = 0; i < unicodeCharacterDataEntries.Length; ++i)
 				{
-					unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader);
+					unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader, nameBuffer);
 				}
 
 				var blockEntries = new UnicodeBlock[reader.ReadByte()];
@@ -70,13 +71,50 @@ namespace System.Unicode
 			}
 		}
 
-		private static UnicodeCharacterData ReadUnicodeCharacterDataEntry(BinaryReader reader)
+		private static UnicodeCharacterData ReadUnicodeCharacterDataEntry(BinaryReader reader, byte[] nameBuffer)
 		{
 			var fields = (UcdFields)reader.ReadUInt16();
 
 			var codePointRange = (fields & UcdFields.CodePointRange) != 0 ? new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)) : new UnicodeCharacterRange(ReadCodePoint(reader));
 
-			string name = (fields & UcdFields.Name) != 0 ? reader.ReadString() : null;
+			string name = null;
+			UnicodeNameAlias[] nameAliases = UnicodeNameAlias.EmptyArray;
+
+			// Read all the official names of the character.
+			if ((fields & UcdFields.Name) != 0)
+			{
+				int length = reader.ReadByte();
+				byte @case = (byte)(length & 0xC0);
+				length = (length & 0x3F) + 1;
+
+				if (@case < 0xC0) // These cases have an official name.
+				{
+					if (@case != 0)
+					{
+					}
+					if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
+
+					name = Encoding.UTF8.GetString(nameBuffer, 0, length);
+					if (@case == 2) length = (reader.ReadByte() & 0x3F) + 1;
+					else length = @case;
+				}
+
+				if (length > 0) // These cases have official name aliases.
+				{
+					nameAliases = new UnicodeNameAlias[length];
+
+					for (int i = 0; i < nameAliases.Length; ++i)
+					{
+						length = reader.ReadByte();
+						UnicodeNameAliasKind aliasKind = (UnicodeNameAliasKind)((length >> 6) + 1);
+						length = (length & 0x3F) + 1;
+
+						if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
+						nameAliases[i] = new UnicodeNameAlias(Encoding.UTF8.GetString(nameBuffer, 0, length), aliasKind);
+                    }
+				}
+			}
+
 			var category = (fields & UcdFields.Category) != 0 ? (UnicodeCategory)reader.ReadByte() : UnicodeCategory.OtherNotAssigned;
 			var canonicalCombiningClass = (fields & UcdFields.CanonicalCombiningClass) != 0 ? (CanonicalCombiningClass)reader.ReadByte() : CanonicalCombiningClass.NotReordered;
 			var bidirectionalClass = (fields & UcdFields.BidirectionalClass) != 0 ? (BidirectionalClass)reader.ReadByte() : 0;
@@ -97,6 +135,7 @@ namespace System.Unicode
 			(
 				codePointRange,
 				name,
+				nameAliases,
 				category,
 				canonicalCombiningClass,
 				bidirectionalClass,

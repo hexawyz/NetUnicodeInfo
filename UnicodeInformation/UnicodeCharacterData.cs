@@ -11,6 +11,7 @@ namespace System.Unicode
 	{
 		public readonly UnicodeCharacterRange CodePointRange;
 		public readonly string Name;
+		public readonly UnicodeNameAlias[] NameAliases;
 		public readonly UnicodeCategory Category;
 		public readonly CanonicalCombiningClass CanonicalCombiningClass;
 		public readonly BidirectionalClass BidirectionalClass;
@@ -32,6 +33,7 @@ namespace System.Unicode
 		(
 			UnicodeCharacterRange codePointRange,
 			string name,
+			UnicodeNameAlias[] nameAliases,
 			UnicodeCategory category,
 			CanonicalCombiningClass canonicalCombiningClass,
 			BidirectionalClass bidirectionalClass,
@@ -51,6 +53,7 @@ namespace System.Unicode
 		{
 			this.CodePointRange = codePointRange;
 			this.Name = name;
+			this.NameAliases = nameAliases;
 			this.Category = category;
 			this.CanonicalCombiningClass = canonicalCombiningClass;
 			this.BidirectionalClass = bidirectionalClass;

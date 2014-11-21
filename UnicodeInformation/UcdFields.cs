@@ -14,7 +14,7 @@ namespace System.Unicode
 		// Not really a field, just here to indicate that the entry is a range
 		CodePointRange = 1,
 
-		Name = 2,
+		Name = 2, // Will stand in for official name as well as related names.
 		Category = 4,
 		CanonicalCombiningClass = 8,
 		BidirectionalClass = 16,
@@ -35,5 +35,7 @@ namespace System.Unicode
 
 		ContributoryProperties = 8192,
 		CoreProperties = 16384,
+
+		RelatedCodePoints = 32768,
 	}
 }
