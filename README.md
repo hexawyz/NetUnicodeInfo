@@ -1,10 +1,17 @@
-﻿.NET Unicode Information Library
-========================
+﻿Unicode Character Inspector & .NET Unicode Information Library
+==============================================================
 
 Summary
 -------
-This projects provides access to some of the data contained in the Unicode Character Database by the means of a portable .NET assembly.
-Included, is a small WPF application allowing to inspect the Unicode code points composing a specified text.
+This projects has two parts.
+One is a library, providing access to some of the data contained in the Unicode Character Database by the means of a portable .NET assembly.
+The other, is a small WPF application allowing to inspect the Unicode code points composing a specified text.
+
+Using the Unicode Character Inspector application
+-------------------------------------------------
+Simply launch the application, then type or paste some text in the text box on the top of the window.
+The code points will be displayed in the list on the left side. Select one of them to display the associated information in the bottom-right pane.
+![Screenshot of Unicode Character Inspector](docs/uci-00.png)
 
 Compiling and using the project
 -------------------------------
@@ -63,6 +70,7 @@ This library includes a subset of the official [Unicode Character Database](http
 * Simple_Uppercase_Maping
 * Simple_Lowercase_Mapping
 * Simple_Titlecase_Mapping
+* Name_Alias
 * Block
 * ASCII_Hex_Digit
 * Bidi_Control
