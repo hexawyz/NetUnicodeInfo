@@ -26,7 +26,7 @@ namespace System.Unicode
 		[ValueName("CS"), ValueName("Common_Separator"), Display(Name = "Common_Separator", Description = "commas, colons, and slashes")]
 		CommonSeparator,
 		[ValueName("NSM"), ValueName("Nonspacing_Mark"), Display(Name = "Nonspacing_Mark", Description = "any nonspacing mark")]
-		NonspacingMark,
+		NonSpacingMark,
 		[ValueName("BN"), ValueName("Boundary_Neutral"), Display(Name = "Boundary_Neutral", Description = "most format characters, control codes, or noncharacters")]
 		BoundaryNeutral,
 		[ValueName("B"), ValueName("Paragraph_Separator"), Display(Name = "Paragraph_Separator", Description = "various newline characters")]

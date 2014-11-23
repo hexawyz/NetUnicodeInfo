@@ -58,10 +58,7 @@ namespace System.Unicode
 		public int IndexOf(UnicodeNameAlias item) { return Array.IndexOf(items, item); }
 		public bool Contains(UnicodeNameAlias item) { return IndexOf(item) >= 0; }
 
-		public void CopyTo(UnicodeNameAlias[] array, int arrayIndex)
-		{
-			throw new NotImplementedException();
-		}
+		public void CopyTo(UnicodeNameAlias[] array, int arrayIndex) { items.CopyTo(array, arrayIndex); }
 
 		public Enumerator GetEnumerator() { return new Enumerator(items); }
 

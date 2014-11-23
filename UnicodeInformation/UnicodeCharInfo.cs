@@ -36,6 +36,7 @@ namespace System.Unicode
 		public string SimpleTitleCaseMapping { get { return unicodeCharacterData?.SimpleTitleCaseMapping; } }
 		public ContributoryProperties ContributoryProperties { get { return unicodeCharacterData?.ContributoryProperties ?? 0; } }
 		public CoreProperties CoreProperties { get { return unicodeCharacterData?.CoreProperties ?? 0; } }
+		public UnicodeCrossReferenceCollection CrossRerefences { get { return new UnicodeCrossReferenceCollection(unicodeCharacterData?.CrossRerefences); } }
 
 		public string Definition { get { return unihanCharacterData?.Definition; } }
 		public string MandarinReading { get { return unihanCharacterData?.MandarinReading; } }
@@ -53,7 +54,7 @@ namespace System.Unicode
 		{
 			this.codePoint = codePoint;
 			this.name = UnicodeInfo.GetName(codePoint, unicodeCharacterData);
-            this.unicodeCharacterData = unicodeCharacterData;
+			this.unicodeCharacterData = unicodeCharacterData;
 			this.unihanCharacterData = unihanCharacterData;
 			this.block = block;
 		}

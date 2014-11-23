@@ -7,5 +7,7 @@
          <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
          <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
          <local:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+         <local:Utf32ToDisplayTextConverter x:Key="Utf32ToStringConverter" />
+         <local:Utf32ToNameConverter x:Key="Utf32ToNameConverter" />
     </Application.Resources>
 </Application>

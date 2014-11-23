@@ -27,7 +27,7 @@ namespace System.Unicode.Builder
 		private CoreProperties coreProperties;
 
 		private readonly List<UnicodeNameAlias> nameAliases = new List<UnicodeNameAlias>();
-		private readonly List<int> relatedCodePoints = new List<int>();
+		private readonly List<int> crossRerefences = new List<int>();
 
 		public UnicodeCharacterRange CodePointRange { get { return codePointRange; } }
 
@@ -124,7 +124,7 @@ namespace System.Unicode.Builder
 			set { coreProperties = value; }
 		}
 
-		public ICollection<int> RelatedCodePoints { get { return relatedCodePoints; } }
+		public ICollection<int> CrossRerefences { get { return crossRerefences; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
 			: this(new UnicodeCharacterRange(codePoint))
@@ -158,7 +158,7 @@ namespace System.Unicode.Builder
 				SimpleTitleCaseMapping,
 				ContributoryProperties,
 				CoreProperties,
-				RelatedCodePoints.Count > 0 ? RelatedCodePoints.ToArray() : null
+				CrossRerefences.Count > 0 ? CrossRerefences.ToArray() : null
 			);
 		}
 
@@ -184,7 +184,7 @@ namespace System.Unicode.Builder
 			if (simpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
 			if (contributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
 			if (coreProperties != 0) fields |= UcdFields.CoreProperties;
-			if (relatedCodePoints.Count > 0) fields |= UcdFields.RelatedCodePoints;
+			if (crossRerefences.Count > 0) fields |= UcdFields.CrossRerefences;
 
 			writer.Write((ushort)fields);
 
@@ -232,11 +232,11 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(simpleTitleCaseMapping);
 			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)contributoryProperties);
 			if ((fields & UcdFields.CoreProperties) != 0) writer.WriteUInt24((int)coreProperties);
-			if ((fields & UcdFields.RelatedCodePoints) != 0)
+			if ((fields & UcdFields.CrossRerefences) != 0)
 			{
-				writer.Write(checked((byte)(relatedCodePoints.Count - 1)));
-				foreach (int relatedCodePoint in relatedCodePoints)
-					writer.WriteCodePoint(relatedCodePoint);
+				writer.Write(checked((byte)(crossRerefences.Count - 1)));
+				foreach (int crossReference in crossRerefences)
+					writer.WriteCodePoint(crossReference);
 			}
 		}
 	}

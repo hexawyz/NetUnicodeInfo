@@ -66,6 +66,7 @@
     <Compile Include="CodePointEnumerator.cs" />
     <Compile Include="CoreProperties.cs" />
     <Compile Include="HangulInfo.cs" />
+    <Compile Include="UnicodeCrossReferenceCollection.cs" />
     <Compile Include="UnicodeNameAliasCollection.cs" />
     <Compile Include="UcdFields.cs" />
     <Compile Include="EnumHelper.cs" />

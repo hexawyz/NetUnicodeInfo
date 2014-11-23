@@ -14,7 +14,7 @@ namespace System.Unicode
 	{
 		public const string DefaultBlock = "No_Block";
 
-        private static readonly Version unicodeVersion;
+		private static readonly Version unicodeVersion;
 		private static readonly UnicodeCharacterData[] unicodeCharacterData;
 		private static readonly UnihanCharacterData[] unihanCharacterData;
 		private static readonly UnicodeBlock[] blocks;
@@ -34,7 +34,7 @@ namespace System.Unicode
 			{
 				int i;
 
-                if (reader.ReadByte() != 'U'
+				if (reader.ReadByte() != 'U'
 					| reader.ReadByte() != 'C'
 					| reader.ReadByte() != 'D')
 					throw new InvalidDataException();
@@ -57,7 +57,7 @@ namespace System.Unicode
 						++i;
 						break;
 					}
-                }
+				}
 
 				maxContiguousIndex = mci;
 
@@ -102,7 +102,7 @@ namespace System.Unicode
 				int length = reader.ReadByte();
 				byte @case = (byte)(length & 0xC0);
 
-				if (@case < 0x80)  // Handles the case where only the name is present.
+				if (@case < 0x80)   // Handles the case where only the name is present.
 				{
 					length = (length & 0x7F) + 1;
 					if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
@@ -143,13 +143,13 @@ namespace System.Unicode
 			string simpleTitleCaseMapping = (fields & UcdFields.SimpleTitleCaseMapping) != 0 ? reader.ReadString() : null;
 			ContributoryProperties contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
 			CoreProperties coreProperties = (fields & UcdFields.CoreProperties) != 0 ? (CoreProperties)ReadInt24(reader) : 0;
-			int[] relatedCodePoints = (fields & UcdFields.RelatedCodePoints) != 0 ? new int[reader.ReadByte() + 1] : null;
+			int[] crossReferences = (fields & UcdFields.CrossRerefences) != 0 ? new int[reader.ReadByte() + 1] : null;
 
-			if (relatedCodePoints != null)
+			if (crossReferences != null)
 			{
-				for (int i = 0; i < relatedCodePoints.Length; ++i)
-					relatedCodePoints[i] = ReadCodePoint(reader);
-            }
+				for (int i = 0; i < crossReferences.Length; ++i)
+					crossReferences[i] = ReadCodePoint(reader);
+			}
 
 			return new UnicodeCharacterData
 			(
@@ -170,7 +170,7 @@ namespace System.Unicode
 				simpleTitleCaseMapping,
 				contributoryProperties,
 				coreProperties,
-				relatedCodePoints
+				crossReferences
 			);
 		}
 
@@ -364,7 +364,7 @@ namespace System.Unicode
 		{
 			if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
 			else return GetName(codePoint, FindUnicodeCodePoint(codePoint));
-        }
+		}
 
 		internal static string GetName(int codePoint, UnicodeCharacterData characterData)
 		{
@@ -372,7 +372,7 @@ namespace System.Unicode
 			else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
 			else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
 			else return null;
-        }
+		}
 
 		public static UnicodeBlock[] GetBlocks()
 		{

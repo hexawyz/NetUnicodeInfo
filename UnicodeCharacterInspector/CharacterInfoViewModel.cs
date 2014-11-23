@@ -67,6 +67,7 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged(nameof(NumericValue));
 					NotifyPropertyChanged(nameof(ContributoryProperties));
 					NotifyPropertyChanged(nameof(CoreProperties));
+					NotifyPropertyChanged(nameof(CrossReferences));
 					NotifyPropertyChanged(nameof(MandarinReading));
 					NotifyPropertyChanged(nameof(CantoneseReading));
 					NotifyPropertyChanged(nameof(JapaneseKunReading));
@@ -170,6 +171,11 @@ namespace UnicodeCharacterInspector
 		public CoreProperties? CoreProperties
 		{
 			get { return character != null ? characterInfo.CoreProperties : null as CoreProperties?; }
+		}
+
+		public UnicodeCrossReferenceCollection CrossReferences
+		{
+			get { return character != null ? characterInfo.CrossRerefences : new UnicodeCrossReferenceCollection(); }
 		}
 
 		public string MandarinReading

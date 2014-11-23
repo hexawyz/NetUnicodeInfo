@@ -63,7 +63,7 @@ This library includes a subset of the official [Unicode Character Database](http
 * Bidi_Class
 * Decomposition_Type
 * Decomposition_Mapping
-* Numeric_Type (*)
+* Numeric_Type (See also kAccountingNumeric/kOtherNumeric/kPrimaryNumeric. Those will set Numeric_Type to Numeric.)
 * Numeric_Value
 * Bidi_Mirrored
 * Unicode_1_Name
@@ -123,6 +123,7 @@ This library includes a subset of the official [Unicode Character Database](http
 * ID_Continue
 * XID_Start
 * XID_Continue
+* Code point cross references extracted from NamesList.txt
 
 NB: The UCD property ISO_Comment will never be included since this one is empty in all new Unicode versions.
 

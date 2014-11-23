@@ -27,7 +27,7 @@ namespace System.Unicode
 		public readonly ContributoryProperties ContributoryProperties;
 		public readonly CoreProperties CoreProperties;
 
-		public readonly int[] RelatedCodePoints; // NB: It seems that parsing NamesList is required in order to provide data for this field ?
+		public readonly int[] CrossRerefences; // NB: It seems that parsing NamesList is required in order to provide data for this field ?
 
 		internal UnicodeCharacterData
 		(
@@ -48,7 +48,7 @@ namespace System.Unicode
 			string simpleTitleCaseMapping,
 			ContributoryProperties contributoryProperties,
 			CoreProperties coreProperties,
-			int[] relatedCodePoints
+			int[] crossRerefences
 		)
 		{
 			this.CodePointRange = codePointRange;
@@ -68,7 +68,7 @@ namespace System.Unicode
 			this.SimpleTitleCaseMapping = simpleTitleCaseMapping;
 			this.ContributoryProperties = contributoryProperties;
 			this.CoreProperties = coreProperties;
-			this.RelatedCodePoints = relatedCodePoints;
+			this.CrossRerefences = crossRerefences;
 		}
 
 		public UnicodeRationalNumber? NumericValue { get { return NumericType != UnicodeNumericType.None ? numericValue : null as UnicodeRationalNumber?; } }

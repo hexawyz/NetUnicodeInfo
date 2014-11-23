@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
+using System.Unicode;
 using System.Windows.Data;
 
 namespace UnicodeCharacterInspector
 {
-	internal sealed class NullToVisibilityConverter : IValueConverter
+	internal sealed class Utf32ToDisplayTextConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			return value != null ? Visibility.Visible : Visibility.Collapsed;
+			return value != null ? UnicodeInfo.GetDisplayText((int)value) : null;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

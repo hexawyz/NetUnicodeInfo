@@ -41,7 +41,7 @@ namespace System.Unicode.Builder
 			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNameAliasesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNamesListFile(ucdSource, builder).ConfigureAwait(false);
-            await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessUnihanReadings(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanVariants(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanNumericValues(unihanSource, builder).ConfigureAwait(false);
@@ -255,12 +255,12 @@ namespace System.Unicode.Builder
 								if (length < 0) length = line.Length;
 								length -= 3;
 
-                                characterData.RelatedCodePoints.Add(int.Parse(line.Substring(3, length), NumberStyles.HexNumber));
+								characterData.CrossRerefences.Add(int.Parse(line.Substring(3, length), NumberStyles.HexNumber));
 							}
 							else if (line[3] == '(')
 							{
 								bool hasBrackets = line[4] == '<';
-                                int codePointOffset = line.IndexOf(hasBrackets ? "> - " : "- ", 4);
+								int codePointOffset = line.IndexOf(hasBrackets ? "> - " : "- ", 4);
 
 								if (codePointOffset < 0) throw new InvalidDataException();
 								codePointOffset += hasBrackets ? 4 : 2;
@@ -269,7 +269,7 @@ namespace System.Unicode.Builder
 								if (length < 0) throw new InvalidDataException();
 								length -= codePointOffset;
 
-                                characterData.RelatedCodePoints.Add(int.Parse(line.Substring(codePointOffset, length), NumberStyles.HexNumber));
+								characterData.CrossRerefences.Add(int.Parse(line.Substring(codePointOffset, length), NumberStyles.HexNumber));
 							}
 							else throw new InvalidDataException();
 						}

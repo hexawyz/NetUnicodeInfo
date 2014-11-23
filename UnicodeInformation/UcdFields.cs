@@ -36,6 +36,6 @@ namespace System.Unicode
 		ContributoryProperties = 8192,
 		CoreProperties = 16384,
 
-		RelatedCodePoints = 32768,
+		CrossRerefences = 32768,
 	}
 }
