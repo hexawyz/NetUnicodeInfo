@@ -14,6 +14,7 @@ namespace System.Unicode.Builder
 		public const string PropListFileName = "PropList.txt";
 		public const string DerivedCorePropertiesFileName = "DerivedCoreProperties.txt";
 		public const string NameAliasesFileName = "NameAliases.txt";
+		public const string NamesListFileName = "NamesList.txt";
 		public const string BlocksFileName = "Blocks.txt";
 		public const string UnihanReadingsFileName = "Unihan_Readings.txt";
 		public const string UnihanVariantsFileName = "Unihan_Variants.txt";
@@ -39,7 +40,8 @@ namespace System.Unicode.Builder
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNameAliasesFile(ucdSource, builder).ConfigureAwait(false);
-			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessNamesListFile(ucdSource, builder).ConfigureAwait(false);
+            await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessUnihanReadings(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanVariants(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanNumericValues(unihanSource, builder).ConfigureAwait(false);
@@ -214,6 +216,93 @@ namespace System.Unicode.Builder
 						throw new InvalidDataException("Unrecognized name alias: " + kindName + ".3");
 
 					ucd.NameAliases.Add(new UnicodeNameAlias(name, kind));
+				}
+			}
+		}
+
+		private static async Task ProcessNamesListFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new StreamReader(await ucdSource.OpenDataFileAsync(NamesListFileName).ConfigureAwait(false), Encoding.UTF8, false))
+			{
+				string line;
+				var characterData = null as UnicodeCharacterDataBuilder;
+
+				while ((line = reader.ReadLine()) != null)
+				{
+					if (line.Length == 0)
+					{
+						characterData = null;
+						continue;
+					}
+
+					if (characterData != null && line.Length > 3 && line[0] == '\t')
+					{
+						if (line[1] == 'x')
+						{
+							// We should get at least 7 characters for a valid line: <tab> "x" <space> [0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z]
+							if (line.Length < 7)
+							{
+								characterData = null;
+								continue;
+							}
+							if (line[2] != ' ') throw new InvalidDataException();
+
+							int length;
+
+							if (line[3].IsHexDigit())
+							{
+								length = line.IndexOf(' ', 3);
+								if (length < 0) length = line.Length;
+								length -= 3;
+
+                                characterData.RelatedCodePoints.Add(int.Parse(line.Substring(3, length), NumberStyles.HexNumber));
+							}
+							else if (line[3] == '(')
+							{
+								bool hasBrackets = line[4] == '<';
+                                int codePointOffset = line.IndexOf(hasBrackets ? "> - " : "- ", 4);
+
+								if (codePointOffset < 0) throw new InvalidDataException();
+								codePointOffset += hasBrackets ? 4 : 2;
+
+								length = line.IndexOf(')', codePointOffset);
+								if (length < 0) throw new InvalidDataException();
+								length -= codePointOffset;
+
+                                characterData.RelatedCodePoints.Add(int.Parse(line.Substring(codePointOffset, length), NumberStyles.HexNumber));
+							}
+							else throw new InvalidDataException();
+						}
+						continue;
+					}
+
+					if (line[0].IsHexDigit())
+					{
+						int codePoint = int.Parse(line.Substring(0, line.IndexOf('\t')), NumberStyles.HexNumber);
+						// This may return null, but for now, we will ignore code points that are not defined in UnicodeData.txt.
+						characterData = builder.GetUcd(codePoint);
+						// There should be no NamesList.txt entries for code points defined in a range.
+						if (characterData != null && !characterData.CodePointRange.IsSingleCodePoint)
+						{
+							// The only exception to this rule will be when we added the "Noncharacter_Code_Point" property to a few ranges, and we will ignore those.
+							if ((characterData.ContributoryProperties & ContributoryProperties.NonCharacterCodePoint) != 0)
+								characterData = null;
+							else
+								throw new InvalidDataException("Did not expect an NamesList.txt entry for U+" + codePoint.ToString("X4") + ".");
+						}
+						continue;
+					}
+
+					switch (line[0])
+					{
+						case '@':
+						case ';':
+						case '\t':
+							characterData = null;
+							break;
+						default:
+							throw new InvalidDataException("Unrecognized data in NamesList.txt.");
+					}
 				}
 			}
 		}

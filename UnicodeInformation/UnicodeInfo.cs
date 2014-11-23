@@ -143,6 +143,13 @@ namespace System.Unicode
 			string simpleTitleCaseMapping = (fields & UcdFields.SimpleTitleCaseMapping) != 0 ? reader.ReadString() : null;
 			ContributoryProperties contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
 			CoreProperties coreProperties = (fields & UcdFields.CoreProperties) != 0 ? (CoreProperties)ReadInt24(reader) : 0;
+			int[] relatedCodePoints = (fields & UcdFields.RelatedCodePoints) != 0 ? new int[reader.ReadByte() + 1] : null;
+
+			if (relatedCodePoints != null)
+			{
+				for (int i = 0; i < relatedCodePoints.Length; ++i)
+					relatedCodePoints[i] = ReadCodePoint(reader);
+            }
 
 			return new UnicodeCharacterData
 			(
@@ -163,7 +170,7 @@ namespace System.Unicode
 				simpleTitleCaseMapping,
 				contributoryProperties,
 				coreProperties,
-				null
+				relatedCodePoints
 			);
 		}
 

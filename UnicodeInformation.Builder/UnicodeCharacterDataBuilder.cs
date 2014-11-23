@@ -184,6 +184,7 @@ namespace System.Unicode.Builder
 			if (simpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
 			if (contributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
 			if (coreProperties != 0) fields |= UcdFields.CoreProperties;
+			if (relatedCodePoints.Count > 0) fields |= UcdFields.RelatedCodePoints;
 
 			writer.Write((ushort)fields);
 
@@ -231,6 +232,12 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(simpleTitleCaseMapping);
 			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)contributoryProperties);
 			if ((fields & UcdFields.CoreProperties) != 0) writer.WriteUInt24((int)coreProperties);
+			if ((fields & UcdFields.RelatedCodePoints) != 0)
+			{
+				writer.Write(checked((byte)(relatedCodePoints.Count - 1)));
+				foreach (int relatedCodePoint in relatedCodePoints)
+					writer.WriteCodePoint(relatedCodePoint);
+			}
 		}
 	}
 }

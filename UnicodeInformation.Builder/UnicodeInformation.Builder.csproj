@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryWriterExtensions.cs" />
+    <Compile Include="CharExtensions.cs" />
     <Compile Include="UnihanProperty.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
