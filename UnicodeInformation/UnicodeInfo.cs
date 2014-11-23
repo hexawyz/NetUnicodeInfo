@@ -18,19 +18,22 @@ namespace System.Unicode
 		private static readonly UnicodeCharacterData[] unicodeCharacterData;
 		private static readonly UnihanCharacterData[] unihanCharacterData;
 		private static readonly UnicodeBlock[] blocks;
+		private static readonly int maxContiguousIndex;
 
 		static UnicodeInfo()
 		{
 			using (var stream = new DeflateStream(typeof(UnicodeInfo).GetTypeInfo().Assembly.GetManifestResourceStream("ucd.dat"), CompressionMode.Decompress, false))
 			{
-				ReadFromStream(stream, out unicodeVersion, out unicodeCharacterData, out unihanCharacterData, out blocks);
+				ReadFromStream(stream, out unicodeVersion, out unicodeCharacterData, out unihanCharacterData, out blocks, out maxContiguousIndex);
 			}
 		}
 
-		internal static void ReadFromStream(Stream stream, out Version unicodeVersion, out UnicodeCharacterData[] unicodeCharacterData, out UnihanCharacterData[] unihanCharacterData, out UnicodeBlock[] blocks)
+		internal static void ReadFromStream(Stream stream, out Version unicodeVersion, out UnicodeCharacterData[] unicodeCharacterData, out UnihanCharacterData[] unihanCharacterData, out UnicodeBlock[] blocks, out int maxContiguousIndex)
 		{
 			using (var reader = new BinaryReader(stream, Encoding.UTF8))
 			{
+				int i;
+
                 if (reader.ReadByte() != 'U'
 					| reader.ReadByte() != 'C'
 					| reader.ReadByte() != 'D')
@@ -44,22 +47,35 @@ namespace System.Unicode
 
 				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
 				byte[] nameBuffer = new byte[128];
+				int mci = 0;
 
-				for (int i = 0; i < unicodeCharacterDataEntries.Length; ++i)
+				for (i = 0; i < unicodeCharacterDataEntries.Length; ++i)
+				{
+					if ((unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader, nameBuffer)).CodePointRange.Contains(i)) mci = i;
+					else
+					{
+						++i;
+						break;
+					}
+                }
+
+				maxContiguousIndex = mci;
+
+				for (; i < unicodeCharacterDataEntries.Length; ++i)
 				{
 					unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader, nameBuffer);
 				}
 
 				var blockEntries = new UnicodeBlock[reader.ReadByte()];
 
-				for (int i = 0; i < blockEntries.Length; ++i)
+				for (i = 0; i < blockEntries.Length; ++i)
 				{
 					blockEntries[i] = ReadBlockEntry(reader);
 				}
 
 				var unihanCharacterDataEntries = new UnihanCharacterData[ReadCodePoint(reader)];
 
-				for (int i = 0; i < unihanCharacterDataEntries.Length; ++i)
+				for (i = 0; i < unihanCharacterDataEntries.Length; ++i)
 				{
 					unihanCharacterDataEntries[i] = ReadUnihanCharacterDataEntry(reader);
 				}
@@ -228,8 +244,24 @@ namespace System.Unicode
 
 		private static UnicodeCharacterData FindUnicodeCodePoint(int codePoint)
 		{
-			int minIndex = 0;
-			int maxIndex = unicodeCharacterData.Length - 1;
+			// For the first code points (this includes all of ASCII, and quite a bit more), the index in the table will be the code point itself.
+			if (codePoint <= maxContiguousIndex)
+			{
+				return unicodeCharacterData[codePoint];
+			}
+			else
+			{
+				// For other code points, we will use a classic binary search with adjusted search indexes.
+				return BinarySearchUnicodeCodePoint(codePoint);
+			}
+		}
+
+		private static UnicodeCharacterData BinarySearchUnicodeCodePoint(int codePoint)
+		{
+			// NB: Due to the strictly ordered nature of the table, we know that a code point can never happen after the index which is the code point itself.
+			// This will greatly reduce the range to scan for characters close to maxContiguousIndex, and will have a lesser impact on other characters.
+			int minIndex = maxContiguousIndex + 1;
+			int maxIndex = codePoint < unicodeCharacterData.Length ? codePoint - 1 : unicodeCharacterData.Length - 1;
 
 			do
 			{
