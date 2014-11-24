@@ -185,6 +185,18 @@ namespace System.Unicode
 				reader.ReadInt64() :
 				0;
 
+			UnicodeRadicalStrokeCount[] unicodeRadicalStrokeCounts = (fields & UnihanFields.UnicodeRadicalStrokeCountMore) != 0 ?
+				new UnicodeRadicalStrokeCount
+				[
+					(fields & UnihanFields.UnicodeRadicalStrokeCountMore) == UnihanFields.UnicodeRadicalStrokeCountMore ?
+						reader.ReadByte() + 3 :
+						((byte)(fields & UnihanFields.UnicodeRadicalStrokeCountMore) >> 2)
+				] :
+				UnicodeRadicalStrokeCount.EmptyArray;
+
+			for (int i = 0; i < unicodeRadicalStrokeCounts.Length; ++i)
+				unicodeRadicalStrokeCounts[i] = new UnicodeRadicalStrokeCount(reader.ReadByte(), reader.ReadByte());
+
 			string definition = (fields & UnihanFields.Definition) != 0 ? reader.ReadString() : null;
 			string mandarinReading = (fields & UnihanFields.MandarinReading) != 0 ? reader.ReadString() : null;
 			string cantoneseReading = (fields & UnihanFields.CantoneseReading) != 0 ? reader.ReadString() : null;
@@ -201,6 +213,7 @@ namespace System.Unicode
 				codePoint,
 				numericType,
 				numericValue,
+				unicodeRadicalStrokeCounts,
 				definition,
 				mandarinReading,
 				cantoneseReading,

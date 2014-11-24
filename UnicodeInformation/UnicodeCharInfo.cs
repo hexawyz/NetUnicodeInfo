@@ -52,6 +52,8 @@ namespace System.Unicode
 		public ContributoryProperties ContributoryProperties { get { return unicodeCharacterData?.ContributoryProperties ?? 0; } }
 		public CoreProperties CoreProperties { get { return unicodeCharacterData?.CoreProperties ?? 0; } }
 		public UnicodeCrossReferenceCollection CrossRerefences { get { return new UnicodeCrossReferenceCollection(unicodeCharacterData?.CrossRerefences); } }
+		[ValueName("kRSUnicode"), ValueName("cjkRSUnicode"), ValueName("Unicode_Radical_Stroke"), ValueName("URS")]
+		public UnicodeRadicalStrokeCountCollection UnicodeRadicalStrokeCounts { get { return new UnicodeRadicalStrokeCountCollection(unihanCharacterData?.UnicodeRadicalStrokeCounts); } }
 
 		[ValueName("kDefinition")]
 		public string Definition { get { return unihanCharacterData?.Definition; } }

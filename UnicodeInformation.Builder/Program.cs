@@ -32,6 +32,7 @@ namespace System.Unicode.Builder
 			"Unihan_NumericValues.txt",
 			"Unihan_Readings.txt",
 			"Unihan_Variants.txt",
+			"Unihan_IRGSources.txt",
 		};
 
 		private static HttpMessageHandler httpMessageHandler;

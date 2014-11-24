@@ -11,6 +11,7 @@ namespace System.Unicode
 		public readonly int CodePoint;
 		public readonly UnihanNumericType NumericType;
 		public readonly long NumericValue;
+		public readonly UnicodeRadicalStrokeCount[] UnicodeRadicalStrokeCounts;
 		public readonly string Definition;
 		public readonly string MandarinReading;
 		public readonly string CantoneseReading;
@@ -27,6 +28,7 @@ namespace System.Unicode
 			int codePoint,
 			UnihanNumericType numericType,
 			long numericValue,
+			UnicodeRadicalStrokeCount[] unicodeRadicalStrokeCounts,
 			string definition,
 			string mandarinReading,
 			string cantoneseReading,
@@ -42,6 +44,7 @@ namespace System.Unicode
 			CodePoint = codePoint;
 			NumericType = numericType;
 			NumericValue = numericValue;
+			UnicodeRadicalStrokeCounts = unicodeRadicalStrokeCounts;
 			Definition = definition;
 			MandarinReading = mandarinReading;
 			CantoneseReading = cantoneseReading;

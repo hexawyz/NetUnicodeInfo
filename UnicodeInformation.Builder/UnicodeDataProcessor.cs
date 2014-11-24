@@ -19,6 +19,7 @@ namespace System.Unicode.Builder
 		public const string UnihanReadingsFileName = "Unihan_Readings.txt";
 		public const string UnihanVariantsFileName = "Unihan_Variants.txt";
 		public const string UnihanNumericValuesFileName = "Unihan_NumericValues.txt";
+		public const string UnihanIrgSourcesFileName = "Unihan_IRGSources.txt";
 
 		private static string ParseSimpleCaseMapping(string mapping)
 		{
@@ -45,6 +46,7 @@ namespace System.Unicode.Builder
 			await ProcessUnihanReadings(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanVariants(unihanSource, builder).ConfigureAwait(false);
 			await ProcessUnihanNumericValues(unihanSource, builder).ConfigureAwait(false);
+			await ProcessUnihanIrgSources(unihanSource, builder).ConfigureAwait(false);
 
 			return builder;
 		}
@@ -435,6 +437,49 @@ namespace System.Unicode.Builder
 					}
 
 					entry.NumericValue = long.Parse(reader.PropertyValue);
+				}
+			}
+		}
+
+		private static async Task ProcessUnihanIrgSources(IDataSource unihanDataSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnihanDataFileReader(await unihanDataSource.OpenDataFileAsync(UnihanIrgSourcesFileName).ConfigureAwait(false)))
+			{
+				while (reader.Read())
+				{
+					switch (reader.PropertyName)
+					{
+						case UnihanProperty.kRSUnicode:
+							var entry = builder.GetUnihan(reader.CodePoint);
+							var values = reader.PropertyValue.Split(' ');
+
+                            foreach (var value in values)
+							{
+								bool isSimplified = false;
+								int index;
+
+								for (int i = 0; i < value.Length; ++i)
+								{
+									switch (value[i])
+									{
+										case '\'':
+											isSimplified = true;
+											goto case '.';
+										case '.':
+											index = i;
+											goto SeparatorFound;
+									}
+								}
+								throw new InvalidDataException("Failed to decode value for kRSUnicode / Unicode_Radical_Stroke.");
+
+							SeparatorFound: ;
+								entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), byte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.None), isSimplified));
+							}
+                            break;
+						default:
+							// Ignore unhandled properties for now.
+							break;
+					}
 				}
 			}
 		}

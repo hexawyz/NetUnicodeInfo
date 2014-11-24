@@ -123,6 +123,7 @@ This library includes a subset of the official [Unicode Character Database](http
 * ID_Continue
 * XID_Start
 * XID_Continue
+* Unicode_Radical_Stroke (This is actually kRSUnicode from the Unihan database)
 * Code point cross references extracted from NamesList.txt
 
 NB: The UCD property ISO_Comment will never be included since this one is empty in all new Unicode versions.
@@ -131,6 +132,7 @@ NB: The UCD property ISO_Comment will never be included since this one is empty 
 * kAccountingNumeric
 * kOtherNumeric
 * kPrimaryNumeric
+* kRSUnicode
 * kDefinition
 * kMandarin
 * kCantonese
