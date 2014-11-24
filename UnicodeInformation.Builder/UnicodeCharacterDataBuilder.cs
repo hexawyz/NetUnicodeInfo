@@ -10,7 +10,7 @@ namespace System.Unicode.Builder
 {
 	public sealed class UnicodeCharacterDataBuilder
 	{
-		private readonly UnicodeCharacterRange codePointRange;
+		private readonly UnicodeCodePointRange codePointRange;
 		private string name;
 		private UnicodeCategory category = UnicodeCategory.OtherNotAssigned;
 		private CanonicalCombiningClass canonicalCombiningClass;
@@ -29,7 +29,7 @@ namespace System.Unicode.Builder
 		private readonly List<UnicodeNameAlias> nameAliases = new List<UnicodeNameAlias>();
 		private readonly List<int> crossRerefences = new List<int>();
 
-		public UnicodeCharacterRange CodePointRange { get { return codePointRange; } }
+		public UnicodeCodePointRange CodePointRange { get { return codePointRange; } }
 
 		public string Name
 		{
@@ -127,11 +127,11 @@ namespace System.Unicode.Builder
 		public IList<int> CrossRerefences { get { return crossRerefences; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
-			: this(new UnicodeCharacterRange(codePoint))
+			: this(new UnicodeCodePointRange(codePoint))
 		{
 		}
 
-		public UnicodeCharacterDataBuilder(UnicodeCharacterRange codePointRange)
+		public UnicodeCharacterDataBuilder(UnicodeCodePointRange codePointRange)
 		{
 			this.codePointRange = codePointRange;
 			this.category = UnicodeCategory.OtherNotAssigned;

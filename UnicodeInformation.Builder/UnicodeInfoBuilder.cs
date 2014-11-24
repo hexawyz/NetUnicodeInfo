@@ -179,7 +179,7 @@ namespace System.Unicode.Builder
 			}
 		}
 
-		public void SetProperties(ContributoryProperties property, UnicodeCharacterRange codePointRange)
+		public void SetProperties(ContributoryProperties property, UnicodeCodePointRange codePointRange)
 		{
 			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
 			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
@@ -210,7 +210,7 @@ namespace System.Unicode.Builder
 			}
 		}
 
-		public void SetProperties(CoreProperties property, UnicodeCharacterRange codePointRange)
+		public void SetProperties(CoreProperties property, UnicodeCodePointRange codePointRange)
 		{
 			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
 			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);

@@ -61,7 +61,7 @@ namespace System.Unicode.Builder
 
 				while (reader.MoveToNextLine())
 				{
-					var codePoint = new UnicodeCharacterRange(int.Parse(reader.ReadField(), NumberStyles.HexNumber));
+					var codePoint = new UnicodeCodePointRange(int.Parse(reader.ReadField(), NumberStyles.HexNumber));
 
 					string name = reader.ReadField();
 
@@ -79,7 +79,7 @@ namespace System.Unicode.Builder
 						{
 							if (rangeStartCodePoint < 0) throw new InvalidDataException("Invalid range data in UnicodeData.txt.");
 
-							codePoint = new UnicodeCharacterRange(rangeStartCodePoint, codePoint.LastCodePoint);
+							codePoint = new UnicodeCodePointRange(rangeStartCodePoint, codePoint.LastCodePoint);
 
 							name = name.Substring(1, name.Length - 8).ToUpperInvariant();	// Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
 
@@ -178,7 +178,7 @@ namespace System.Unicode.Builder
 				{
 					ContributoryProperties property;
 
-					var range = UnicodeCharacterRange.Parse(reader.ReadTrimmedField());
+					var range = UnicodeCodePointRange.Parse(reader.ReadTrimmedField());
 					if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out property))
 					{
 						builder.SetProperties(property, range);
@@ -195,7 +195,7 @@ namespace System.Unicode.Builder
 				{
 					CoreProperties property;
 
-					var range = UnicodeCharacterRange.Parse(reader.ReadTrimmedField());
+					var range = UnicodeCodePointRange.Parse(reader.ReadTrimmedField());
 					if (EnumHelper<CoreProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out property))
 					{
 						builder.SetProperties(property, range);
@@ -364,7 +364,7 @@ namespace System.Unicode.Builder
 			{
 				while (reader.MoveToNextLine())
 				{
-					builder.AddBlockEntry(new UnicodeBlock(UnicodeCharacterRange.Parse(reader.ReadField()), reader.ReadTrimmedField()));
+					builder.AddBlockEntry(new UnicodeBlock(UnicodeCodePointRange.Parse(reader.ReadField()), reader.ReadTrimmedField()));
 				}
 			}
 		}

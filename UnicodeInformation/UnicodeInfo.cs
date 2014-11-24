@@ -100,7 +100,7 @@ namespace System.Unicode
 		{
 			var fields = (UcdFields)reader.ReadUInt16();
 
-			var codePointRange = (fields & UcdFields.CodePointRange) != 0 ? new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)) : new UnicodeCharacterRange(ReadCodePoint(reader));
+			var codePointRange = (fields & UcdFields.CodePointRange) != 0 ? new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)) : new UnicodeCodePointRange(ReadCodePoint(reader));
 
 			string name = null;
 			UnicodeNameAlias[] nameAliases = UnicodeNameAlias.EmptyArray;
@@ -249,7 +249,7 @@ namespace System.Unicode
 
 		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
 		{
-			return new UnicodeBlock(new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
+			return new UnicodeBlock(new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
 		}
 
 		private static int ReadInt24(BinaryReader reader)

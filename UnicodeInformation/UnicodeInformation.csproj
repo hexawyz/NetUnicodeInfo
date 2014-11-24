@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CB722958-A1C4-4121-804B-7D5A671491B1}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -83,7 +83,7 @@
     <Compile Include="UnicodeCategoryExtensions.cs" />
     <Compile Include="UnicodeCategoryInfo.cs" />
     <Compile Include="UnicodeCharacterData.cs" />
-    <Compile Include="UnicodeCharacterRange.cs" />
+    <Compile Include="UnicodeCodePointRange.cs" />
     <Compile Include="UnicodeCharInfo.cs" />
     <Compile Include="UnicodeInfo.cs" />
     <Compile Include="UnicodeNameAlias.cs" />

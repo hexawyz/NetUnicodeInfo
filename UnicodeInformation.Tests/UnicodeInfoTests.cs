@@ -68,7 +68,7 @@ namespace UnicodeInformation.Tests
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
 			Assert.AreEqual(codePoint, info.CodePoint);
-            Assert.AreEqual(category, info.Category);
+			Assert.AreEqual(category, info.Category);
 			Assert.AreEqual(name, info.Name);
 			Assert.AreEqual(block, UnicodeInfo.GetBlockName(codePoint));
 			Assert.AreEqual(block, info.Block);
@@ -192,7 +192,64 @@ namespace UnicodeInformation.Tests
 
 			AssertEx.ThrowsExactly<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(0), nameof(UnicodeInfo.GetCjkRadicalInfo));
 			AssertEx.ThrowsExactly<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(215), nameof(UnicodeInfo.GetCjkRadicalInfo));
-        }
+		}
+
+		[TestMethod]
+		public void CodePointRangeTest()
+		{
+			var fullRange = new UnicodeCodePointRange(0, 0x10FFFF);
+
+			Assert.AreEqual(0, fullRange.FirstCodePoint);
+			Assert.AreEqual(0x10FFFF, fullRange.LastCodePoint);
+			Assert.AreEqual(false, fullRange.IsSingleCodePoint);
+
+			var letterA = new UnicodeCodePointRange('A');
+
+			Assert.AreEqual('A', letterA.FirstCodePoint);
+			Assert.AreEqual('A', letterA.LastCodePoint);
+			Assert.AreEqual(true, letterA.IsSingleCodePoint);
+
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(0x110000));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(int.MaxValue));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1, 10));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(10, 0x110000));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1, 0x110000));
+		}
+
+		[TestMethod]
+		public void CodePointRangeEnumerationTest()
+		{
+			const int start = 0xA3F;
+			const int end = 0x105F;
+
+			// Generic test
+			{
+				int i = start;
+
+				foreach (int n in new UnicodeCodePointRange(start, end))
+				{
+					Assert.AreEqual(i++, n);
+				}
+			}
+
+			// Nongeneric test
+			{
+				int i = start;
+
+				var enumerator = (IEnumerator)new UnicodeCodePointRange(start, end).GetEnumerator();
+
+				while (enumerator.MoveNext())
+				{
+					Assert.AreEqual(i++, enumerator.Current);
+				}
+
+				enumerator.Reset();
+
+				Assert.AreEqual(true, enumerator.MoveNext());
+				Assert.AreEqual(start, enumerator.Current);
+			}
+		}
 
 #if DEBUG
 		[TestMethod]
@@ -209,41 +266,15 @@ namespace UnicodeInformation.Tests
 			for (int i = 0x2F800; i < 0x30000; ++i)
 				Assert.AreEqual(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
 
-			try
-			{
-				UnihanCharacterData.PackCodePoint(0xA000);
-				Assert.Fail("The PackCodePoint method should fail for code points outside of the valid range.");
-			}
-			catch (ArgumentOutOfRangeException)
-			{
-			}
+			const string packCodePointErrorMessage = "The PackCodePoint method should fail for code points outside of the valid range.";
+			const string unpackCodePointErrorMessage = "The PackCodePoint method should fail for values outside of the valid range.";
 
-			try
-			{
-				UnihanCharacterData.PackCodePoint(0xFB00);
-				Assert.Fail("The PackCodePoint method should fail for code points outside of the valid range.");
-			}
-			catch (ArgumentOutOfRangeException)
-			{
-			}
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0xA000), nameof(UnihanCharacterData.PackCodePoint), packCodePointErrorMessage);
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0xFB00), nameof(UnihanCharacterData.PackCodePoint), packCodePointErrorMessage);
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0x30000), nameof(UnihanCharacterData.PackCodePoint), packCodePointErrorMessage);
 
-			try
-			{
-				UnihanCharacterData.PackCodePoint(0x30000);
-				Assert.Fail("The PackCodePoint method should fail for code points outside of the valid range.");
-			}
-			catch (ArgumentOutOfRangeException)
-			{
-			}
-
-			try
-			{
-				UnihanCharacterData.UnpackCodePoint(0x20000);
-				Assert.Fail("The UnpackCodePoint method should fail for code points outside of the valid range.");
-			}
-			catch (ArgumentOutOfRangeException)
-			{
-			}
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.UnpackCodePoint(-1), nameof(UnihanCharacterData.UnpackCodePoint), unpackCodePointErrorMessage);
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.UnpackCodePoint(0x20000), nameof(UnihanCharacterData.UnpackCodePoint), unpackCodePointErrorMessage);
 		}
 #endif
 	}

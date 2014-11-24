@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	public struct UnicodeCharacterRange : IEnumerable<int>
+	public struct UnicodeCodePointRange : IEnumerable<int>
 	{
 		public struct Enumerator : IEnumerator<int>
 		{
@@ -39,7 +39,7 @@ namespace System.Unicode
 
 		public bool IsSingleCodePoint { get { return FirstCodePoint == LastCodePoint; } }
 
-		public UnicodeCharacterRange(int codePoint)
+		public UnicodeCodePointRange(int codePoint)
 		{
 			if (codePoint < 0 || codePoint > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(codePoint));
 
@@ -47,7 +47,7 @@ namespace System.Unicode
 			LastCodePoint = codePoint;
 		}
 
-		public UnicodeCharacterRange(int firstCodePoint, int lastCodePoint)
+		public UnicodeCodePointRange(int firstCodePoint, int lastCodePoint)
 		{
 			if (firstCodePoint < 0 || firstCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(firstCodePoint));
 			if (lastCodePoint < firstCodePoint || lastCodePoint > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(lastCodePoint));
@@ -71,7 +71,7 @@ namespace System.Unicode
 			return FirstCodePoint == LastCodePoint ? FirstCodePoint.ToString("X4") : FirstCodePoint.ToString("X4") + ".." + LastCodePoint.ToString("X4");
 		}
 
-		public static UnicodeCharacterRange Parse(string s)
+		public static UnicodeCodePointRange Parse(string s)
 		{
 			int start, end;
 
@@ -88,7 +88,7 @@ namespace System.Unicode
 				end = int.Parse(s.Substring(rangeSeparatorOffset + 2), NumberStyles.HexNumber);
 			}
 
-			return new UnicodeCharacterRange(start, end);
+			return new UnicodeCodePointRange(start, end);
 		}
 
 		public Enumerator GetEnumerator() { return new Enumerator(FirstCodePoint, LastCodePoint); }

@@ -148,7 +148,8 @@ namespace System.Unicode.Tests
 			{
 				var data = (await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource));
 
-				using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
+				//using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
+				using (var stream = File.Create("ucd.dat"))
 				{
 					data.WriteToStream(stream);
 				}

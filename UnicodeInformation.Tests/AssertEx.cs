@@ -9,7 +9,7 @@ namespace UnicodeInformation.Tests
 {
 	public static class AssertEx
 	{
-		public static void ThrowsExactly<TException>(Action action, string methodName)
+		public static void ThrowsExactly<TException>(Action action, string methodName = null, string message = null)
 			where TException : Exception
 		{
 			try
@@ -19,12 +19,12 @@ namespace UnicodeInformation.Tests
 			catch (TException ex)
 			{
 				if (ex.GetType() != typeof(TException))
-					Assert.Fail("The " + methodName + " method should throw an exception of type " + typeof(TException).Name + " but got " + ex.GetType().Name + ".");
+					Assert.Fail(message ?? (methodName != null ? "The " + methodName + " method should throw an exception of type " : "Expected an exception of type ") + typeof(TException).Name + " but got " + ex.GetType().Name + ".");
 				else
 					return;
 			}
 
-			Assert.Fail("The " + methodName + " method should throw an exception of type " + typeof(TException).Name + ".");
+			Assert.Fail(message ?? (methodName != null ? "The " + methodName + " method should throw an exception of type " : "Expected an exception of type ") + typeof(TException).Name + ".");
 		}
 	}
 }

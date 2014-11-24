@@ -9,7 +9,7 @@ namespace System.Unicode
 {
 	internal sealed class UnicodeCharacterData
 	{
-		public readonly UnicodeCharacterRange CodePointRange;
+		public readonly UnicodeCodePointRange CodePointRange;
 		public readonly string Name;
 		public readonly UnicodeNameAlias[] NameAliases;
 		public readonly UnicodeCategory Category;
@@ -31,7 +31,7 @@ namespace System.Unicode
 
 		internal UnicodeCharacterData
 		(
-			UnicodeCharacterRange codePointRange,
+			UnicodeCodePointRange codePointRange,
 			string name,
 			UnicodeNameAlias[] nameAliases,
 			UnicodeCategory category,
