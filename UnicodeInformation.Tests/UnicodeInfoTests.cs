@@ -153,6 +153,47 @@ namespace UnicodeInformation.Tests
 			Assert.AreEqual("Miscellaneous Symbols and Pictographs", UnicodeInfo.GetBlockName(0x1F574));
 		}
 
+		[TestMethod]
+		public void RadicalStrokeCountTest()
+		{
+			var char5E7A = UnicodeInfo.GetCharInfo(0x5E7A);
+
+			Assert.AreNotEqual(0, char5E7A.UnicodeRadicalStrokeCounts);
+			Assert.AreEqual(false, char5E7A.UnicodeRadicalStrokeCounts[0].IsSimplified);
+			Assert.AreEqual(char5E7A.UnicodeRadicalStrokeCounts[0].Radical, 52);
+			Assert.AreEqual(char5E7A.UnicodeRadicalStrokeCounts[0].StrokeCount, 0);
+
+			var char2A6D6 = UnicodeInfo.GetCharInfo(0x2A6D6);
+
+			Assert.AreNotEqual(0, char2A6D6.UnicodeRadicalStrokeCounts);
+			Assert.AreEqual(false, char2A6D6.UnicodeRadicalStrokeCounts[0].IsSimplified);
+			Assert.AreEqual(char2A6D6.UnicodeRadicalStrokeCounts[0].Radical, 214);
+			Assert.AreEqual(char2A6D6.UnicodeRadicalStrokeCounts[0].StrokeCount, 20);
+		}
+
+		[TestMethod]
+		public void RadicalInfoTest()
+		{
+			var radical1 = UnicodeInfo.GetCjkRadicalInfo(1);
+
+			Assert.AreEqual(false, radical1.HasSimplifiedForm);
+			Assert.AreEqual('\u2F00', radical1.TraditionalRadicalCodePoint);
+			Assert.AreEqual('\u4E00', radical1.TraditionalCharacterCodePoint);
+			Assert.AreEqual('\u2F00', radical1.SimplifiedRadicalCodePoint);
+			Assert.AreEqual('\u4E00', radical1.SimplifiedCharacterCodePoint);
+
+			var radical214 = UnicodeInfo.GetCjkRadicalInfo(214);
+
+			Assert.AreEqual(false, radical214.HasSimplifiedForm);
+			Assert.AreEqual('\u2FD5', radical214.TraditionalRadicalCodePoint);
+			Assert.AreEqual('\u9FA0', radical214.TraditionalCharacterCodePoint);
+			Assert.AreEqual('\u2FD5', radical214.SimplifiedRadicalCodePoint);
+			Assert.AreEqual('\u9FA0', radical214.SimplifiedCharacterCodePoint);
+
+			AssertEx.ThrowsExactly<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(0), nameof(UnicodeInfo.GetCjkRadicalInfo));
+			AssertEx.ThrowsExactly<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(215), nameof(UnicodeInfo.GetCjkRadicalInfo));
+        }
+
 #if DEBUG
 		[TestMethod]
 		public void UnihanCodePointPackingTest()

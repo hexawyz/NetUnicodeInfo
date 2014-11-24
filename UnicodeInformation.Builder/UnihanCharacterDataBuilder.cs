@@ -38,7 +38,7 @@ namespace System.Unicode.Builder
 		public string VietnameseReading { get { return vietnameseReading; } set { vietnameseReading = value; } }
 		public string SimplifiedVariant { get { return simplifiedVariant; } set { simplifiedVariant = value; } }
 		public string TraditionalVariant { get { return traditionalVariant; } set { traditionalVariant = value; } }
-		public ICollection<UnicodeRadicalStrokeCount> UnicodeRadicalStrokeCounts { get { return unicodeRadicalStrokeCounts; } }
+		public IList<UnicodeRadicalStrokeCount> UnicodeRadicalStrokeCounts { get { return unicodeRadicalStrokeCounts; } }
 
 		internal UnihanCharacterDataBuilder(int codePoint)
 		{
@@ -77,7 +77,7 @@ namespace System.Unicode.Builder
 			{
 				if (unicodeRadicalStrokeCounts.Count == 1) fields |= UnihanFields.UnicodeRadicalStrokeCount;
 				else if (unicodeRadicalStrokeCounts.Count == 2) fields |= UnihanFields.UnicodeRadicalStrokeCountTwice;
-				else fields |= UnihanFields.UnicodeRadicalStrokeCount | UnihanFields.UnicodeRadicalStrokeCountTwice;
+				else fields |= UnihanFields.UnicodeRadicalStrokeCountMore;
 			}
 			if (Definition != null) fields |= UnihanFields.Definition;
 			if (MandarinReading != null) fields |= UnihanFields.MandarinReading;
@@ -93,6 +93,8 @@ namespace System.Unicode.Builder
 			writer.Write((ushort)fields);
 
 			writer.WriteCodePoint(UnihanCharacterData.PackCodePoint(codePoint));
+			if ((fields & UnihanFields.OtherNumeric) != 0) writer.Write(numericValue);
+
 			if ((fields & UnihanFields.UnicodeRadicalStrokeCountMore) != 0)
 			{
 				if ((fields & (UnihanFields.UnicodeRadicalStrokeCountMore)) == UnihanFields.UnicodeRadicalStrokeCountMore)
@@ -104,7 +106,7 @@ namespace System.Unicode.Builder
 					writer.Write((byte)(radicalStrokeCount.StrokeCount | (radicalStrokeCount.IsSimplified ? 0x80 : 0)));
                 }
 			}
-			if ((fields & UnihanFields.OtherNumeric) != 0) writer.Write(numericValue);
+
 			if ((fields & UnihanFields.Definition) != 0) writer.Write(Definition);
 			if ((fields & UnihanFields.MandarinReading) != 0) writer.Write(MandarinReading);
 			if ((fields & UnihanFields.CantoneseReading) != 0) writer.Write(CantoneseReading);

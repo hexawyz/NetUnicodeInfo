@@ -21,6 +21,7 @@ namespace System.Unicode.Builder
 			"UnicodeData.txt",
 			"PropList.txt",
 			"DerivedCoreProperties.txt",
+			"CJKRadicals.txt",
 			//"Jamo.txt", // Not used right now, as the hangul syllable algorithm implementation takes care of this.
 			"NameAliases.txt",
 			"NamesList.txt",

@@ -37,7 +37,7 @@ namespace System.Unicode.Builder
 			set { name = value; }
 		}
 
-		public ICollection<UnicodeNameAlias> NameAliases { get { return nameAliases; } }
+		public IList<UnicodeNameAlias> NameAliases { get { return nameAliases; } }
 
 		public UnicodeCategory Category
 		{
@@ -124,7 +124,7 @@ namespace System.Unicode.Builder
 			set { coreProperties = value; }
 		}
 
-		public ICollection<int> CrossRerefences { get { return crossRerefences; } }
+		public IList<int> CrossRerefences { get { return crossRerefences; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
 			: this(new UnicodeCharacterRange(codePoint))

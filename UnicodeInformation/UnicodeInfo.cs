@@ -18,17 +18,18 @@ namespace System.Unicode
 		private static readonly UnicodeCharacterData[] unicodeCharacterData;
 		private static readonly UnihanCharacterData[] unihanCharacterData;
 		private static readonly UnicodeBlock[] blocks;
+		private static readonly CjkRadicalData[] radicals;
 		private static readonly int maxContiguousIndex;
 
 		static UnicodeInfo()
 		{
 			using (var stream = new DeflateStream(typeof(UnicodeInfo).GetTypeInfo().Assembly.GetManifestResourceStream("ucd.dat"), CompressionMode.Decompress, false))
 			{
-				ReadFromStream(stream, out unicodeVersion, out unicodeCharacterData, out unihanCharacterData, out blocks, out maxContiguousIndex);
+				ReadFromStream(stream, out unicodeVersion, out unicodeCharacterData, out unihanCharacterData, out radicals, out blocks, out maxContiguousIndex);
 			}
 		}
 
-		internal static void ReadFromStream(Stream stream, out Version unicodeVersion, out UnicodeCharacterData[] unicodeCharacterData, out UnihanCharacterData[] unihanCharacterData, out UnicodeBlock[] blocks, out int maxContiguousIndex)
+		internal static void ReadFromStream(Stream stream, out Version unicodeVersion, out UnicodeCharacterData[] unicodeCharacterData, out UnihanCharacterData[] unihanCharacterData, out CjkRadicalData[] radicals, out UnicodeBlock[] blocks, out int maxContiguousIndex)
 		{
 			using (var reader = new BinaryReader(stream, Encoding.UTF8))
 			{
@@ -73,6 +74,13 @@ namespace System.Unicode
 					blockEntries[i] = ReadBlockEntry(reader);
 				}
 
+				var cjkRadicalEntries = new CjkRadicalData[reader.ReadByte()];
+
+				for (i = 0; i < cjkRadicalEntries.Length; ++i)
+				{
+					cjkRadicalEntries[i] = ReadCjkRadicalInfo(reader);
+                }
+
 				var unihanCharacterDataEntries = new UnihanCharacterData[ReadCodePoint(reader)];
 
 				for (i = 0; i < unihanCharacterDataEntries.Length; ++i)
@@ -83,6 +91,7 @@ namespace System.Unicode
 				unicodeVersion = fileUnicodeVersion;
 				unicodeCharacterData = unicodeCharacterDataEntries;
 				unihanCharacterData = unihanCharacterDataEntries;
+				radicals = cjkRadicalEntries;
 				blocks = blockEntries;
 			}
 		}
@@ -227,6 +236,17 @@ namespace System.Unicode
 			);
 		}
 
+		private static CjkRadicalData ReadCjkRadicalInfo(BinaryReader reader)
+		{
+			char tr;
+			char tc;
+
+			tr = (char)reader.ReadUInt16();
+			tc = (char)reader.ReadUInt16();
+
+			return (tr & 0x8000) == 0 ? new CjkRadicalData(tr, tc) : new CjkRadicalData((char)(tr & 0x7FFF), tc, (char)reader.ReadUInt16(), (char)reader.ReadUInt16());
+		}
+
 		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
 		{
 			return new UnicodeBlock(new UnicodeCharacterRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
@@ -302,7 +322,7 @@ namespace System.Unicode
 			int minIndex;
 			int maxIndex;
 
-			if (unihanCharacterData.Length == 0 || codePoint < unihanCharacterData[minIndex = 0].CodePoint || codePoint > unihanCharacterData[maxIndex = unicodeCharacterData.Length - 1].CodePoint)
+			if (unihanCharacterData.Length == 0 || codePoint < unihanCharacterData[minIndex = 0].CodePoint || codePoint > unihanCharacterData[maxIndex = unihanCharacterData.Length - 1].CodePoint)
 			{
 				return null;
 			}
@@ -340,6 +360,10 @@ namespace System.Unicode
 			return -1;
 		}
 
+		/// <summary>Gets the name of the Unicode block containing the character.</summary>
+		/// <remarks>If the character has not been assigned to a block, the value of <see cref="DefaultBlock"/> will be returned.</remarks>
+		/// <param name="codePoint">The Unicode code point whose block should be retrieved.</param>
+		/// <returns>The name of the block the code point was assigned to.</returns>
 		public static string GetBlockName(int codePoint)
 		{
 			int i = FindBlockIndex(codePoint);
@@ -347,11 +371,43 @@ namespace System.Unicode
 			return i >= 0 ? blocks[i].Name : DefaultBlock;
 		}
 
+		/// <summary>Gets Unicode information on the specified code point.</summary>
+		/// <remarks>
+		/// This method will consolidate the data from a few different sources.
+		/// There are more efficient way of retrieving the data for some properties if only one of those is needed at a time:
+		/// <list type="bullet">
+		/// <listheader>
+		/// <term>Property</term>
+		/// <description>Method</description>
+		/// </listheader>
+		/// <item>
+		/// <term>Name</term>
+		/// <description><see cref="GetName(int)"/></description>
+		/// </item>
+		/// <item>
+		/// <term>Category</term>
+		/// <description><see cref="GetCategory(int)"/></description>
+		/// </item>
+		/// <item>
+		/// <term>Block</term>
+		/// <description><see cref="GetBlockName(int)"/></description>
+		/// </item>
+		/// </list>
+		/// </remarks>
+		/// <param name="codePoint">The Unicode code point for which the data must be retrieved.</param>
+		/// <returns>The name of the code point, if defined; <see langword="null"/> otherwise.</returns>
 		public static UnicodeCharInfo GetCharInfo(int codePoint)
 		{
 			return new UnicodeCharInfo(codePoint, FindUnicodeCodePoint(codePoint), FindUnihanCodePoint(codePoint), GetBlockName(codePoint));
 		}
 
+		/// <summary>Gets the category of the specified code point.</summary>
+		/// <remarks>
+		/// The name referred to is the unicode General_Category property.
+		/// If you only need the category of a character, calling this method is faster than calling <see cref="GetCharInfo(int)"/> and retrieving <see cref="UnicodeCharInfo.Category"/>, because there is less information to lookup.
+		/// </remarks>
+		/// <param name="codePoint">The Unicode code point for which the category must be retrieved.</param>
+		/// <returns>The category of the code point.</returns>
 		public static UnicodeCategory GetCategory(int codePoint)
 		{
 			var charData = FindUnicodeCodePoint(codePoint);
@@ -359,6 +415,9 @@ namespace System.Unicode
 			return charData != null ? charData.Category : UnicodeCategory.OtherNotAssigned;
 		}
 
+		/// <summary>Gets a display text for the specified code point.</summary>
+		/// <param name="charInfo">The information for the code point.</param>
+		/// <returns>A display text for the code point, which may be the representation of the code point itself.</returns>
 		public static string GetDisplayText(UnicodeCharInfo charInfo)
 		{
 			if (charInfo.CodePoint <= 0x0020) return ((char)(0x2400 + charInfo.CodePoint)).ToString();
@@ -366,6 +425,9 @@ namespace System.Unicode
 			else return char.ConvertFromUtf32(charInfo.CodePoint);
 		}
 
+		/// <summary>Gets a display text for the specified code point.</summary>
+		/// <param name="codePoint">The Unicode code point, for which a display text should be returned.</param>
+		/// <returns>A display text for the code point, which may be the representation of the code point itself.</returns>
 		public static string GetDisplayText(int codePoint)
 		{
 			if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString();
@@ -373,6 +435,13 @@ namespace System.Unicode
 			else return char.ConvertFromUtf32(codePoint);
 		}
 
+		/// <summary>Gets the name of the specified code point.</summary>
+		/// <remarks>
+		/// The name referred to is the unicode Name property.
+		/// If you only need the name of a character, calling this method is faster than calling <see cref="GetCharInfo(int)"/> and retrieving <see cref="UnicodeCharInfo.Name"/>, because there is less information to lookup.
+		/// </remarks>
+		/// <param name="codePoint">The Unicode code point for which the name must be retrieved.</param>
+		/// <returns>The name of the code point, if defined; <see langword="null"/> otherwise.</returns>
 		public static string GetName(int codePoint)
 		{
 			if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
@@ -387,6 +456,22 @@ namespace System.Unicode
 			else return null;
 		}
 
+		/// <summary>Returns information for a CJK radical.</summary>
+		/// <param name="radicalIndex">The index of the radical. Must be between 1 and <see cref="CjkRadicalCount"/>.</param>
+		/// <returns>Information on the specified radical.</returns>
+		/// <exception cref="IndexOutOfRangeException">The <paramref name="radicalIndex"/> parameter is out of range.</exception>
+		public static CjkRadicalInfo GetCjkRadicalInfo(int radicalIndex)
+		{
+			return new CjkRadicalInfo(checked((byte)radicalIndex), radicals[radicalIndex - 1]);
+		}
+
+		/// <summary>Returns the number of CJK radicals in the Unicode data.</summary>
+		/// <remarks>This value will be 214 for the foreseeable future.</remarks>
+		public static int CjkRadicalCount { get { return radicals.Length; } }
+
+		/// <summary>Gets all the blocks defined in the Unicode data.</summary>
+		/// <remarks><see cref="DefaultBlock"/> is not the name of a block, but only a value indicating the abscence of block information for a given code point.</remarks>
+		/// <returns>An array containing an entry for every block defined in the Unicode data.</returns>
 		public static UnicodeBlock[] GetBlocks()
 		{
 			return (UnicodeBlock[])blocks.Clone();

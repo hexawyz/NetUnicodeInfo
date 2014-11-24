@@ -9,12 +9,15 @@ namespace System.Unicode.Builder
 {
 	internal class UnicodeInfoBuilder
 	{
+		public const int CjkRadicalCount = 214;	// The number of radicals (214) shouldn't change in the near future…
+
 		private readonly Version unicodeVersion;
 		private UnicodeCharacterDataBuilder[] ucdEntries = new UnicodeCharacterDataBuilder[10000];
 		private int ucdEntryCount;
 		private UnihanCharacterDataBuilder[] unihanEntries = new UnihanCharacterDataBuilder[10000];
 		private int unihanEntryCount;
-		private List<UnicodeBlock> blockEntries = new List<UnicodeBlock>(100);
+		private readonly List<UnicodeBlock> blockEntries = new List<UnicodeBlock>(100);
+		private readonly CjkRadicalData[] cjkRadicals = new CjkRadicalData[CjkRadicalCount];
 
 		public UnicodeInfoBuilder(Version unicodeVersion)
 		{
@@ -238,6 +241,20 @@ namespace System.Unicode.Builder
 			}
 		}
 
+		public void SetRadicalInfo(int radicalIndex, CjkRadicalData data)
+		{
+			if (radicalIndex < 1 || radicalIndex > CjkRadicalCount) throw new ArgumentOutOfRangeException(nameof(radicalIndex));
+
+			cjkRadicals[radicalIndex - 1] = data;
+		}
+
+		public CjkRadicalData GetRadicalInfo(int radicalIndex)
+		{
+			if (radicalIndex < 1 || radicalIndex > CjkRadicalCount) throw new ArgumentOutOfRangeException(nameof(radicalIndex));
+
+			return cjkRadicals[radicalIndex - 1];
+		}
+
 		public void AddBlockEntry(UnicodeBlock block)
 		{
 			blockEntries.Add(block);
@@ -282,6 +299,20 @@ namespace System.Unicode.Builder
 				for (int i = 0; i < blockEntries.Count; ++i)
 				{
 					WriteUnicodeBlockToFile(writer, blockEntries[i]);
+				}
+				writer.Write((byte)CjkRadicalCount);
+				for (int i = 0; i < cjkRadicals.Length; ++i)
+				{
+					var radical = cjkRadicals[i];
+
+					writer.Write((ushort)(radical.HasSimplifiedForm ? 0x8000 | radical.TraditionalRadicalCodePoint : radical.TraditionalRadicalCodePoint));
+					writer.Write((ushort)radical.TraditionalCharacterCodePoint);
+
+					if (radical.HasSimplifiedForm)
+					{
+						writer.Write((ushort)radical.SimplifiedRadicalCodePoint);
+						writer.Write((ushort)radical.SimplifiedCharacterCodePoint);
+					}
 				}
 				writer.WriteCodePoint(unihanEntryCount);
 				for (int i = 0; i < unihanEntryCount; ++i)

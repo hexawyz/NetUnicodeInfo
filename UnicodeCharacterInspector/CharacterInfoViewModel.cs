@@ -67,6 +67,7 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged(nameof(NumericValue));
 					NotifyPropertyChanged(nameof(ContributoryProperties));
 					NotifyPropertyChanged(nameof(CoreProperties));
+					NotifyPropertyChanged(nameof(RadicalStrokeCounts));
 					NotifyPropertyChanged(nameof(CrossReferences));
 					NotifyPropertyChanged(nameof(MandarinReading));
 					NotifyPropertyChanged(nameof(CantoneseReading));
@@ -171,6 +172,11 @@ namespace UnicodeCharacterInspector
 		public CoreProperties? CoreProperties
 		{
 			get { return character != null ? characterInfo.CoreProperties : null as CoreProperties?; }
+		}
+
+		public UnicodeRadicalStrokeCountCollection RadicalStrokeCounts
+		{
+			get { return character != null ? characterInfo.UnicodeRadicalStrokeCounts : new UnicodeRadicalStrokeCountCollection(); }
 		}
 
 		public UnicodeCrossReferenceCollection CrossReferences

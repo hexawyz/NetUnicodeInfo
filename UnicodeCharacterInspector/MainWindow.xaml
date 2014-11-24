@@ -87,6 +87,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 				<TextBlock Grid.Row="0" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CodePoint, Converter={StaticResource NullToVisibilityConverter}}" Text="Code Point" />
@@ -105,52 +106,64 @@
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
-				<TextBlock Grid.Row="4" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.SimplifiedVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="Simplified Variant" />
-				<TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.SimplifiedVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.SimplifiedVariant}" />
-				<TextBlock Grid.Row="5" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.TraditionalVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="Traditional Variant" />
-				<TextBlock Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.TraditionalVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.TraditionalVariant}" />
-				<TextBlock Grid.Row="6" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Definition, Converter={StaticResource NullToVisibilityConverter}}" Text="Unihan Definition" />
-				<TextBlock Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.Definition, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Definition}" />
-				<TextBlock Grid.Row="7" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.MandarinReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Mandarin Reading" />
-				<TextBlock Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.MandarinReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.MandarinReading}" />
-				<TextBlock Grid.Row="8" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CantoneseReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Cantonese Reading" />
-				<TextBlock Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.CantoneseReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CantoneseReading}" />
-				<TextBlock Grid.Row="9" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.JapaneseKunReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Japanese Kun Reading" />
-				<TextBlock Grid.Row="9" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.JapaneseKunReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.JapaneseKunReading}" />
-				<TextBlock Grid.Row="10" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.JapaneseOnReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Japanese On Reading" />
-				<TextBlock Grid.Row="10" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.JapaneseOnReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.JapaneseOnReading}" />
-				<TextBlock Grid.Row="11" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.KoreanReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Korean Reading" />
-				<TextBlock Grid.Row="11" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.KoreanReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.KoreanReading}" />
-				<TextBlock Grid.Row="12" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.HangulReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Hangul Reading" />
-				<TextBlock Grid.Row="12" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.HangulReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.HangulReading}" />
-				<TextBlock Grid.Row="13" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="Category" />
-				<TextBlock Grid.Row="13" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Category}" />
-				<TextBlock Grid.Row="14" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Block, Converter={StaticResource NullToVisibilityConverter}}" Text="Block" />
-				<TextBlock Grid.Row="14" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Block, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Block}" />
-				<TextBlock Grid.Row="15" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Text="Canonical Combining Class" />
-				<TextBlock Grid.Row="15" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CanonicalCombiningClass}" />
-				<TextBlock Grid.Row="16" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Text="Bidirectional Class" />
-				<TextBlock Grid.Row="16" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.BidirectionalClass}" />
-				<TextBlock Grid.Row="17" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Text="Decomposition Type" />
-				<TextBlock Grid.Row="17" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionType}" />
-				<TextBlock Grid.Row="18" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Text="Decomposition Mapping" />
-				<TextBlock Grid.Row="18" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionMapping}" />
-				<TextBlock Grid.Row="19" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Numeric Type" />
-				<TextBlock Grid.Row="19" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericType}" />
-				<TextBlock Grid.Row="20" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.UnihanNumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Numeric Type (Unihan)" />
-				<TextBlock Grid.Row="20" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.UnihanNumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.UnihanNumericType}" />
-				<TextBlock Grid.Row="21" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="Numeric Value" />
-				<TextBlock Grid.Row="21" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericValue}" />
-				<TextBlock Grid.Row="22" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Contributory Properties" />
-				<TextBlock Grid.Row="22" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" />
-				<TextBlock Grid.Row="23" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CoreProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Core Properties" />
-				<TextBlock Grid.Row="23" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.CoreProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CoreProperties}" />
-				<TextBlock Grid.Row="24" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Cross-References" />
-				<ItemsControl Grid.Row="24" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" ItemsSource="{Binding SelectedCharacterInfo.CrossReferences}">
+				<TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.RadicalStrokeCounts.Count, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Radical &amp; Stroke Count" />
+				<ItemsControl Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.RadicalStrokeCounts.Count, Converter={StaticResource ZeroToVisibilityConverter}}" ItemsSource="{Binding SelectedCharacterInfo.RadicalStrokeCounts}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<TextBlock TextWrapping="WrapWithOverflow">
-								• “<Run Text="{Binding Mode=OneTime, Converter={StaticResource Utf32ToStringConverter}}" />” U+<Run Text="{Binding Mode=OneTime, StringFormat=X4}" /> <Run Text="{Binding Mode=OneTime, Converter={StaticResource Utf32ToNameConverter}}" />
+								Radical <Run Text="{Binding Radical, Mode=OneTime}" /> (<Run Text="{Binding Mode=OneTime, Converter={StaticResource RadicalStrokeCountToCharConverter}}" />), <Run Text="{Binding StrokeCount, Mode=OneTime}" /> strokes
+							</TextBlock>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+				<TextBlock Grid.Row="5" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.SimplifiedVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="Simplified Variant" />
+				<TextBlock Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.SimplifiedVariant, Converter={StaticResource NullToVisibilityConverter}}">
+					“<Run Text="{Binding SelectedCharacterInfo.SimplifiedVariant, Mode=OneWay}" />” U+<Run Text="{Binding SelectedCharacterInfo.SimplifiedVariant, Mode=OneWay, Converter={StaticResource StringToUtf32Converter}, StringFormat=X4}" />
+				</TextBlock>
+				<TextBlock Grid.Row="6" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.TraditionalVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="Traditional Variant" />
+				<TextBlock Grid.Row="6" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.TraditionalVariant, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.TraditionalVariant}" />
+				<TextBlock Grid.Row="7" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Definition, Converter={StaticResource NullToVisibilityConverter}}" Text="Unihan Definition" />
+				<TextBlock Grid.Row="7" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.Definition, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Definition}" />
+				<TextBlock Grid.Row="8" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.MandarinReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Mandarin Reading" />
+				<TextBlock Grid.Row="8" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.MandarinReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.MandarinReading}" />
+				<TextBlock Grid.Row="9" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CantoneseReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Cantonese Reading" />
+				<TextBlock Grid.Row="9" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.CantoneseReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CantoneseReading}" />
+				<TextBlock Grid.Row="10" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.JapaneseKunReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Japanese Kun Reading" />
+				<TextBlock Grid.Row="10" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.JapaneseKunReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.JapaneseKunReading}" />
+				<TextBlock Grid.Row="11" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.JapaneseOnReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Japanese On Reading" />
+				<TextBlock Grid.Row="11" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.JapaneseOnReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.JapaneseOnReading}" />
+				<TextBlock Grid.Row="12" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.KoreanReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Korean Reading" />
+				<TextBlock Grid.Row="12" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.KoreanReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.KoreanReading}" />
+				<TextBlock Grid.Row="13" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.HangulReading, Converter={StaticResource NullToVisibilityConverter}}" Text="Hangul Reading" />
+				<TextBlock Grid.Row="13" Grid.Column="1" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.HangulReading, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.HangulReading}" />
+				<TextBlock Grid.Row="14" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="Category" />
+				<TextBlock Grid.Row="14" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Category, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Category}" />
+				<TextBlock Grid.Row="15" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.Block, Converter={StaticResource NullToVisibilityConverter}}" Text="Block" />
+				<TextBlock Grid.Row="15" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.Block, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.Block}" />
+				<TextBlock Grid.Row="16" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Text="Canonical Combining Class" />
+				<TextBlock Grid.Row="16" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CanonicalCombiningClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CanonicalCombiningClass}" />
+				<TextBlock Grid.Row="17" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Text="Bidirectional Class" />
+				<TextBlock Grid.Row="17" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.BidirectionalClass, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.BidirectionalClass}" />
+				<TextBlock Grid.Row="18" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Text="Decomposition Type" />
+				<TextBlock Grid.Row="18" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionType, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionType}" />
+				<TextBlock Grid.Row="19" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Text="Decomposition Mapping" />
+				<TextBlock Grid.Row="19" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.DecompositionMapping, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.DecompositionMapping}" />
+				<TextBlock Grid.Row="20" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Numeric Type" />
+				<TextBlock Grid.Row="20" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericType}" />
+				<TextBlock Grid.Row="21" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.UnihanNumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Numeric Type (Unihan)" />
+				<TextBlock Grid.Row="21" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.UnihanNumericType, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.UnihanNumericType}" />
+				<TextBlock Grid.Row="22" Grid.Column="0" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="Numeric Value" />
+				<TextBlock Grid.Row="22" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.NumericValue, Converter={StaticResource NullToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.NumericValue}" />
+				<TextBlock Grid.Row="23" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Contributory Properties" />
+				<TextBlock Grid.Row="23" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" />
+				<TextBlock Grid.Row="24" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CoreProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Core Properties" />
+				<TextBlock Grid.Row="24" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.CoreProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CoreProperties}" />
+				<TextBlock Grid.Row="25" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Cross-References" />
+				<ItemsControl Grid.Row="25" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" ItemsSource="{Binding SelectedCharacterInfo.CrossReferences}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBlock TextWrapping="WrapWithOverflow">
+								“<Run Text="{Binding Mode=OneTime, Converter={StaticResource Utf32ToDisplayTextConverter}}" />” U+<Run Text="{Binding Mode=OneTime, StringFormat=X4}" /> <Run Text="{Binding Mode=OneTime, Converter={StaticResource Utf32ToNameConverter}}" />
 							</TextBlock>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

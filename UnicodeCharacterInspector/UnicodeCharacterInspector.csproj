@@ -77,6 +77,8 @@
     <Compile Include="PlaceholderAdorner.cs">
       <DependentUpon>Placeholder.cs</DependentUpon>
     </Compile>
+    <Compile Include="RadicalStrokeCountToCharConverter.cs" />
+    <Compile Include="StringToUtf32Converter.cs" />
     <Compile Include="Utf32ToNameConverter.cs" />
     <Compile Include="Utf32ToDisplayTextConverter.cs" />
     <Compile Include="ZeroToVisibilityConverter.cs" />

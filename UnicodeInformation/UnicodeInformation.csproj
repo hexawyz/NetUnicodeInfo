@@ -32,6 +32,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,6 +42,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -59,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BidirectionalClass.cs" />
+    <Compile Include="CjkRadicalData.cs" />
+    <Compile Include="CjkRadicalInfo.cs" />
     <Compile Include="CompatibilityFormattingTag.cs" />
     <Compile Include="ContributoryProperties.cs" />
     <Compile Include="CanonicalCombiningClass.cs" />

@@ -13,6 +13,7 @@ namespace System.Unicode.Builder
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
 		public const string DerivedCorePropertiesFileName = "DerivedCoreProperties.txt";
+		public const string CjkRadicalsFileName = "CJKRadicals.txt";
 		public const string NameAliasesFileName = "NameAliases.txt";
 		public const string NamesListFileName = "NamesList.txt";
 		public const string BlocksFileName = "Blocks.txt";
@@ -40,6 +41,7 @@ namespace System.Unicode.Builder
 			await ProcessUnicodeDataFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessCjkRadicalsFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNameAliasesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNamesListFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessBlocksFile(ucdSource, builder).ConfigureAwait(false);
@@ -200,6 +202,53 @@ namespace System.Unicode.Builder
 					}
 				}
 			}
+		}
+
+		private static async Task ProcessCjkRadicalsFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnicodeDataFileReader(await ucdSource.OpenDataFileAsync(CjkRadicalsFileName).ConfigureAwait(false), ';'))
+			{
+				int lastReadRadical = 0;
+
+				while (reader.MoveToNextLine())
+				{
+					string radicalIndexText = reader.ReadField();
+					bool isSimplified = radicalIndexText[radicalIndexText.Length - 1] == '\'';
+					int radicalIndex = int.Parse(isSimplified ? radicalIndexText.Substring(0, radicalIndexText.Length - 1) : radicalIndexText);
+
+					if (isSimplified ? radicalIndex != lastReadRadical : lastReadRadical + 1 != (lastReadRadical = radicalIndex))
+						throw new InvalidDataException("Did not expect radical number " + radicalIndexText + ".");
+
+					char radicalCodePoint = checked((char)int.Parse(reader.ReadTrimmedField(), NumberStyles.HexNumber));
+					char characterCodePoint = checked((char)int.Parse(reader.ReadTrimmedField(), NumberStyles.HexNumber));
+
+					if (!isSimplified && (radicalCodePoint & 0x8000) != 0)
+						throw new InvalidOperationException("Did not expect the radical code point to be higher than U+8000 for radical " + radicalIndex.ToString() + ".");
+
+					if (isSimplified)
+					{
+						builder.SetRadicalInfo(radicalIndex, UpdateRadicalData(builder.GetRadicalInfo(radicalIndex), radicalCodePoint, characterCodePoint));
+                    }
+					else
+					{
+						builder.SetRadicalInfo(radicalIndex, new CjkRadicalData(radicalCodePoint, characterCodePoint));
+					}
+				}
+
+				if (lastReadRadical != UnicodeInfoBuilder.CjkRadicalCount)
+					throw new InvalidOperationException("There was not enough data for the 214 CJK radicals.");
+			}
+		}
+
+		private static CjkRadicalData UpdateRadicalData(CjkRadicalData traditionalData, char simplifiedRadicalCodePoint, char simplifiedCharacterCodePoint)
+		{
+			return new CjkRadicalData
+			(
+				traditionalData.TraditionalRadicalCodePoint,
+				traditionalData.TraditionalCharacterCodePoint,
+				simplifiedRadicalCodePoint,
+				simplifiedCharacterCodePoint
+			);
 		}
 
 		private static async Task ProcessNameAliasesFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
@@ -475,7 +524,7 @@ namespace System.Unicode.Builder
 							SeparatorFound: ;
 								entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), byte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.None), isSimplified));
 							}
-                            break;
+							break;
 						default:
 							// Ignore unhandled properties for now.
 							break;
