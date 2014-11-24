@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 	public sealed class ValueNameAttribute : Attribute
 	{
 		private readonly string name;
