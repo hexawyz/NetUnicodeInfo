@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfo.Common.cs">
+      <Link>Properties\AssemblyInfo.Common.cs</Link>
+    </Compile>
     <Compile Include="BinaryWriterExtensions.cs" />
     <Compile Include="CharExtensions.cs" />
     <Compile Include="UnihanProperty.cs">

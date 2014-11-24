@@ -42,6 +42,9 @@
   <PropertyGroup>
     <ApplicationIcon>UnicodeCharacterInspector.ico</ApplicationIcon>
   </PropertyGroup>
+	<PropertyGroup>
+		<UICulture>en-US</UICulture>
+	</PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -66,6 +69,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="..\AssemblyInfo.Common.cs">
+      <Link>Properties\AssemblyInfo.Common.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

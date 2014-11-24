@@ -150,10 +150,12 @@ namespace UnicodeInformation.Tests
 		[TestMethod]
 		public void HangulNameTest()
 		{
+#if DEBUG
 			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\0'));
 			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\uABFF'));
 			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\uD7A5'));
-            Assert.AreEqual("HANGUL SYLLABLE PWILH", UnicodeInfo.GetName(0xD4DB));
+#endif
+			Assert.AreEqual("HANGUL SYLLABLE PWILH", UnicodeInfo.GetName(0xD4DB));
 			Assert.AreEqual("HANGUL SYLLABLE PWAENG", UnicodeInfo.GetName(0xD439));
 			Assert.AreEqual("HANGUL SYLLABLE PANJ", UnicodeInfo.GetName(0xD311));
 			Assert.AreEqual("HANGUL SYLLABLE TOLM", UnicodeInfo.GetName(0xD1AA));

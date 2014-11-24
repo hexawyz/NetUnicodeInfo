@@ -62,6 +62,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfo.Common.cs">
+      <Link>Properties\AssemblyInfo.Common.cs</Link>
+    </Compile>
     <Compile Include="BidirectionalClass.cs" />
     <Compile Include="CjkRadicalData.cs" />
     <Compile Include="CjkRadicalInfo.cs" />
