@@ -66,9 +66,16 @@ namespace UnicodeInformation.Tests
 
 		private static void AssertChar(int codePoint, UnicodeCategory category, string name, string block)
 		{
+			AssertChar(codePoint, category, UnicodeNumericType.None, null, name, block);
+        }
+
+		private static void AssertChar(int codePoint, UnicodeCategory category, UnicodeNumericType numericType, UnicodeRationalNumber? numericValue, string name, string block)
+		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
 			Assert.AreEqual(codePoint, info.CodePoint);
 			Assert.AreEqual(category, info.Category);
+			Assert.AreEqual(numericType, info.NumericType);
+			Assert.AreEqual(numericValue, info.NumericValue);
 			Assert.AreEqual(name, info.Name);
 			Assert.AreEqual(block, UnicodeInfo.GetBlockName(codePoint));
 			Assert.AreEqual(block, info.Block);
@@ -77,6 +84,11 @@ namespace UnicodeInformation.Tests
 		[TestMethod]
 		public void CharacterInfoTest()
 		{
+			AssertChar(0x0030, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(0), "DIGIT ZERO", "Basic Latin");
+			AssertChar(0x0031, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(1), "DIGIT ONE", "Basic Latin");
+			AssertChar(0x0032, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(2), "DIGIT TWO", "Basic Latin");
+			AssertChar(0x0035, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(5), "DIGIT FIVE", "Basic Latin");
+			AssertChar(0x0039, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(9), "DIGIT NINE", "Basic Latin");
 			AssertChar(0x0041, UnicodeCategory.UppercaseLetter, "LATIN CAPITAL LETTER A", "Basic Latin");
 			AssertChar(0x1F600, UnicodeCategory.OtherSymbol, "GRINNING FACE", "Emoticons");
 			AssertChar(0x00E9, UnicodeCategory.LowercaseLetter, "LATIN SMALL LETTER E WITH ACUTE", "Latin-1 Supplement");
@@ -138,7 +150,10 @@ namespace UnicodeInformation.Tests
 		[TestMethod]
 		public void HangulNameTest()
 		{
-			Assert.AreEqual("HANGUL SYLLABLE PWILH", UnicodeInfo.GetName(0xD4DB));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\0'));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\uABFF'));
+			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\uD7A5'));
+            Assert.AreEqual("HANGUL SYLLABLE PWILH", UnicodeInfo.GetName(0xD4DB));
 			Assert.AreEqual("HANGUL SYLLABLE PWAENG", UnicodeInfo.GetName(0xD439));
 			Assert.AreEqual("HANGUL SYLLABLE PANJ", UnicodeInfo.GetName(0xD311));
 			Assert.AreEqual("HANGUL SYLLABLE TOLM", UnicodeInfo.GetName(0xD1AA));
@@ -177,6 +192,7 @@ namespace UnicodeInformation.Tests
 			var radical1 = UnicodeInfo.GetCjkRadicalInfo(1);
 
 			Assert.AreEqual(false, radical1.HasSimplifiedForm);
+			Assert.AreEqual(1, radical1.RadicalIndex);
 			Assert.AreEqual('\u2F00', radical1.TraditionalRadicalCodePoint);
 			Assert.AreEqual('\u4E00', radical1.TraditionalCharacterCodePoint);
 			Assert.AreEqual('\u2F00', radical1.SimplifiedRadicalCodePoint);
@@ -185,6 +201,7 @@ namespace UnicodeInformation.Tests
 			var radical214 = UnicodeInfo.GetCjkRadicalInfo(214);
 
 			Assert.AreEqual(false, radical214.HasSimplifiedForm);
+			Assert.AreEqual(214, radical214.RadicalIndex);
 			Assert.AreEqual('\u2FD5', radical214.TraditionalRadicalCodePoint);
 			Assert.AreEqual('\u9FA0', radical214.TraditionalCharacterCodePoint);
 			Assert.AreEqual('\u2FD5', radical214.SimplifiedRadicalCodePoint);
