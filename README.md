@@ -16,7 +16,8 @@ The code points will be displayed in the list on the left side. Select one of th
 Compiling and using the project
 -------------------------------
 ### Using the UnicodeInformation library
-Using the library is as easy as including it in your project. You will find all the good stuff in the System.Unicode namespace.
+Grab the latest version of the package on NuGet: https://www.nuget.org/packages/UnicodeInformation/.
+Once the library is installed in your project, you will find everything you need in the System.Unicode namespace.
 
 Let's see a simple example:
 
