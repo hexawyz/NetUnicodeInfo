@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	public struct CodePointEnumerable : IEnumerable<int>
+	public struct PermissiveCodePointEnumerable : IEnumerable<int>
 	{
 		private readonly string text;
 
-		public CodePointEnumerable(string text)
+		public PermissiveCodePointEnumerable(string text)
 		{
 			if (text == null) throw new ArgumentNullException(nameof(text));
 
@@ -20,9 +20,9 @@ namespace System.Unicode
 
 		public string Text { get { return text; } }
 
-		public CodePointEnumerator GetEnumerator()
+		public PermissiveCodePointEnumerator GetEnumerator()
 		{
-			return new CodePointEnumerator(text);
+			return new PermissiveCodePointEnumerator(text);
 		}
 
 		IEnumerator<int> IEnumerable<int>.GetEnumerator()

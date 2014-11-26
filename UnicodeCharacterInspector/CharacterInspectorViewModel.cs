@@ -139,7 +139,7 @@ namespace UnicodeCharacterInspector
 				int index = 0;
 				if (!string.IsNullOrEmpty(value))
 				{
-					foreach (int codePoint in value.AsCodePointEnumerable())
+					foreach (int codePoint in value.AsPermissiveCodePointEnumerable())
 					{
 						if (index >= codePoints.Length) Array.Resize(ref codePoints, codePoints.Length * 2);
 

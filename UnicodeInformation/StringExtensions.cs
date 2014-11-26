@@ -12,5 +12,10 @@ namespace System.Unicode
 		{
 			return new CodePointEnumerable(s);
 		}
+
+		public static PermissiveCodePointEnumerable AsPermissiveCodePointEnumerable(this string s)
+		{
+			return new PermissiveCodePointEnumerable(s);
+		}
 	}
 }

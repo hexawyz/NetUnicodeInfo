@@ -68,6 +68,8 @@
     <Compile Include="BidirectionalClass.cs" />
     <Compile Include="CjkRadicalData.cs" />
     <Compile Include="CjkRadicalInfo.cs" />
+    <Compile Include="PermissiveCodePointEnumerable.cs" />
+    <Compile Include="PermissiveCodePointEnumerator.cs" />
     <Compile Include="CompatibilityFormattingTag.cs" />
     <Compile Include="ContributoryProperties.cs" />
     <Compile Include="CanonicalCombiningClass.cs" />

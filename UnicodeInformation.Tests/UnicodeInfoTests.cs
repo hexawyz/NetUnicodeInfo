@@ -50,6 +50,91 @@ namespace UnicodeInformation.Tests
 			Assert.AreEqual(false, legacyEnumerator.MoveNext());
 		}
 
+		private static void EnumerationFailTest(string text) { foreach (int codePoint in text.AsCodePointEnumerable()) { } }
+
+		[TestMethod]
+		public void CodePointEnumeratorDirtyTest()
+		{
+			AssertEx.ThrowsExactly<ArgumentNullException>(() => EnumerationFailTest(null));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDA00"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDCD0"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDCD0\uDA00"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\u0041\uDA00"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\u0041\uDCD0"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDA00\u0041"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDCD0\u0041"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDA00\u0041\uDCD0\u0041"));
+			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\u0041\uDA00\u0041\uDCD0\u0041"));
+		}
+
+		[TestMethod]
+		public void PermissiveCodePointEnumeratorTest()
+		{
+			string text = "\u0041\U0001F600\u00E9";
+
+			var enumerable = text.AsPermissiveCodePointEnumerable();
+
+			Assert.AreEqual(text, enumerable.Text);
+
+			var enumerator = enumerable.GetEnumerator();
+
+			Assert.AreEqual(true, enumerator.MoveNext());
+			Assert.AreEqual(0x0041, enumerator.Current);
+			Assert.AreEqual(true, enumerator.MoveNext());
+			Assert.AreEqual(0x1F600, enumerator.Current);
+			Assert.AreEqual(true, enumerator.MoveNext());
+			Assert.AreEqual(0x00E9, enumerator.Current);
+			Assert.AreEqual(false, enumerator.MoveNext());
+
+			var genericEnumerator = ((IEnumerable<int>)enumerable).GetEnumerator();
+
+			Assert.AreEqual(true, genericEnumerator.MoveNext());
+			Assert.AreEqual(0x0041, genericEnumerator.Current);
+			Assert.AreEqual(true, genericEnumerator.MoveNext());
+			Assert.AreEqual(0x1F600, genericEnumerator.Current);
+			Assert.AreEqual(true, genericEnumerator.MoveNext());
+			Assert.AreEqual(0x00E9, genericEnumerator.Current);
+			Assert.AreEqual(false, genericEnumerator.MoveNext());
+
+			var legacyEnumerator = ((IEnumerable)enumerable).GetEnumerator();
+
+			Assert.AreEqual(true, legacyEnumerator.MoveNext());
+			Assert.AreEqual(0x0041, legacyEnumerator.Current);
+			Assert.AreEqual(true, legacyEnumerator.MoveNext());
+			Assert.AreEqual(0x1F600, legacyEnumerator.Current);
+			Assert.AreEqual(true, legacyEnumerator.MoveNext());
+			Assert.AreEqual(0x00E9, legacyEnumerator.Current);
+			Assert.AreEqual(false, legacyEnumerator.MoveNext());
+		}
+
+		private static void PermissiveEnumerationTest(string text, int[] expectedCharacters)
+		{
+			int i = 0;
+
+			foreach (int codePoint in text.AsPermissiveCodePointEnumerable())
+			{
+				Assert.AreEqual(expectedCharacters[i++], codePoint);
+			}
+
+			Assert.AreEqual(expectedCharacters.Length, i);
+		}
+
+		[TestMethod]
+		public void PermissiveCodePointEnumeratorDirtyTest()
+		{
+			AssertEx.ThrowsExactly<ArgumentNullException>(() => { foreach (int c in (null as string).AsPermissiveCodePointEnumerable()) { } });
+			PermissiveEnumerationTest(string.Empty, new int[0]);
+			PermissiveEnumerationTest("\uDA00", new int[] { 0xDA00 });
+			PermissiveEnumerationTest("\uDCD0", new int[] { 0xDCD0 });
+			PermissiveEnumerationTest("\uDCD0\uDA00", new int[] { 0xDCD0, 0xDA00 });
+			PermissiveEnumerationTest("\u0041\uDA00", new int[] { 0x0041, 0xDA00 });
+			PermissiveEnumerationTest("\u0041\uDCD0", new int[] { 0x0041, 0xDCD0 });
+			PermissiveEnumerationTest("\uDA00\u0041", new int[] { 0xDA00, 0x0041 });
+			PermissiveEnumerationTest("\uDCD0\u0041", new int[] { 0xDCD0, 0x0041 });
+			PermissiveEnumerationTest("\uDA00\u0041\uDCD0\u0041", new int[] { 0xDA00, 0x0041, 0xDCD0, 0x0041 });
+			PermissiveEnumerationTest("\u0041\uDA00\u0041\uDCD0\u0041", new int[] { 0x0041, 0xDA00, 0x0041, 0xDCD0, 0x0041 });
+		}
+
 		[TestMethod]
 		public void DisplayTextTest()
 		{
