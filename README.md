@@ -1,6 +1,8 @@
 ﻿Unicode Character Inspector & .NET Unicode Information Library
 ==============================================================
 
+[![Build status](https://ci.appveyor.com/api/projects/status/github/GoldenCrystal/NetUnicodeInfo?branch=master&svg=true)](https://ci.appveyor.com/project/GoldenCrystal/netunicodeinfo/branch/master)
+
 Summary
 -------
 This projects has two parts.
