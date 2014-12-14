@@ -9,4 +9,8 @@ assembly_info:
   assembly_file_version: 1.0.1.{build}
   assembly_informational_version: 1.0.1.{build}-CI
 build:
+  publish_nuget: true
   verbosity: minimal
+artifacts:
+- path: UnicodeCharacterInspector\bin\Release
+  name: UnicodeCharacterInspector

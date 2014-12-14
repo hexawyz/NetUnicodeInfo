@@ -13,6 +13,6 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Unicode Unihan .NET C# String Text Char Character CodePoint Code Point</tags>
+    <tags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</tags>
   </metadata>
 </package>
