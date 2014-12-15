@@ -47,13 +47,13 @@ namespace System.Unicode
 
 		bool ICollection<UnicodeRadicalStrokeCount>.IsReadOnly { get { return true; } }
 
-		public void Add(UnicodeRadicalStrokeCount item) { throw new NotSupportedException(); }
-		public void Insert(int index, UnicodeRadicalStrokeCount item) { throw new NotSupportedException(); }
+		void ICollection<UnicodeRadicalStrokeCount>.Add(UnicodeRadicalStrokeCount item) { throw new NotSupportedException(); }
+		void IList<UnicodeRadicalStrokeCount>.Insert(int index, UnicodeRadicalStrokeCount item) { throw new NotSupportedException(); }
 
-		public bool Remove(UnicodeRadicalStrokeCount item) { throw new NotSupportedException(); }
-		public void RemoveAt(int index) { throw new NotSupportedException(); }
+		bool ICollection<UnicodeRadicalStrokeCount>.Remove(UnicodeRadicalStrokeCount item) { throw new NotSupportedException(); }
+		void IList<UnicodeRadicalStrokeCount>.RemoveAt(int index) { throw new NotSupportedException(); }
 
-		public void Clear() { throw new NotSupportedException(); }
+		void ICollection<UnicodeRadicalStrokeCount>.Clear() { throw new NotSupportedException(); }
 
 		public int IndexOf(UnicodeRadicalStrokeCount item) { return Array.IndexOf(items, item); }
 		public bool Contains(UnicodeRadicalStrokeCount item) { return IndexOf(item) >= 0; }

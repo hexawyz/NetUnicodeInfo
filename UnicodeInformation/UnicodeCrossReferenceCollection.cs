@@ -49,13 +49,13 @@ namespace System.Unicode
 
 		bool ICollection<int>.IsReadOnly { get { return true; } }
 
-		public void Add(int item) { throw new NotSupportedException(); }
-		public void Insert(int index, int item) { throw new NotSupportedException(); }
+		void ICollection<int>.Add(int item) { throw new NotSupportedException(); }
+		void IList<int>.Insert(int index, int item) { throw new NotSupportedException(); }
 
-		public bool Remove(int item) { throw new NotSupportedException(); }
-		public void RemoveAt(int index) { throw new NotSupportedException(); }
+		bool ICollection<int>.Remove(int item) { throw new NotSupportedException(); }
+		void IList<int>.RemoveAt(int index) { throw new NotSupportedException(); }
 
-		public void Clear() { throw new NotSupportedException(); }
+		void ICollection<int>.Clear() { throw new NotSupportedException(); }
 
 		public int IndexOf(int item) { return Array.IndexOf(items, item); }
 		public bool Contains(int item) { return IndexOf(item) >= 0; }
