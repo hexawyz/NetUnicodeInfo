@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
+	/// <summary>Provides access to unicode information.</summary>
 	public static class UnicodeInfo
 	{
+		/// <summary>The block name returned when no block is assigned to a specific code point.</summary>
 		public const string DefaultBlock = "No_Block";
 
 		private static readonly Version unicodeVersion;
@@ -280,6 +282,7 @@ namespace System.Unicode
 			}
 		}
 
+		/// <summary>Gets the version of the Unicode standard supported by the class.</summary>
 		public static Version UnicodeVersion { get { return unicodeVersion; } }
 
 		private static UnicodeCharacterData FindUnicodeCodePoint(int codePoint)
