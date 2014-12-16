@@ -71,9 +71,20 @@ namespace System.Unicode
 
 		void ICollection<UnicodeNameAlias>.Clear() { throw new NotSupportedException(); }
 
+		/// <summary>Determines the index of a specific item in the <see cref="UnicodeNameAliasCollection"/>.</summary>
+		/// <param name="item">The object to locate in the <see cref="UnicodeNameAliasCollection"/>.</param>
+		/// <returns>The index of the item if found in the list; otherwise, -1.</returns>
 		public int IndexOf(UnicodeNameAlias item) { return Array.IndexOf(items, item); }
+		/// <summary>Determines whether the <see cref="UnicodeNameAliasCollection"/> contains a specific value.</summary>
+		/// <param name="item">The object to locate in the <see cref="UnicodeNameAliasCollection"/>.</param>
+		/// <returns><see langword="true" /> if item is fount in the <see cref="UnicodeNameAliasCollection"/>; <see langword="false" /> otherwise.</returns>
 		public bool Contains(UnicodeNameAlias item) { return IndexOf(item) >= 0; }
 
+		/// <summary>
+		/// Copies the elements of the UnicodeNameAliasCollection to an <see cref="System.Array" />, starting at a particular <see cref="System.Array" /> index.
+		/// </summary>
+		/// <param name="array">The one-dimensional <see cref="System.Array" /> that is the destination of the elements to copy from UnicodeNameAliasCollection. The <see cref="System.Array" /> must have zero-based indexing.</param>
+		/// <param name="arrayIndex">The zeo-based index in array at which copy begins.</param>
 		public void CopyTo(UnicodeNameAlias[] array, int arrayIndex) { items.CopyTo(array, arrayIndex); }
 
 		/// <summary>Returns an enumerator that iterates through the collection.</summary>
