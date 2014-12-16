@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace System.Unicode
 {
 	/// <summary>A bitmask of the various available contributory properties.</summary>
+	/// <remarks>As per the standard, contributory properties are neither normative nor informative, but are used to derive <see cref="ContributoryProperties"/>.</remarks>
 	[Flags]
 	public enum ContributoryProperties : int
 	{

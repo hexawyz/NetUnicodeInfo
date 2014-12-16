@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace System.Unicode
 {
+	/// <summary>Represents a collection of code point cross-references.</summary>
 	public struct UnicodeCrossReferenceCollection : IList<int>
 	{
 		private static int[] EmptyArray = new int[0];
