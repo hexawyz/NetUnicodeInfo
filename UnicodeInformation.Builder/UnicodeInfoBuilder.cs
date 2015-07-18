@@ -120,7 +120,7 @@ namespace System.Unicode.Builder
 
 			if (insertionPoint < 0) throw new InvalidOperationException("The specified range overlaps with pre-existing ranges.");
 
-			if (insertionPoint >= ucdEntries.Length)
+			if (ucdEntryCount == ucdEntries.Length)
 			{
 				Array.Resize(ref ucdEntries, ucdEntries.Length << 1);
 			}
@@ -140,7 +140,7 @@ namespace System.Unicode.Builder
 
 			if (insertionPoint < 0) throw new InvalidOperationException("The specified range overlaps with pre-existing ranges.");
 
-			if (insertionPoint >= unihanEntries.Length)
+			if (unihanEntryCount == unihanEntries.Length)
 			{
 				Array.Resize(ref unihanEntries, unihanEntries.Length << 1);
 			}

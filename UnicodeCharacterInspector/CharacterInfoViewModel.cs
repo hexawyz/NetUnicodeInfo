@@ -106,7 +106,7 @@ namespace UnicodeCharacterInspector
 
 		public UnicodeNameAliasCollection NameAliases
 		{
-			get { return character != null ? characterInfo.NameAliases : new UnicodeNameAliasCollection(); }
+			get { return character != null ? characterInfo.NameAliases : UnicodeNameAliasCollection.Empty; }
 		}
 
 		public string OldName
@@ -176,12 +176,12 @@ namespace UnicodeCharacterInspector
 
 		public UnicodeRadicalStrokeCountCollection RadicalStrokeCounts
 		{
-			get { return character != null ? characterInfo.UnicodeRadicalStrokeCounts : new UnicodeRadicalStrokeCountCollection(); }
+			get { return character != null ? characterInfo.UnicodeRadicalStrokeCounts : UnicodeRadicalStrokeCountCollection.Empty; }
 		}
 
 		public UnicodeCrossReferenceCollection CrossReferences
 		{
-			get { return character != null ? characterInfo.CrossRerefences : new UnicodeCrossReferenceCollection(); }
+			get { return character != null ? characterInfo.CrossRerefences : UnicodeCrossReferenceCollection.Empty; }
 		}
 
 		public string MandarinReading

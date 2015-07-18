@@ -41,10 +41,11 @@ namespace System.Unicode
 			void IEnumerator.Reset() { this.index = -1; }
 		}
 
+		/// <summary>Gets an empty <see cref="UnicodeCrossReferenceCollection"/> struct.</summary>
+		public static readonly UnicodeCrossReferenceCollection Empty = new UnicodeCrossReferenceCollection(EmptyArray);
+
 		private readonly int[] items;
 
-		/// <summary>Initializes a new instance of the <see cref="UnicodeCrossReferenceCollection"/> struct.</summary>
-		public UnicodeCrossReferenceCollection() { items = EmptyArray; }
 		internal UnicodeCrossReferenceCollection(int[] items) { this.items = items ?? EmptyArray; }
 
 		/// <summary>Gets the cross-referenced code point at the specified index.</summary>

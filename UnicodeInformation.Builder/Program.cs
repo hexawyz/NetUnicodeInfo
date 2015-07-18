@@ -36,21 +36,19 @@ namespace System.Unicode.Builder
 			"Unihan_IRGSources.txt",
 		};
 
-		private static HttpMessageHandler httpMessageHandler;
+		private static HttpClient httpClient;
 
 		// The only purpose of this is for tests…
-		internal static HttpMessageHandler HttpMessageHandler
+		internal static void SetHttpMessageHandler(HttpMessageHandler handler)
 		{
-			get { return httpMessageHandler ?? (httpMessageHandler = new HttpClientHandler()); }
-			set { httpMessageHandler = value != null ? value : new HttpClientHandler(); }
-		}
+			httpClient = new HttpClient(handler ?? new HttpClientHandler());
+        }
+
+		private static HttpClient HttpClient { get { return httpClient ?? (httpClient = new HttpClient()); } }
 
 		private static byte[] DownloadDataArchive(string archiveName)
 		{
-			using (var httpClient = new HttpClient(HttpMessageHandler))
-			{
-				return httpClient.GetByteArrayAsync(HttpDataSource.UnicodeCharacterDataUri + archiveName).Result;
-			}
+			return HttpClient.GetByteArrayAsync(HttpDataSource.UnicodeCharacterDataUri + archiveName).Result;
 		}
 
 		internal static IDataSource GetDataSource(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)

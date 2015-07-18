@@ -39,10 +39,11 @@ namespace System.Unicode
 			void IEnumerator.Reset() { this.index = -1; }
 		}
 
+		/// <summary>Gets an empty <see cref="UnicodeNameAliasCollection"/> struct.</summary>
+		public static readonly UnicodeNameAliasCollection Empty = new UnicodeNameAliasCollection(UnicodeNameAlias.EmptyArray);
+
 		private readonly UnicodeNameAlias[] items;
 
-		/// <summary>Initializes a new instance of the <see cref="UnicodeNameAliasCollection"/> struct.</summary>
-		public UnicodeNameAliasCollection() { items = UnicodeNameAlias.EmptyArray; }
 		internal UnicodeNameAliasCollection(UnicodeNameAlias[] items) { this.items = items ?? UnicodeNameAlias.EmptyArray; }
 
 		/// <summary>Gets the <see cref="UnicodeNameAlias"/> at the specified index.</summary>

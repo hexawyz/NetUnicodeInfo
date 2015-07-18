@@ -39,10 +39,11 @@ namespace System.Unicode
 			void IEnumerator.Reset() { this.index = -1; }
 		}
 
+		/// <summary>Gets an empty <see cref="UnicodeRadicalStrokeCountCollection"/> struct.</summary>
+		public static readonly UnicodeRadicalStrokeCountCollection Empty = new UnicodeRadicalStrokeCountCollection(null);
+
 		private readonly UnicodeRadicalStrokeCount[] items;
 
-		/// <summary>Initializes a new instance of the <see cref="UnicodeRadicalStrokeCountCollection"/> struct.</summary>
-		public UnicodeRadicalStrokeCountCollection() { items = UnicodeRadicalStrokeCount.EmptyArray; }
 		internal UnicodeRadicalStrokeCountCollection(UnicodeRadicalStrokeCount[] items) { this.items = items ?? UnicodeRadicalStrokeCount.EmptyArray; }
 
 		/// <summary>Gets the <see cref="UnicodeRadicalStrokeCount"/> at the specified index.</summary>

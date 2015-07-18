@@ -70,7 +70,7 @@ namespace System.Unicode.Tests
 			var ucdTask = RegisterAndDownloadFile(handler, httpCacheDirectory, HttpDataSource.UnicodeCharacterDataUri, Program.UcdArchiveName);
 			var unihanTask = RegisterAndDownloadFile(handler, httpCacheDirectory, HttpDataSource.UnicodeCharacterDataUri, Program.UnihanArchiveName);
 
-			Program.HttpMessageHandler = handler;
+			Program.SetHttpMessageHandler(handler);
 
 			if (Directory.Exists(Program.UcdDirectoryName)) Directory.Delete(Program.UcdDirectoryName, true);
 			if (File.Exists(Program.UcdArchiveName)) File.Delete(Program.UcdArchiveName);
