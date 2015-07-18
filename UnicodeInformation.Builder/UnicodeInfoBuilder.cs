@@ -286,16 +286,16 @@ namespace System.Unicode.Builder
 		{
 			using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
 			{
-				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 1 });
-				writer.Write((ushort)7); // Hardcode Unicode 7.0
+				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 2 });
+				writer.Write((ushort)8); // Hardcode Unicode 8.0
 				writer.Write((byte)0);
 				writer.WriteCodePoint(ucdEntryCount);
 				for (int i = 0; i < ucdEntryCount; ++i)
 				{
 					ucdEntries[i].WriteToFile(writer);
 				}
-				if (blockEntries.Count > 255) throw new InvalidOperationException("There are too many block entries. The file format needs to be upgraded.");
-				writer.Write((byte)blockEntries.Count);
+				if (blockEntries.Count > ushort.MaxValue) throw new InvalidOperationException("There are too many block entries. The file format needs to be upgraded.");
+				writer.Write((ushort)blockEntries.Count);
 				for (int i = 0; i < blockEntries.Count; ++i)
 				{
 					WriteUnicodeBlockToFile(writer, blockEntries[i]);

@@ -44,7 +44,7 @@ namespace System.Unicode
 
 				byte formatVersion = reader.ReadByte();
 
-				if (formatVersion != 1) throw new InvalidDataException();
+				if (formatVersion != 2) throw new InvalidDataException();
 
 				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
 
@@ -69,7 +69,7 @@ namespace System.Unicode
 					unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader, nameBuffer);
 				}
 
-				var blockEntries = new UnicodeBlock[reader.ReadByte()];
+				var blockEntries = new UnicodeBlock[reader.ReadUInt16()];
 
 				for (i = 0; i < blockEntries.Length; ++i)
 				{
