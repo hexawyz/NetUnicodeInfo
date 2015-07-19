@@ -46,7 +46,7 @@ namespace System.Unicode
 
 				if (formatVersion != 2) throw new InvalidDataException();
 
-				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte());
+				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte(), reader.ReadByte());
 
 				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
 				byte[] nameBuffer = new byte[128];
@@ -81,7 +81,7 @@ namespace System.Unicode
 				for (i = 0; i < cjkRadicalEntries.Length; ++i)
 				{
 					cjkRadicalEntries[i] = ReadCjkRadicalInfo(reader);
-                }
+				}
 
 				var unihanCharacterDataEntries = new UnihanCharacterData[ReadCodePoint(reader)];
 

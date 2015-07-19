@@ -56,7 +56,7 @@ This example shows a few usages of the library. It gets information on a specifi
 ### Details
 In its current state, the project is written in C# 6, compilable by [Roslyn](http://roslyn.codeplex.com/), and targets the .NET 4.5 framework.
 The core of the project, UnicodeInformation.dll, is a portable class library usable for either regular .NET or Windows 8 applications.
-This library includes a subset of the official [Unicode Character Database](http://www.unicode.org/Public/UCD/latest/) (Version 7.0 at the time of writing) stored in a custom file format.
+This library includes a subset of the official [Unicode Character Database](http://www.unicode.org/Public/UCD/latest/) (Version 8.0 at the time of writing) stored in a custom file format.
 
 ### Included Properties
 #### From UCD

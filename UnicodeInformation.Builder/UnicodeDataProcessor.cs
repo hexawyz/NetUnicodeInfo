@@ -4,12 +4,14 @@ using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	internal class UnicodeDataProcessor
 	{
+		public const string ReadMeFileName = "ReadMe.txt";
 		public const string UnicodeDataFileName = "UnicodeData.txt";
 		public const string PropListFileName = "PropList.txt";
 		public const string DerivedCorePropertiesFileName = "DerivedCoreProperties.txt";
@@ -36,7 +38,7 @@ namespace System.Unicode.Builder
 
 		public static async Task<UnicodeInfoBuilder> BuildDataAsync(IDataSource ucdSource, IDataSource unihanSource)
 		{
-			var builder = new UnicodeInfoBuilder(new Version(7, 0));
+			var builder = new UnicodeInfoBuilder(await ReadUnicodeVersionAsync(ucdSource).ConfigureAwait(false));
 
 			await ProcessUnicodeDataFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
@@ -51,6 +53,24 @@ namespace System.Unicode.Builder
 			await ProcessUnihanIrgSources(unihanSource, builder).ConfigureAwait(false);
 
 			return builder;
+		}
+
+		private static async Task<Version> ReadUnicodeVersionAsync(IDataSource ucdSource)
+		{
+			using (var reader = new StreamReader(await ucdSource.OpenDataFileAsync(ReadMeFileName).ConfigureAwait(false), Encoding.UTF8, true))
+			{
+				string text = await reader.ReadToEndAsync().ConfigureAwait(false);
+
+				var match = Regex.Match(text, @"Version\s+(?<Major>[1-9][0-9]*)\.(?<Minor>[0-9]+)\.(?<Update>[0-9]+)\s+of\s+the\s+Unicode\s+Standard\.");
+				if (!match.Success)
+				{
+					match = Regex.Match(text, @"Unicode\s+(?<Major>[1-9][0-9]*)\.(?<Minor>[0-9]+)\.(?<Update>[0-9]+)\.");
+				}
+
+				if (!match.Success) throw new InvalidDataException("Could not determine the version of the Unicode standard defined in the files.");
+
+				return new Version(int.Parse(match.Groups["Major"].Value), int.Parse(match.Groups["Minor"].Value), int.Parse(match.Groups["Update"].Value));
+			}
 		}
 
 		private static async Task ProcessUnicodeDataFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
@@ -81,11 +101,11 @@ namespace System.Unicode.Builder
 
 							codePoint = new UnicodeCodePointRange(rangeStartCodePoint, codePoint.LastCodePoint);
 
-							name = name.Substring(1, name.Length - 8).ToUpperInvariant();	// Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
+							name = name.Substring(1, name.Length - 8).ToUpperInvariant(); // Upper-case the name in order to respect unicode naming scheme. (Spec says all names are uppercase ASCII)
 
 							rangeStartCodePoint = -1;
 						}
-						else if (name == "<control>")	// Ignore the name of the property for these code points, as it should really be empty by the spec.
+						else if (name == "<control>") // Ignore the name of the property for these code points, as it should really be empty by the spec.
 						{
 							// For control characters, we can derive a character label in of the form <control-NNNN>, which is not the character name.
 							name = null;
@@ -228,7 +248,7 @@ namespace System.Unicode.Builder
 					if (isSimplified)
 					{
 						builder.SetRadicalInfo(radicalIndex, UpdateRadicalData(builder.GetRadicalInfo(radicalIndex), radicalCodePoint, characterCodePoint));
-                    }
+					}
 					else
 					{
 						builder.SetRadicalInfo(radicalIndex, new CjkRadicalData(radicalCodePoint, characterCodePoint));
@@ -502,7 +522,7 @@ namespace System.Unicode.Builder
 							var entry = builder.GetUnihan(reader.CodePoint);
 							var values = reader.PropertyValue.Split(' ');
 
-                            foreach (var value in values)
+							foreach (var value in values)
 							{
 								bool isSimplified = false;
 								int index;
@@ -521,7 +541,7 @@ namespace System.Unicode.Builder
 								}
 								throw new InvalidDataException("Failed to decode value for kRSUnicode / Unicode_Radical_Stroke.");
 
-							SeparatorFound: ;
+							SeparatorFound:;
 								entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), byte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.None), isSimplified));
 							}
 							break;

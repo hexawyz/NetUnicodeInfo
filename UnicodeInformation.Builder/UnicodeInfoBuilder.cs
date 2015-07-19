@@ -9,7 +9,7 @@ namespace System.Unicode.Builder
 {
 	internal class UnicodeInfoBuilder
 	{
-		public const int CjkRadicalCount = 214;	// The number of radicals (214) shouldn't change in the near future…
+		public const int CjkRadicalCount = 214; // The number of radicals (214) shouldn't change in the near future…
 
 		private readonly Version unicodeVersion;
 		private UnicodeCharacterDataBuilder[] ucdEntries = new UnicodeCharacterDataBuilder[10000];
@@ -287,8 +287,9 @@ namespace System.Unicode.Builder
 			using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
 			{
 				writer.Write(new byte[] { (byte)'U', (byte)'C', (byte)'D', 2 });
-				writer.Write((ushort)8); // Hardcode Unicode 8.0
-				writer.Write((byte)0);
+				writer.Write(checked((ushort)unicodeVersion.Major));
+				writer.Write(checked((byte)unicodeVersion.Minor));
+				writer.Write(checked((byte)unicodeVersion.Build));
 				writer.WriteCodePoint(ucdEntryCount);
 				for (int i = 0; i < ucdEntryCount; ++i)
 				{
