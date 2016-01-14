@@ -433,9 +433,10 @@ namespace System.Unicode
 		/// <returns>A display text for the code point, which may be the representation of the code point itself.</returns>
 		public static string GetDisplayText(int codePoint)
 		{
-			if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString();
-			else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
-			else return char.ConvertFromUtf32(codePoint);
+            if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString();
+            else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
+            else if (codePoint >= 0xD800 && codePoint <= 0xDFFF) return "\xFFFD";
+            else return char.ConvertFromUtf32(codePoint);
 		}
 
 		/// <summary>Gets the name of the specified code point.</summary>
@@ -448,16 +449,23 @@ namespace System.Unicode
 		public static string GetName(int codePoint)
 		{
 			if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
-			else return GetName(codePoint, FindUnicodeCodePoint(codePoint));
+			else return GetNameInternal(codePoint);
 		}
+
+        private static string GetNameInternal(int codePoint)
+        {
+            var codePointInfo = FindUnicodeCodePoint(codePoint);
+
+            return codePointInfo != null ? GetName(codePoint, codePointInfo) : null;
+        }
 
 		internal static string GetName(int codePoint, UnicodeCharacterData characterData)
 		{
-			if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
-			else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
-			else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
-			else return null;
-		}
+            if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
+            else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
+            else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
+            else return null;
+        }
 
 		/// <summary>Returns information for a CJK radical.</summary>
 		/// <param name="radicalIndex">The index of the radical. Must be between 1 and <see cref="CjkRadicalCount"/>.</param>

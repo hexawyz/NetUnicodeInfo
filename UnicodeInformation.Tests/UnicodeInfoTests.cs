@@ -353,10 +353,58 @@ namespace UnicodeInformation.Tests
 				Assert.AreEqual(true, enumerator.MoveNext());
 				Assert.AreEqual(start, enumerator.Current);
 			}
-		}
+        }
+
+        [TestMethod]
+        public void GetNameSuccessTest()
+        {
+            for (int i = 0; i <= 0x10FFFF; i++)
+            {
+                UnicodeInfo.GetName(i);
+            }
+        }
+
+        [TestMethod]
+        public void GetDisplayTextSuccessTest()
+        {
+            for (int i = 0; i <= 0x10FFFF; i++)
+            {
+                UnicodeInfo.GetDisplayText(i);
+            }
+        }
+
+        [TestMethod]
+        public void GetCategorySuccessTest()
+        {
+            for (int i = 0; i <= 0x10FFFF; i++)
+            {
+                UnicodeInfo.GetCategory(i);
+            }
+        }
+
+        [TestMethod]
+        public void GetCharInfoSuccessTest()
+        {
+            for (int i = 0; i <= 0x10FFFF; i++)
+            {
+                UnicodeInfo.GetCharInfo(i);
+            }
+        }
+
+        [TestMethod]
+        public void GetCharInfoCoherenceTest()
+        {
+            for (int i = 0; i <= 0x10FFFF; i++)
+            {
+                var charInfo = UnicodeInfo.GetCharInfo(i);
+
+                Assert.AreEqual(charInfo.Name, UnicodeInfo.GetName(i));
+                Assert.AreEqual(charInfo.Category, UnicodeInfo.GetCategory(i));
+            }
+        }
 
 #if DEBUG
-		[TestMethod]
+        [TestMethod]
 		public void UnihanCodePointPackingTest()
 		{
 			for (int i = 0x3400; i < 0x4E00; ++i)

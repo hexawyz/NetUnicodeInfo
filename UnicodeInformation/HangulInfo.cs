@@ -55,7 +55,7 @@ namespace System.Unicode
 
 		internal static bool IsHangul(int codePoint)
 		{
-			return codePoint >= SBase && codePoint <= SBase + SCount;
+			return codePoint >= SBase && codePoint < SBase + SCount;
 		}
 	}
 }

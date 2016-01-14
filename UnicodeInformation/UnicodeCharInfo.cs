@@ -190,7 +190,7 @@ namespace System.Unicode
 		internal UnicodeCharInfo(int codePoint, UnicodeCharacterData unicodeCharacterData, UnihanCharacterData unihanCharacterData, string block)
 		{
 			this.codePoint = codePoint;
-			this.name = UnicodeInfo.GetName(codePoint, unicodeCharacterData);
+			this.name = unicodeCharacterData != null ? UnicodeInfo.GetName(codePoint, unicodeCharacterData) : null;
 			this.unicodeCharacterData = unicodeCharacterData;
 			this.unihanCharacterData = unihanCharacterData;
 			this.block = block;
