@@ -400,6 +400,7 @@ namespace UnicodeInformation.Tests
 
                 Assert.AreEqual(charInfo.Name, UnicodeInfo.GetName(i));
                 Assert.AreEqual(charInfo.Category, UnicodeInfo.GetCategory(i));
+                Assert.AreEqual(UnicodeInfo.GetDisplayText(charInfo), UnicodeInfo.GetDisplayText(i));
             }
         }
 

@@ -425,6 +425,7 @@ namespace System.Unicode
 		{
 			if (charInfo.CodePoint <= 0x0020) return ((char)(0x2400 + charInfo.CodePoint)).ToString();
 			else if (charInfo.Category == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(charInfo.CodePoint);
+            else if (charInfo.CodePoint >= 0xD800 && charInfo.CodePoint <= 0xDFFF) return "\xFFFD";
 			else return char.ConvertFromUtf32(charInfo.CodePoint);
 		}
 
