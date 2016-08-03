@@ -1,158 +1,157 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Unicode;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Collections;
+using Xunit;
 
 namespace UnicodeInformation.Tests
 {
-	[TestClass]
 	public class UnicodeInfoTests
 	{
-		[TestMethod]
-		public void UnicodeVersionTest()
+		[Fact]
+		public void TestUnicodeVersion()
 		{
-			Assert.AreEqual(new Version(9, 0, 0), UnicodeInfo.UnicodeVersion);
+			Assert.Equal(new Version(9, 0, 0), UnicodeInfo.UnicodeVersion);
 		}
 
-		[TestMethod]
-		public void CodePointEnumeratorTest()
+		[Fact]
+		public void TestCodePointEnumerator()
 		{
 			string text = "\u0041\U0001F600\u00E9";
 
 			var enumerable = text.AsCodePointEnumerable();
 
-			Assert.AreEqual(text, enumerable.Text);
+			Assert.Equal(text, enumerable.Text);
 
 			var enumerator = enumerable.GetEnumerator();
 
-			Assert.AreEqual(true, enumerator.MoveNext());
-			Assert.AreEqual(0x0041, enumerator.Current);
-			Assert.AreEqual(true, enumerator.MoveNext());
-			Assert.AreEqual(0x1F600, enumerator.Current);
-			Assert.AreEqual(true, enumerator.MoveNext());
-			Assert.AreEqual(0x00E9, enumerator.Current);
-			Assert.AreEqual(false, enumerator.MoveNext());
+			Assert.Equal(true, enumerator.MoveNext());
+			Assert.Equal(0x0041, enumerator.Current);
+			Assert.Equal(true, enumerator.MoveNext());
+			Assert.Equal(0x1F600, enumerator.Current);
+			Assert.Equal(true, enumerator.MoveNext());
+			Assert.Equal(0x00E9, enumerator.Current);
+			Assert.Equal(false, enumerator.MoveNext());
 
 			var genericEnumerator = ((IEnumerable<int>)enumerable).GetEnumerator();
 
-			Assert.AreEqual(true, genericEnumerator.MoveNext());
-			Assert.AreEqual(0x0041, genericEnumerator.Current);
-			Assert.AreEqual(true, genericEnumerator.MoveNext());
-			Assert.AreEqual(0x1F600, genericEnumerator.Current);
-			Assert.AreEqual(true, genericEnumerator.MoveNext());
-			Assert.AreEqual(0x00E9, genericEnumerator.Current);
-			Assert.AreEqual(false, genericEnumerator.MoveNext());
+			Assert.Equal(true, genericEnumerator.MoveNext());
+			Assert.Equal(0x0041, genericEnumerator.Current);
+			Assert.Equal(true, genericEnumerator.MoveNext());
+			Assert.Equal(0x1F600, genericEnumerator.Current);
+			Assert.Equal(true, genericEnumerator.MoveNext());
+			Assert.Equal(0x00E9, genericEnumerator.Current);
+			Assert.Equal(false, genericEnumerator.MoveNext());
 
 			var legacyEnumerator = ((IEnumerable)enumerable).GetEnumerator();
 
-			Assert.AreEqual(true, legacyEnumerator.MoveNext());
-			Assert.AreEqual(0x0041, legacyEnumerator.Current);
-			Assert.AreEqual(true, legacyEnumerator.MoveNext());
-			Assert.AreEqual(0x1F600, legacyEnumerator.Current);
-			Assert.AreEqual(true, legacyEnumerator.MoveNext());
-			Assert.AreEqual(0x00E9, legacyEnumerator.Current);
-			Assert.AreEqual(false, legacyEnumerator.MoveNext());
+			Assert.Equal(true, legacyEnumerator.MoveNext());
+			Assert.Equal(0x0041, legacyEnumerator.Current);
+			Assert.Equal(true, legacyEnumerator.MoveNext());
+			Assert.Equal(0x1F600, legacyEnumerator.Current);
+			Assert.Equal(true, legacyEnumerator.MoveNext());
+			Assert.Equal(0x00E9, legacyEnumerator.Current);
+			Assert.Equal(false, legacyEnumerator.MoveNext());
 		}
 
 		private static void EnumerationFailTest(string text) { foreach (int codePoint in text.AsCodePointEnumerable()) { } }
 
-		[TestMethod]
-		public void CodePointEnumeratorDirtyTest()
+		[Fact]
+		public void TestCodePointEnumeratorFailures()
 		{
-			AssertEx.ThrowsExactly<ArgumentNullException>(() => EnumerationFailTest(null));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDA00"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDCD0"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDCD0\uDA00"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\u0041\uDA00"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\u0041\uDCD0"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDA00\u0041"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDCD0\u0041"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\uDA00\u0041\uDCD0\u0041"));
-			AssertEx.ThrowsExactly<ArgumentException>(() => EnumerationFailTest("\u0041\uDA00\u0041\uDCD0\u0041"));
+			Assert.Throws<ArgumentNullException>(() => EnumerationFailTest(null));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\uDA00"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\uDCD0"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\uDCD0\uDA00"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\u0041\uDA00"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\u0041\uDCD0"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\uDA00\u0041"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\uDCD0\u0041"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\uDA00\u0041\uDCD0\u0041"));
+			Assert.Throws<ArgumentException>(() => EnumerationFailTest("\u0041\uDA00\u0041\uDCD0\u0041"));
 		}
 
-		[TestMethod]
-		public void PermissiveCodePointEnumeratorTest()
+		[Fact]
+		public void TestPermissiveCodePointEnumerator()
 		{
 			string text = "\u0041\U0001F600\u00E9";
 
 			var enumerable = text.AsPermissiveCodePointEnumerable();
 
-			Assert.AreEqual(text, enumerable.Text);
+			Assert.Equal(text, enumerable.Text);
 
 			var enumerator = enumerable.GetEnumerator();
 
-			Assert.AreEqual(true, enumerator.MoveNext());
-			Assert.AreEqual(0x0041, enumerator.Current);
-			Assert.AreEqual(true, enumerator.MoveNext());
-			Assert.AreEqual(0x1F600, enumerator.Current);
-			Assert.AreEqual(true, enumerator.MoveNext());
-			Assert.AreEqual(0x00E9, enumerator.Current);
-			Assert.AreEqual(false, enumerator.MoveNext());
+			Assert.Equal(true, enumerator.MoveNext());
+			Assert.Equal(0x0041, enumerator.Current);
+			Assert.Equal(true, enumerator.MoveNext());
+			Assert.Equal(0x1F600, enumerator.Current);
+			Assert.Equal(true, enumerator.MoveNext());
+			Assert.Equal(0x00E9, enumerator.Current);
+			Assert.Equal(false, enumerator.MoveNext());
 
 			var genericEnumerator = ((IEnumerable<int>)enumerable).GetEnumerator();
 
-			Assert.AreEqual(true, genericEnumerator.MoveNext());
-			Assert.AreEqual(0x0041, genericEnumerator.Current);
-			Assert.AreEqual(true, genericEnumerator.MoveNext());
-			Assert.AreEqual(0x1F600, genericEnumerator.Current);
-			Assert.AreEqual(true, genericEnumerator.MoveNext());
-			Assert.AreEqual(0x00E9, genericEnumerator.Current);
-			Assert.AreEqual(false, genericEnumerator.MoveNext());
+			Assert.Equal(true, genericEnumerator.MoveNext());
+			Assert.Equal(0x0041, genericEnumerator.Current);
+			Assert.Equal(true, genericEnumerator.MoveNext());
+			Assert.Equal(0x1F600, genericEnumerator.Current);
+			Assert.Equal(true, genericEnumerator.MoveNext());
+			Assert.Equal(0x00E9, genericEnumerator.Current);
+			Assert.Equal(false, genericEnumerator.MoveNext());
 
 			var legacyEnumerator = ((IEnumerable)enumerable).GetEnumerator();
 
-			Assert.AreEqual(true, legacyEnumerator.MoveNext());
-			Assert.AreEqual(0x0041, legacyEnumerator.Current);
-			Assert.AreEqual(true, legacyEnumerator.MoveNext());
-			Assert.AreEqual(0x1F600, legacyEnumerator.Current);
-			Assert.AreEqual(true, legacyEnumerator.MoveNext());
-			Assert.AreEqual(0x00E9, legacyEnumerator.Current);
-			Assert.AreEqual(false, legacyEnumerator.MoveNext());
+			Assert.Equal(true, legacyEnumerator.MoveNext());
+			Assert.Equal(0x0041, legacyEnumerator.Current);
+			Assert.Equal(true, legacyEnumerator.MoveNext());
+			Assert.Equal(0x1F600, legacyEnumerator.Current);
+			Assert.Equal(true, legacyEnumerator.MoveNext());
+			Assert.Equal(0x00E9, legacyEnumerator.Current);
+			Assert.Equal(false, legacyEnumerator.MoveNext());
 		}
 
-		private static void PermissiveEnumerationTest(string text, int[] expectedCharacters)
+		private static void TestPermissiveEnumeration(string text, int[] expectedCharacters)
 		{
 			int i = 0;
 
 			foreach (int codePoint in text.AsPermissiveCodePointEnumerable())
 			{
-				Assert.AreEqual(expectedCharacters[i++], codePoint);
+				Assert.Equal(expectedCharacters[i++], codePoint);
 			}
 
-			Assert.AreEqual(expectedCharacters.Length, i);
+			Assert.Equal(expectedCharacters.Length, i);
 		}
 
-		[TestMethod]
-		public void PermissiveCodePointEnumeratorDirtyTest()
+		[Fact]
+		public void TestPermissiveCodePointEnumeratorWithDirtyValues()
 		{
-			AssertEx.ThrowsExactly<ArgumentNullException>(() => { foreach (int c in (null as string).AsPermissiveCodePointEnumerable()) { } });
-			PermissiveEnumerationTest(string.Empty, new int[0]);
-			PermissiveEnumerationTest("\uDA00", new int[] { 0xDA00 });
-			PermissiveEnumerationTest("\uDCD0", new int[] { 0xDCD0 });
-			PermissiveEnumerationTest("\uDCD0\uDA00", new int[] { 0xDCD0, 0xDA00 });
-			PermissiveEnumerationTest("\u0041\uDA00", new int[] { 0x0041, 0xDA00 });
-			PermissiveEnumerationTest("\u0041\uDCD0", new int[] { 0x0041, 0xDCD0 });
-			PermissiveEnumerationTest("\uDA00\u0041", new int[] { 0xDA00, 0x0041 });
-			PermissiveEnumerationTest("\uDCD0\u0041", new int[] { 0xDCD0, 0x0041 });
-			PermissiveEnumerationTest("\uDA00\u0041\uDCD0\u0041", new int[] { 0xDA00, 0x0041, 0xDCD0, 0x0041 });
-			PermissiveEnumerationTest("\u0041\uDA00\u0041\uDCD0\u0041", new int[] { 0x0041, 0xDA00, 0x0041, 0xDCD0, 0x0041 });
+			Assert.Throws<ArgumentNullException>(() => { foreach (int c in (null as string).AsPermissiveCodePointEnumerable()) { } });
+			TestPermissiveEnumeration(string.Empty, new int[0]);
+			TestPermissiveEnumeration("\uDA00", new int[] { 0xDA00 });
+			TestPermissiveEnumeration("\uDCD0", new int[] { 0xDCD0 });
+			TestPermissiveEnumeration("\uDCD0\uDA00", new int[] { 0xDCD0, 0xDA00 });
+			TestPermissiveEnumeration("\u0041\uDA00", new int[] { 0x0041, 0xDA00 });
+			TestPermissiveEnumeration("\u0041\uDCD0", new int[] { 0x0041, 0xDCD0 });
+			TestPermissiveEnumeration("\uDA00\u0041", new int[] { 0xDA00, 0x0041 });
+			TestPermissiveEnumeration("\uDCD0\u0041", new int[] { 0xDCD0, 0x0041 });
+			TestPermissiveEnumeration("\uDA00\u0041\uDCD0\u0041", new int[] { 0xDA00, 0x0041, 0xDCD0, 0x0041 });
+			TestPermissiveEnumeration("\u0041\uDA00\u0041\uDCD0\u0041", new int[] { 0x0041, 0xDA00, 0x0041, 0xDCD0, 0x0041 });
 		}
 
-		[TestMethod]
-		public void DisplayTextTest()
+		[Fact]
+		public void TestDisplayText()
 		{
 			for (int i = 0; i <= 0x20; ++i)
 			{
-				Assert.AreEqual(char.ConvertFromUtf32(0x2400 + i), UnicodeInfo.GetDisplayText(i));
-				Assert.AreEqual(char.ConvertFromUtf32(0x2400 + i), UnicodeInfo.GetDisplayText(UnicodeInfo.GetCharInfo(i)));
+				Assert.Equal(char.ConvertFromUtf32(0x2400 + i), UnicodeInfo.GetDisplayText(i));
+				Assert.Equal(char.ConvertFromUtf32(0x2400 + i), UnicodeInfo.GetDisplayText(UnicodeInfo.GetCharInfo(i)));
 			}
 
-			Assert.AreEqual("\u0041", UnicodeInfo.GetDisplayText(0x0041));
-			Assert.AreEqual("\U0001F600", UnicodeInfo.GetDisplayText(0x1F600));
-			Assert.AreEqual("\u00E9", UnicodeInfo.GetDisplayText(0x00E9));
+			Assert.Equal("\u0041", UnicodeInfo.GetDisplayText(0x0041));
+			Assert.Equal("\U0001F600", UnicodeInfo.GetDisplayText(0x1F600));
+			Assert.Equal("\u00E9", UnicodeInfo.GetDisplayText(0x00E9));
 		}
 
 		private static void AssertChar(int codePoint, UnicodeCategory category, string name, string block)
@@ -163,17 +162,17 @@ namespace UnicodeInformation.Tests
 		private static void AssertChar(int codePoint, UnicodeCategory category, UnicodeNumericType numericType, UnicodeRationalNumber? numericValue, string name, string block)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
-			Assert.AreEqual(codePoint, info.CodePoint);
-			Assert.AreEqual(category, info.Category);
-			Assert.AreEqual(numericType, info.NumericType);
-			Assert.AreEqual(numericValue, info.NumericValue);
-			Assert.AreEqual(name, info.Name);
-			Assert.AreEqual(block, UnicodeInfo.GetBlockName(codePoint));
-			Assert.AreEqual(block, info.Block);
+			Assert.Equal(codePoint, info.CodePoint);
+			Assert.Equal(category, info.Category);
+			Assert.Equal(numericType, info.NumericType);
+			Assert.Equal(numericValue, info.NumericValue);
+			Assert.Equal(name, info.Name);
+			Assert.Equal(block, UnicodeInfo.GetBlockName(codePoint));
+			Assert.Equal(block, info.Block);
 		}
 
-		[TestMethod]
-		public void CharacterInfoTest()
+		[Fact]
+		public void TestCharacterInfo()
 		{
 			AssertChar(0x0030, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(0), "DIGIT ZERO", "Basic Latin");
 			AssertChar(0x0031, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, new UnicodeRationalNumber(1), "DIGIT ONE", "Basic Latin");
@@ -188,30 +187,30 @@ namespace UnicodeInformation.Tests
 			AssertChar(0x17000, UnicodeCategory.OtherLetter, "TANGUT IDEOGRAPH-17000", "Tangut");
 		}
 
-		[TestMethod]
-		public void RationalNumberTest()
+		[Fact]
+		public void TestRationalNumber()
 		{
-			Assert.AreEqual(true, default(UnicodeRationalNumber).IsDefaultValue);
-			Assert.AreEqual("1", new UnicodeRationalNumber(1).ToString());
-			Assert.AreEqual("1", new UnicodeRationalNumber(1, 1).ToString());
-			Assert.AreEqual(new UnicodeRationalNumber(1), new UnicodeRationalNumber(1, 1));
-			Assert.AreEqual("1/100", new UnicodeRationalNumber(1, 100).ToString());
-			Assert.AreEqual("-20/7", new UnicodeRationalNumber(-20, 7).ToString());
-			Assert.AreEqual("-5", new UnicodeRationalNumber(-5).ToString());
-			Assert.AreEqual(long.MaxValue.ToString(), new UnicodeRationalNumber(long.MaxValue).ToString());
-			Assert.AreEqual(long.MaxValue.ToString() + "/" + byte.MaxValue.ToString(), new UnicodeRationalNumber(long.MaxValue, byte.MaxValue).ToString());
-			Assert.AreEqual(string.Empty, default(UnicodeRationalNumber).ToString());
+			Assert.Equal(true, default(UnicodeRationalNumber).IsDefaultValue);
+			Assert.Equal("1", new UnicodeRationalNumber(1).ToString());
+			Assert.Equal("1", new UnicodeRationalNumber(1, 1).ToString());
+			Assert.Equal(new UnicodeRationalNumber(1), new UnicodeRationalNumber(1, 1));
+			Assert.Equal("1/100", new UnicodeRationalNumber(1, 100).ToString());
+			Assert.Equal("-20/7", new UnicodeRationalNumber(-20, 7).ToString());
+			Assert.Equal("-5", new UnicodeRationalNumber(-5).ToString());
+			Assert.Equal(long.MaxValue.ToString(), new UnicodeRationalNumber(long.MaxValue).ToString());
+			Assert.Equal(long.MaxValue.ToString() + "/" + byte.MaxValue.ToString(), new UnicodeRationalNumber(long.MaxValue, byte.MaxValue).ToString());
+			Assert.Equal(string.Empty, default(UnicodeRationalNumber).ToString());
 
-			Assert.AreEqual(new UnicodeRationalNumber(0), UnicodeRationalNumber.Parse("0"));
-			Assert.AreEqual(new UnicodeRationalNumber(1), UnicodeRationalNumber.Parse("1"));
-			Assert.AreEqual(new UnicodeRationalNumber(1), UnicodeRationalNumber.Parse("1/1"));
-			Assert.AreEqual(new UnicodeRationalNumber(1, 10), UnicodeRationalNumber.Parse("1/10"));
-			Assert.AreNotEqual(new UnicodeRationalNumber(2, 10), UnicodeRationalNumber.Parse("1/10"));
-			Assert.AreNotEqual(new UnicodeRationalNumber(1, 20), UnicodeRationalNumber.Parse("1/10"));
-			Assert.AreNotEqual(new UnicodeRationalNumber(2, 2), new UnicodeRationalNumber(1, 1));
+			Assert.Equal(new UnicodeRationalNumber(0), UnicodeRationalNumber.Parse("0"));
+			Assert.Equal(new UnicodeRationalNumber(1), UnicodeRationalNumber.Parse("1"));
+			Assert.Equal(new UnicodeRationalNumber(1), UnicodeRationalNumber.Parse("1/1"));
+			Assert.Equal(new UnicodeRationalNumber(1, 10), UnicodeRationalNumber.Parse("1/10"));
+			Assert.NotEqual(new UnicodeRationalNumber(2, 10), UnicodeRationalNumber.Parse("1/10"));
+			Assert.NotEqual(new UnicodeRationalNumber(1, 20), UnicodeRationalNumber.Parse("1/10"));
+			Assert.NotEqual(new UnicodeRationalNumber(2, 2), new UnicodeRationalNumber(1, 1));
 
-			AssertEx.ThrowsExactly<ArgumentNullException>(() => UnicodeRationalNumber.Parse(null), "UnicodeRationalNumber.Parse");
-			AssertEx.ThrowsExactly<ArgumentException>(() => UnicodeRationalNumber.Parse(string.Empty), "UnicodeRationalNumber.Parse");
+			Assert.Throws<ArgumentNullException>(() => UnicodeRationalNumber.Parse(null));
+			Assert.Throws<ArgumentException>(() => UnicodeRationalNumber.Parse(string.Empty));
 
 			var numbers = new[]
 			{
@@ -232,104 +231,112 @@ namespace UnicodeInformation.Tests
 
 			// Verify that all numbers are unique
 			foreach (var number in numbers)
-				Assert.AreEqual(true, hashSet.Add(number));
+				Assert.Equal(true, hashSet.Add(number));
 
 			// Verify that all numbers are already in the list
 			foreach (var number in numbers)
-				Assert.AreEqual(false, hashSet.Add(number));
+				Assert.Equal(false, hashSet.Add(number));
 		}
 
-		[TestMethod]
-		public void HangulNameTest()
-		{
 #if DEBUG
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\0'));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\uABFF'));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName('\uD7A5'));
-#endif
-			Assert.AreEqual("HANGUL SYLLABLE PWILH", UnicodeInfo.GetName(0xD4DB));
-			Assert.AreEqual("HANGUL SYLLABLE PWAENG", UnicodeInfo.GetName(0xD439));
-			Assert.AreEqual("HANGUL SYLLABLE PANJ", UnicodeInfo.GetName(0xD311));
-			Assert.AreEqual("HANGUL SYLLABLE TOLM", UnicodeInfo.GetName(0xD1AA));
-		}
-
-		[TestMethod]
-		public void BlockNameTest()
+		[Theory]
+		[InlineData('\0')]
+		[InlineData('\uABFF')]
+		[InlineData('\uD7A5')]
+		public void TestHangulNameFailure(char codePoint)
 		{
-			Assert.AreEqual("Basic Latin", UnicodeInfo.GetBlockName(0x0041));
-			Assert.AreEqual("Miscellaneous Technical", UnicodeInfo.GetBlockName(0x2307));
-			Assert.AreEqual("Hangul Syllables", UnicodeInfo.GetBlockName(0xD311));
-			Assert.AreEqual("Miscellaneous Symbols and Pictographs", UnicodeInfo.GetBlockName(0x1F574));
+			Assert.Throws<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName(codePoint));
+		}
+#endif
+
+		[Theory]
+		[InlineData("HANGUL SYLLABLE PWILH", 0xD4DB)]
+		[InlineData("HANGUL SYLLABLE PWAENG", 0xD439)]
+		[InlineData("HANGUL SYLLABLE PANJ", 0xD311)]
+		[InlineData("HANGUL SYLLABLE TOLM", 0xD1AA)]
+		public void TestHangulName(string expectedName, int codePoint)
+		{
+			Assert.Equal(expectedName, UnicodeInfo.GetName(codePoint));
 		}
 
-		[TestMethod]
-		public void RadicalStrokeCountTest()
+		[Theory]
+		[InlineData("Basic Latin", 0x0041)]
+		[InlineData("Miscellaneous Technical", 0x2307)]
+		[InlineData("Hangul Syllables", 0xD311)]
+		[InlineData("Miscellaneous Symbols and Pictographs", 0x1F574)]
+		public void TestBlockName(string expectedBlockName, int codePoint)
+		{
+			Assert.Equal(expectedBlockName, UnicodeInfo.GetBlockName(codePoint));
+		}
+
+		[Fact]
+		public void TestRadicalStrokeCount()
 		{
 			var char5E7A = UnicodeInfo.GetCharInfo(0x5E7A);
 
-			Assert.AreNotEqual(0, char5E7A.UnicodeRadicalStrokeCounts);
-			Assert.AreEqual(false, char5E7A.UnicodeRadicalStrokeCounts[0].IsSimplified);
-			Assert.AreEqual(char5E7A.UnicodeRadicalStrokeCounts[0].Radical, 52);
-			Assert.AreEqual(char5E7A.UnicodeRadicalStrokeCounts[0].StrokeCount, 0);
+			Assert.NotEqual(0, char5E7A.UnicodeRadicalStrokeCounts.Count);
+			Assert.Equal(false, char5E7A.UnicodeRadicalStrokeCounts[0].IsSimplified);
+			Assert.Equal(char5E7A.UnicodeRadicalStrokeCounts[0].Radical, 52);
+			Assert.Equal(char5E7A.UnicodeRadicalStrokeCounts[0].StrokeCount, 0);
 
 			var char2A6D6 = UnicodeInfo.GetCharInfo(0x2A6D6);
 
-			Assert.AreNotEqual(0, char2A6D6.UnicodeRadicalStrokeCounts);
-			Assert.AreEqual(false, char2A6D6.UnicodeRadicalStrokeCounts[0].IsSimplified);
-			Assert.AreEqual(char2A6D6.UnicodeRadicalStrokeCounts[0].Radical, 214);
-			Assert.AreEqual(char2A6D6.UnicodeRadicalStrokeCounts[0].StrokeCount, 20);
+			Assert.NotEqual(0, char2A6D6.UnicodeRadicalStrokeCounts.Count);
+			Assert.Equal(false, char2A6D6.UnicodeRadicalStrokeCounts[0].IsSimplified);
+			Assert.Equal(char2A6D6.UnicodeRadicalStrokeCounts[0].Radical, 214);
+			Assert.Equal(char2A6D6.UnicodeRadicalStrokeCounts[0].StrokeCount, 20);
 		}
 
-		[TestMethod]
-		public void RadicalInfoTest()
+		[Fact]
+		public void TestRadicalInfo()
 		{
 			var radical1 = UnicodeInfo.GetCjkRadicalInfo(1);
 
-			Assert.AreEqual(false, radical1.HasSimplifiedForm);
-			Assert.AreEqual(1, radical1.RadicalIndex);
-			Assert.AreEqual('\u2F00', radical1.TraditionalRadicalCodePoint);
-			Assert.AreEqual('\u4E00', radical1.TraditionalCharacterCodePoint);
-			Assert.AreEqual('\u2F00', radical1.SimplifiedRadicalCodePoint);
-			Assert.AreEqual('\u4E00', radical1.SimplifiedCharacterCodePoint);
+			Assert.Equal(false, radical1.HasSimplifiedForm);
+			Assert.Equal(1, radical1.RadicalIndex);
+			Assert.Equal('\u2F00', radical1.TraditionalRadicalCodePoint);
+			Assert.Equal('\u4E00', radical1.TraditionalCharacterCodePoint);
+			Assert.Equal('\u2F00', radical1.SimplifiedRadicalCodePoint);
+			Assert.Equal('\u4E00', radical1.SimplifiedCharacterCodePoint);
 
 			var radical214 = UnicodeInfo.GetCjkRadicalInfo(214);
 
-			Assert.AreEqual(false, radical214.HasSimplifiedForm);
-			Assert.AreEqual(214, radical214.RadicalIndex);
-			Assert.AreEqual('\u2FD5', radical214.TraditionalRadicalCodePoint);
-			Assert.AreEqual('\u9FA0', radical214.TraditionalCharacterCodePoint);
-			Assert.AreEqual('\u2FD5', radical214.SimplifiedRadicalCodePoint);
-			Assert.AreEqual('\u9FA0', radical214.SimplifiedCharacterCodePoint);
+			Assert.Equal(false, radical214.HasSimplifiedForm);
+			Assert.Equal(214, radical214.RadicalIndex);
+			Assert.Equal('\u2FD5', radical214.TraditionalRadicalCodePoint);
+			Assert.Equal('\u9FA0', radical214.TraditionalCharacterCodePoint);
+			Assert.Equal('\u2FD5', radical214.SimplifiedRadicalCodePoint);
+			Assert.Equal('\u9FA0', radical214.SimplifiedCharacterCodePoint);
 
-			AssertEx.ThrowsExactly<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(0), nameof(UnicodeInfo.GetCjkRadicalInfo));
-			AssertEx.ThrowsExactly<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(215), nameof(UnicodeInfo.GetCjkRadicalInfo));
+			Assert.Throws<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(0));
+			Assert.Throws<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(215));
 		}
 
-		[TestMethod]
-		public void CodePointRangeTest()
+		[Fact]
+		public void TestCodePointRange()
 		{
 			var fullRange = new UnicodeCodePointRange(0, 0x10FFFF);
 
-			Assert.AreEqual(0, fullRange.FirstCodePoint);
-			Assert.AreEqual(0x10FFFF, fullRange.LastCodePoint);
-			Assert.AreEqual(false, fullRange.IsSingleCodePoint);
+			Assert.Equal(0, fullRange.FirstCodePoint);
+			Assert.Equal(0x10FFFF, fullRange.LastCodePoint);
+			Assert.Equal(false, fullRange.IsSingleCodePoint);
 
 			var letterA = new UnicodeCodePointRange('A');
 
-			Assert.AreEqual('A', letterA.FirstCodePoint);
-			Assert.AreEqual('A', letterA.LastCodePoint);
-			Assert.AreEqual(true, letterA.IsSingleCodePoint);
+			Assert.Equal('A', letterA.FirstCodePoint);
+			Assert.Equal('A', letterA.LastCodePoint);
+			Assert.Equal(true, letterA.IsSingleCodePoint);
 
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(0x110000));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(int.MaxValue));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1, 10));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(10, 0x110000));
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1, 0x110000));
+			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(0x110000));
+			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(int.MaxValue));
+			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1, 10));
+			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(10, 0x110000));
+			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(-1, 0x110000));
 		}
 
-		[TestMethod]
-		public void CodePointRangeEnumerationTest()
+		[Fact]
+		public void TestCodePointRangeEnumeration()
 		{
 			const int start = 0xA3F;
 			const int end = 0x105F;
@@ -340,7 +347,7 @@ namespace UnicodeInformation.Tests
 
 				foreach (int n in new UnicodeCodePointRange(start, end))
 				{
-					Assert.AreEqual(i++, n);
+					Assert.Equal(i++, n);
 				}
 			}
 
@@ -352,18 +359,18 @@ namespace UnicodeInformation.Tests
 
 				while (enumerator.MoveNext())
 				{
-					Assert.AreEqual(i++, enumerator.Current);
+					Assert.Equal(i++, enumerator.Current);
 				}
 
 				enumerator.Reset();
 
-				Assert.AreEqual(true, enumerator.MoveNext());
-				Assert.AreEqual(start, enumerator.Current);
+				Assert.Equal(true, enumerator.MoveNext());
+				Assert.Equal(start, enumerator.Current);
 			}
         }
 
-        [TestMethod]
-        public void GetNameSuccessTest()
+        [Fact]
+        public void TestGetNameSuccess()
         {
             for (int i = 0; i <= 0x10FFFF; i++)
             {
@@ -371,8 +378,8 @@ namespace UnicodeInformation.Tests
             }
         }
 
-        [TestMethod]
-        public void GetDisplayTextSuccessTest()
+        [Fact]
+        public void TestGetDisplayTextSuccess()
         {
             for (int i = 0; i <= 0x10FFFF; i++)
             {
@@ -380,8 +387,8 @@ namespace UnicodeInformation.Tests
             }
         }
 
-        [TestMethod]
-        public void GetCategorySuccessTest()
+        [Fact]
+        public void TestGetCategorySuccess()
         {
             for (int i = 0; i <= 0x10FFFF; i++)
             {
@@ -389,8 +396,8 @@ namespace UnicodeInformation.Tests
             }
         }
 
-        [TestMethod]
-        public void GetCharInfoSuccessTest()
+        [Fact]
+        public void TestGetCharInfoSuccess()
         {
             for (int i = 0; i <= 0x10FFFF; i++)
             {
@@ -398,43 +405,42 @@ namespace UnicodeInformation.Tests
             }
         }
 
-        [TestMethod]
-        public void GetCharInfoCoherenceTest()
+        [Fact]
+        public void TestGetCharInfoCoherence()
         {
             for (int i = 0; i <= 0x10FFFF; i++)
             {
                 var charInfo = UnicodeInfo.GetCharInfo(i);
 
-                Assert.AreEqual(charInfo.Name, UnicodeInfo.GetName(i));
-                Assert.AreEqual(charInfo.Category, UnicodeInfo.GetCategory(i));
-                Assert.AreEqual(UnicodeInfo.GetDisplayText(charInfo), UnicodeInfo.GetDisplayText(i));
+                Assert.Equal(charInfo.Name, UnicodeInfo.GetName(i));
+                Assert.Equal(charInfo.Category, UnicodeInfo.GetCategory(i));
+                Assert.Equal(UnicodeInfo.GetDisplayText(charInfo), UnicodeInfo.GetDisplayText(i));
             }
         }
 
 #if DEBUG
-        [TestMethod]
-		public void UnihanCodePointPackingTest()
+        [Fact]
+		public void TestUnihanCodePointPacking()
 		{
 			for (int i = 0x3400; i < 0x4E00; ++i)
-				Assert.AreEqual(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
+				Assert.Equal(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
 			for (int i = 0x4E00; i < 0xA000; ++i)
-				Assert.AreEqual(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
+				Assert.Equal(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
 			for (int i = 0xF900; i < 0xFB00; ++i)
-				Assert.AreEqual(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
+				Assert.Equal(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
 			for (int i = 0x20000; i < 0x2F800; ++i)
-				Assert.AreEqual(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
+				Assert.Equal(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
 			for (int i = 0x2F800; i < 0x30000; ++i)
-				Assert.AreEqual(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
+				Assert.Equal(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
+			
+			// The PackCodePoint method should fail for code points outside of the valid range.
+			Assert.Throws<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0xA000));
+			Assert.Throws<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0xFB00));
+			Assert.Throws<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0x30000));
 
-			const string packCodePointErrorMessage = "The PackCodePoint method should fail for code points outside of the valid range.";
-			const string unpackCodePointErrorMessage = "The PackCodePoint method should fail for values outside of the valid range.";
-
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0xA000), nameof(UnihanCharacterData.PackCodePoint), packCodePointErrorMessage);
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0xFB00), nameof(UnihanCharacterData.PackCodePoint), packCodePointErrorMessage);
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.PackCodePoint(0x30000), nameof(UnihanCharacterData.PackCodePoint), packCodePointErrorMessage);
-
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.UnpackCodePoint(-1), nameof(UnihanCharacterData.UnpackCodePoint), unpackCodePointErrorMessage);
-			AssertEx.ThrowsExactly<ArgumentOutOfRangeException>(() => UnihanCharacterData.UnpackCodePoint(0x20000), nameof(UnihanCharacterData.UnpackCodePoint), unpackCodePointErrorMessage);
+			// The UnpackCodePoint method should fail for values outside of the valid range.
+			Assert.Throws<ArgumentOutOfRangeException>(() => UnihanCharacterData.UnpackCodePoint(-1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => UnihanCharacterData.UnpackCodePoint(0x20000));
 		}
 #endif
 	}

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
@@ -8,10 +7,10 @@ using System.Unicode.Builder;
 using System.Text;
 using System.Net.Http;
 using System.Collections.Generic;
+using Xunit;
 
 namespace System.Unicode.Tests
 {
-	[TestClass]
 	public class UnicodeInfoBuilderTests
 	{
 		private sealed class FileHttpResponseHandler : HttpMessageHandler
@@ -57,9 +56,8 @@ namespace System.Unicode.Tests
 
 			handler.RegisterFile(uri, path);
 		}
-
-		[TestInitialize]
-		public void Initialize()
+		
+		public UnicodeInfoBuilderTests()
 		{
 			var httpCacheDirectory = Path.GetFullPath(HttpCacheDirectory);
 
@@ -80,7 +78,7 @@ namespace System.Unicode.Tests
 			Task.WaitAll(ucdTask, unihanTask);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void DownloadUcdArchive()
 		{
 			using (var source = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, false, false))
@@ -88,7 +86,7 @@ namespace System.Unicode.Tests
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public void DownloadAndSaveUcdArchive()
 		{
 			using (var source = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, true, false))
@@ -96,7 +94,7 @@ namespace System.Unicode.Tests
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public void ExtractUcdArchive()
 		{
 			using (var source = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, true, true))
@@ -104,7 +102,7 @@ namespace System.Unicode.Tests
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public void DownloadUnihanArchive()
 		{
 			using (var source = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, false, false))
@@ -112,7 +110,7 @@ namespace System.Unicode.Tests
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public void DownloadAndSaveUnihanArchive()
 		{
 			using (var source = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, true, false))
@@ -120,7 +118,7 @@ namespace System.Unicode.Tests
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public void ExtractUnihanArchive()
 		{
 			using (var source = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, true, true))
@@ -128,7 +126,7 @@ namespace System.Unicode.Tests
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public async Task BuildDataAsync()
 		{
 			using (var ucdSource = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, null, null, null))
@@ -136,11 +134,11 @@ namespace System.Unicode.Tests
 			{
 				var data = (await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource));
 
-				Assert.AreEqual((int)'\t', data.GetUcd('\t').CodePointRange.FirstCodePoint);
+				Assert.Equal((int)'\t', data.GetUcd('\t').CodePointRange.FirstCodePoint);
 			}
 		}
 
-		[TestMethod]
+		[Fact]
 		public async Task BuildAndWriteDataAsync()
 		{
 			using (var ucdSource = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, null, null, null))
@@ -157,7 +155,7 @@ namespace System.Unicode.Tests
 		}
 
 #if DEBUG
-		[TestMethod]
+		[Fact]
 		public void CodePointEncodingTest()
 		{
 			using (var stream = new MemoryStream(4))
@@ -169,7 +167,7 @@ namespace System.Unicode.Tests
 					writer.WriteCodePoint(i);
 					writer.Flush();
 					stream.Position = 0;
-					Assert.AreEqual(i, UnicodeInfo.ReadCodePoint(reader));
+					Assert.Equal(i, UnicodeInfo.ReadCodePoint(reader));
 					stream.Position = 0;
 				}
 			}
