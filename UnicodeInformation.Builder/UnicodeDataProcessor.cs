@@ -542,7 +542,7 @@ namespace System.Unicode.Builder
 								throw new InvalidDataException("Failed to decode value for kRSUnicode / Unicode_Radical_Stroke.");
 
 							SeparatorFound:;
-								entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), byte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.None), isSimplified));
+								entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), sbyte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.AllowLeadingSign), isSimplified));
 							}
 							break;
 						default:

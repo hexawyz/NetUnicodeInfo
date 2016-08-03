@@ -9,11 +9,19 @@ This projects has two parts.
 One is a library, providing access to some of the data contained in the Unicode Character Database by the means of a portable .NET assembly.
 The other, is a small WPF application allowing to inspect the Unicode code points composing a specified text.
 
+Version of Unicode supported
+----------------------------
+Unicode 9.0.0
+
 Using the Unicode Character Inspector application
 -------------------------------------------------
 Simply launch the application, then type or paste some text in the text box on the top of the window.
 The code points will be displayed in the list on the left side. Select one of them to display the associated information in the bottom-right pane.
 ![Screenshot of Unicode Character Inspector](docs/uci-00.png)
+
+Breaking changes from versions 1.x to 2.x
+-----------------------------------------
+UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.
 
 Compiling and using the project
 -------------------------------
@@ -56,7 +64,7 @@ This example shows a few usages of the library. It gets information on a specifi
 ### Details
 In its current state, the project is written in C# 6, compilable by [Roslyn](http://roslyn.codeplex.com/), and targets the .NET 4.5 framework.
 The core of the project, UnicodeInformation.dll, is a portable class library usable for either regular .NET or Windows 8 applications.
-This library includes a subset of the official [Unicode Character Database](http://www.unicode.org/Public/UCD/latest/) (Version 8.0 at the time of writing) stored in a custom file format.
+This library includes a subset of the official [Unicode Character Database](http://www.unicode.org/Public/UCD/latest/) stored in a custom file format.
 
 ### Included Properties
 #### From UCD

@@ -103,7 +103,7 @@ namespace System.Unicode.Builder
                 foreach (var radicalStrokeCount in unicodeRadicalStrokeCounts)
 				{
 					writer.Write(radicalStrokeCount.Radical);
-					writer.Write((byte)(radicalStrokeCount.StrokeCount | (radicalStrokeCount.IsSimplified ? 0x80 : 0)));
+					writer.Write(radicalStrokeCount.RawStrokeCount);
                 }
 			}
 

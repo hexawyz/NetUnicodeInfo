@@ -11,6 +11,12 @@ namespace UnicodeInformation.Tests
 	public class UnicodeInfoTests
 	{
 		[TestMethod]
+		public void UnicodeVersionTest()
+		{
+			Assert.AreEqual(new Version(9, 0, 0), UnicodeInfo.UnicodeVersion);
+		}
+
+		[TestMethod]
 		public void CodePointEnumeratorTest()
 		{
 			string text = "\u0041\U0001F600\u00E9";
@@ -179,6 +185,7 @@ namespace UnicodeInformation.Tests
 			AssertChar(0x00E9, UnicodeCategory.LowercaseLetter, "LATIN SMALL LETTER E WITH ACUTE", "Latin-1 Supplement");
 			AssertChar(0xD4DB, UnicodeCategory.OtherLetter, "HANGUL SYLLABLE PWILH", "Hangul Syllables");
 			AssertChar(0x1F574, UnicodeCategory.OtherSymbol, "MAN IN BUSINESS SUIT LEVITATING", "Miscellaneous Symbols and Pictographs");
+			AssertChar(0x17000, UnicodeCategory.OtherLetter, "TANGUT IDEOGRAPH-17000", "Tangut");
 		}
 
 		[TestMethod]

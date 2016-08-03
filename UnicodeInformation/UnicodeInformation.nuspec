@@ -11,7 +11,11 @@
     <iconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/UnicodeCharacterInspector/UnicodeCharacterInspector.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>
+      Version 2.0
+      -------------
+      Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.
+    </releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</tags>
   </metadata>
