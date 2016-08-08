@@ -5,9 +5,9 @@ platform: Any CPU
 assembly_info:
   patch: true
   file: AssemblyInfo.Common.*
-  assembly_version: 1.0.1.{build}
-  assembly_file_version: 1.0.1.{build}
-  assembly_informational_version: 1.0.1.{build}-CI
+  assembly_version: 2.0.0.{build}
+  assembly_file_version: 2.0.0.{build}
+  assembly_informational_version: 2.0.0.{build}-CI
 before_build:
 - cmd: nuget restore
 build:
