@@ -8,6 +8,8 @@ assembly_info:
   assembly_version: 1.0.1.{build}
   assembly_file_version: 1.0.1.{build}
   assembly_informational_version: 1.0.1.{build}-CI
+before_build:
+- cmd: nuget restore
 build:
   publish_nuget: true
   verbosity: minimal
