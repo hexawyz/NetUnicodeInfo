@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Unicode;
 using System.Globalization;
-using System.Collections.Generic;
-using System.Collections;
 using Xunit;
-using System.Linq;
 
 namespace UnicodeInformation.Tests
 {
@@ -99,7 +96,7 @@ namespace UnicodeInformation.Tests
 		}
 
 		[Fact]
-		public void TestRadicalStrokeCount()
+		public void RadicalStrokeCountShouldHaveExpectedResults()
 		{
 			var char5E7A = UnicodeInfo.GetCharInfo(0x5E7A);
 
@@ -117,7 +114,7 @@ namespace UnicodeInformation.Tests
 		}
 
 		[Fact]
-		public void TestRadicalInfo()
+		public void RadicalInfoShouldHaveExpectedResults()
 		{
 			var radical1 = UnicodeInfo.GetCjkRadicalInfo(1);
 
@@ -139,74 +136,6 @@ namespace UnicodeInformation.Tests
 
 			Assert.Throws<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(0));
 			Assert.Throws<IndexOutOfRangeException>(() => UnicodeInfo.GetCjkRadicalInfo(215));
-		}
-
-		[Fact]
-		public void TestCodePointRange()
-		{
-			var fullRange = new UnicodeCodePointRange(0, 0x10FFFF);
-
-			Assert.Equal(0, fullRange.FirstCodePoint);
-			Assert.Equal(0x10FFFF, fullRange.LastCodePoint);
-			Assert.False(fullRange.IsSingleCodePoint);
-
-			var letterA = new UnicodeCodePointRange('A');
-
-			Assert.Equal('A', letterA.FirstCodePoint);
-			Assert.Equal('A', letterA.LastCodePoint);
-			Assert.True(letterA.IsSingleCodePoint);
-		}
-
-		[Theory]
-		[InlineData(-1)]
-		[InlineData(0x110000)]
-		[InlineData(int.MaxValue)]
-		public void TestInvalidSingleCodePointRanges(int codePoint)
-		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(codePoint));
-		}
-
-		[Theory]
-		[InlineData(-1, 10)]
-		[InlineData(10, 0x110000)]
-		[InlineData(-1, 0x110000)]
-		public void TestInvalidCodePointRanges(int firstCodePoint, int lastCodePoint)
-		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(firstCodePoint, lastCodePoint));
-		}
-
-		[Fact]
-		public void TestCodePointRangeEnumeration()
-		{
-			const int start = 0xA3F;
-			const int end = 0x105F;
-
-			// Generic test
-			{
-				int i = start;
-
-				foreach (int n in new UnicodeCodePointRange(start, end))
-				{
-					Assert.Equal(i++, n);
-				}
-			}
-
-			// Nongeneric test
-			{
-				int i = start;
-
-				var enumerator = (IEnumerator)new UnicodeCodePointRange(start, end).GetEnumerator();
-
-				while (enumerator.MoveNext())
-				{
-					Assert.Equal(i++, enumerator.Current);
-				}
-
-				enumerator.Reset();
-
-				Assert.True(enumerator.MoveNext());
-				Assert.Equal(start, enumerator.Current);
-			}
 		}
 
 		[Fact]
@@ -246,7 +175,7 @@ namespace UnicodeInformation.Tests
 		}
 
 		[Fact]
-		public void TestGetCharInfoCoherence()
+		public void MethodGetCharInfoShouldHaveCoherentResults()
 		{
 			for (int i = 0; i <= 0x10FFFF; i++)
 			{
@@ -260,7 +189,7 @@ namespace UnicodeInformation.Tests
 
 #if DEBUG
 		[Fact]
-		public void TestUnihanCodePointPacking()
+		public void UnihanCodePointPackingShouldHaveExpectedResults()
 		{
 			for (int i = 0x3400; i < 0x4E00; ++i)
 				Assert.Equal(i, UnihanCharacterData.UnpackCodePoint(UnihanCharacterData.PackCodePoint(i)));
