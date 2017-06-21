@@ -72,7 +72,7 @@ namespace System.Unicode.Builder
 				{
 					if (byteBuffer[index++] == '\n')
 					{
-						if (index < length && !IsNewLineOrComment(byteBuffer[index]))
+						if ((index < length || RefillBuffer()) && !IsNewLineOrComment(byteBuffer[index]))
 						{
 							hasField = true;
 							goto Completed;

@@ -195,7 +195,7 @@ namespace System.Unicode.Builder
 				|| ucdEntries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
 				|| ucdEntries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Unable to find code point for setting contributory property.");
 			}
 
 			int i = firstIndex;

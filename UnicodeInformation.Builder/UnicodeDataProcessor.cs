@@ -128,8 +128,7 @@ namespace System.Unicode.Builder
 						CanonicalCombiningClass = (CanonicalCombiningClass)byte.Parse(reader.ReadField()),
 					};
 
-					BidirectionalClass bidirectionalClass;
-					if (EnumHelper<BidirectionalClass>.TryGetNamedValue(reader.ReadField(), out bidirectionalClass))
+					if (EnumHelper<BidirectionalClass>.TryGetNamedValue(reader.ReadField(), out var bidirectionalClass))
 					{
 						characterData.BidirectionalClass = bidirectionalClass;
 					}
@@ -196,10 +195,8 @@ namespace System.Unicode.Builder
 			{
 				while (reader.MoveToNextLine())
 				{
-					ContributoryProperties property;
-
 					var range = UnicodeCodePointRange.Parse(reader.ReadTrimmedField());
-					if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out property))
+					if (EnumHelper<ContributoryProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out var property))
 					{
 						builder.SetProperties(property, range);
 					}
@@ -213,10 +210,8 @@ namespace System.Unicode.Builder
 			{
 				while (reader.MoveToNextLine())
 				{
-					CoreProperties property;
-
 					var range = UnicodeCodePointRange.Parse(reader.ReadTrimmedField());
-					if (EnumHelper<CoreProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out property))
+					if (EnumHelper<CoreProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out var property))
 					{
 						builder.SetProperties(property, range);
 					}
@@ -281,9 +276,8 @@ namespace System.Unicode.Builder
 
 					string name = reader.ReadField();
 					string kindName = reader.ReadField();
-					UnicodeNameAliasKind kind;
 
-					if (!EnumHelper<UnicodeNameAliasKind>.TryGetNamedValue(kindName, out kind))
+					if (!EnumHelper<UnicodeNameAliasKind>.TryGetNamedValue(kindName, out var kind))
 						throw new InvalidDataException("Unrecognized name alias: " + kindName + ".3");
 
 					ucd.NameAliases.Add(new UnicodeNameAlias(name, kind));

@@ -10,7 +10,7 @@ namespace UnicodeInformation.Tests
 		[Fact]
 		public void UnicodeVersionShouldBeTheLatestSupported()
 		{
-			Assert.Equal(new Version(9, 0, 0), UnicodeInfo.UnicodeVersion);
+			Assert.Equal(new Version(10, 0, 0), UnicodeInfo.UnicodeVersion);
 		}
 		
 		[Fact]

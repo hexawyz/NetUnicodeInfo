@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Product>.NET Unicode Information</Product>
+    <Authors>Fabien Barbier</Authors>
+    <Copyright>Copyright © Fabien Barbier 2014-2017</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>2.1.0</Version>
+  </PropertyGroup>
+</Project>

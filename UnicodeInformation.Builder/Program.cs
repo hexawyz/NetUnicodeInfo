@@ -53,7 +53,7 @@ namespace System.Unicode.Builder
 
 		internal static IDataSource GetDataSource(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
 		{
-			string baseDirectory = Environment.CurrentDirectory;
+			string baseDirectory = Directory.GetCurrentDirectory();
 			string dataDirectory = Path.Combine(baseDirectory, UcdDirectoryName);
 			string dataArchiveFileName = Path.Combine(baseDirectory, archiveName);
 
