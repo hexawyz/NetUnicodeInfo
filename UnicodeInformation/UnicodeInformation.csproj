@@ -4,23 +4,29 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <RootNamespace>System.Unicode</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\System.Unicode.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Label="Package">
+    <PackageId>UnicodeInformation</PackageId>
+    <Title>.NET Unicode Information Library</Title>
     <AssemblyTitle>.NET Unicode Information Library</AssemblyTitle>
     <Description>Library providing access to Unicode data to .NET clients.</Description>
+    <PackageTags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</PackageTags>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GoldenCrystal/NetUnicodeInfo</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/UnicodeCharacterInspector/UnicodeCharacterInspector.ico</PackageIconUrl>
-    <PackageReleaseNotes>Version 2.1
--------------
-Support for Unicode 10.0.
+    <PackageReleaseNotes>
+      Version 2.1
+      -------------
+      Support for Unicode 10.0.
 
-Version 2.0
--------------
-Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.</PackageReleaseNotes>
-    <PackageTags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</PackageTags>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+      Version 2.0
+      -------------
+      Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.
+    </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="ucd.dat" />
