@@ -13,7 +13,10 @@ before_build:
 build:
   verbosity: minimal
 test_script:
-- cmd: dotnet xunit
+- cmd: >-
+    cd UnicodeInformation.Tests
+
+    dotnet xunit
 artifacts:
 - path: UnicodeCharacterInspector\bin\Release
   name: UnicodeCharacterInspector
