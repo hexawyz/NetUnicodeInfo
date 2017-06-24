@@ -102,15 +102,15 @@ namespace UnicodeInformation.Tests
 
 			Assert.NotEmpty(char5E7A.UnicodeRadicalStrokeCounts);
 			Assert.False(char5E7A.UnicodeRadicalStrokeCounts[0].IsSimplified);
-			Assert.Equal(char5E7A.UnicodeRadicalStrokeCounts[0].Radical, 52);
-			Assert.Equal(char5E7A.UnicodeRadicalStrokeCounts[0].StrokeCount, 0);
+			Assert.Equal(52, char5E7A.UnicodeRadicalStrokeCounts[0].Radical);
+			Assert.Equal(0, char5E7A.UnicodeRadicalStrokeCounts[0].StrokeCount);
 
 			var char2A6D6 = UnicodeInfo.GetCharInfo(0x2A6D6);
 
 			Assert.NotEmpty(char2A6D6.UnicodeRadicalStrokeCounts);
 			Assert.False(char2A6D6.UnicodeRadicalStrokeCounts[0].IsSimplified);
-			Assert.Equal(char2A6D6.UnicodeRadicalStrokeCounts[0].Radical, 214);
-			Assert.Equal(char2A6D6.UnicodeRadicalStrokeCounts[0].StrokeCount, 20);
+			Assert.Equal(214, char2A6D6.UnicodeRadicalStrokeCounts[0].Radical);
+			Assert.Equal(20, char2A6D6.UnicodeRadicalStrokeCounts[0].StrokeCount);
 		}
 
 		[Fact]
