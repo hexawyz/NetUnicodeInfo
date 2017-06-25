@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Unicode
@@ -420,23 +421,29 @@ namespace System.Unicode
 		/// <summary>Gets a display text for the specified code point.</summary>
 		/// <param name="charInfo">The information for the code point.</param>
 		/// <returns>A display text for the code point, which may be the representation of the code point itself.</returns>
-		public static string GetDisplayText(UnicodeCharInfo charInfo)
-		{
-			if (charInfo.CodePoint <= 0x0020) return ((char)(0x2400 + charInfo.CodePoint)).ToString();
-			else if (charInfo.Category == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(charInfo.CodePoint);
-            else if (charInfo.CodePoint >= 0xD800 && charInfo.CodePoint <= 0xDFFF) return "\xFFFD";
-			else return char.ConvertFromUtf32(charInfo.CodePoint);
-		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static string GetDisplayText(this UnicodeCharInfo charInfo)
+			=> GetDisplayText(charInfo.CodePoint, charInfo.unicodeCharacterDataIndex);
 
 		/// <summary>Gets a display text for the specified code point.</summary>
 		/// <param name="codePoint">The Unicode code point, for which a display text should be returned.</param>
 		/// <returns>A display text for the code point, which may be the representation of the code point itself.</returns>
 		public static string GetDisplayText(int codePoint)
 		{
-            if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString();
-            else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
+            if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString(); // Provide a display text for control characters, including space.
+			else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
             else if (codePoint >= 0xD800 && codePoint <= 0xDFFF) return "\xFFFD";
+			else if (codePoint >= 0xE0020 && codePoint < 0xE007F) return char.ConvertFromUtf32(codePoint - 0xE0000); // Handle "TAG" ASCII subset by remapping it to regular ASCII
             else return char.ConvertFromUtf32(codePoint);
+		}
+
+		private static string GetDisplayText(int codePoint, int unicodeCharacterDataIndex)
+		{
+			if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString(); // Provide a display text for control characters, including space.
+			else if (GetUnicodeCharacterData(unicodeCharacterDataIndex).Category == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
+			else if (codePoint >= 0xD800 && codePoint <= 0xDFFF) return "\xFFFD";
+			else if (codePoint >= 0xE0020 && codePoint < 0xE007F) return char.ConvertFromUtf32(codePoint - 0xE0000); // Handle "TAG" ASCII subset by remapping it to regular ASCII
+			else return char.ConvertFromUtf32(codePoint);
 		}
 
 		/// <summary>Gets the name of the specified code point.</summary>

@@ -11,7 +11,8 @@ The other, is a small WPF application allowing to inspect the Unicode code point
 
 Version of Unicode supported
 ----------------------------
-Unicode 9.0.0
+Unicode 10.0.0
+Emoji 5.0
 
 Using the Unicode Character Inspector application
 -------------------------------------------------

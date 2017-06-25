@@ -15,15 +15,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="UnihanProperty.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>UnihanProperty.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\UnicodeInformation\UnicodeInformation.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="UnihanProperty.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UnihanProperty.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="UnihanProperty.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UnihanProperty.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

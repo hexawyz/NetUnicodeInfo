@@ -88,7 +88,7 @@ namespace UnicodeCharacterInspector
 			if (displayText != oldValue) NotifyPropertyChanged(nameof(DisplayText));
 		}
 
-		public string DisplayText { get { return displayText; } }
+		public string DisplayText => displayText;
 
 		public int? CodePoint => character != null ? codePoint : null as int?;
 

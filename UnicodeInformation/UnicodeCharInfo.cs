@@ -14,7 +14,7 @@ namespace System.Unicode
 		private readonly int codePoint;
 		/// <summary>The name of the code point.</summary>
 		private readonly string name;
-		private readonly int unicodeCharacterDataIndex;
+		internal readonly int unicodeCharacterDataIndex;
 		private readonly int unihanCharacterDataIndex;
 		private readonly string block;
 
