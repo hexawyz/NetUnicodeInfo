@@ -13,6 +13,11 @@ namespace System.Unicode
 	/// <summary>Provides access to unicode information.</summary>
 	public static class UnicodeInfo
 	{
+		// NB: These fields will be used as a default value for UnicodeCharacterData and UnihanCharacterData, and passed by reference.
+		// They should be considered as being redonly, even if they aren't explicitely.
+		private static /*readonly*/ UnicodeCharacterData DefaultUnicodeCharacterData = new UnicodeCharacterData(default(UnicodeCodePointRange), null, null, UnicodeCategory.OtherNotAssigned, 0, 0, 0, null, 0, default(UnicodeRationalNumber), false, null, null, null, null, 0, 0, null);
+		private static /*readonly*/ UnihanCharacterData DefaultUnihanCharacterData = default(UnihanCharacterData);
+
 		/// <summary>The block name returned when no block is assigned to a specific code point.</summary>
 		public const string DefaultBlock = "No_Block";
 
@@ -47,14 +52,18 @@ namespace System.Unicode
 				if (formatVersion != 2) throw new InvalidDataException();
 
 				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte(), reader.ReadByte());
-
-				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)];
+				
+				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)]; // Allocate one extra entry to act as a dummy entry.
 				byte[] nameBuffer = new byte[128];
 				int mci = 0;
 
 				for (i = 0; i < unicodeCharacterDataEntries.Length; ++i)
 				{
-					if ((unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader, nameBuffer)).CodePointRange.Contains(i)) mci = i;
+					ReadUnicodeCharacterDataEntry(reader, nameBuffer, out unicodeCharacterDataEntries[i]);
+					if (unicodeCharacterDataEntries[i].CodePointRange.Contains(i))
+					{
+						mci = i;
+					}
 					else
 					{
 						++i;
@@ -66,7 +75,7 @@ namespace System.Unicode
 
 				for (; i < unicodeCharacterDataEntries.Length; ++i)
 				{
-					unicodeCharacterDataEntries[i] = ReadUnicodeCharacterDataEntry(reader, nameBuffer);
+					 ReadUnicodeCharacterDataEntry(reader, nameBuffer, out unicodeCharacterDataEntries[i]);
 				}
 
 				var blockEntries = new UnicodeBlock[reader.ReadUInt16()];
@@ -87,7 +96,7 @@ namespace System.Unicode
 
 				for (i = 0; i < unihanCharacterDataEntries.Length; ++i)
 				{
-					unihanCharacterDataEntries[i] = ReadUnihanCharacterDataEntry(reader);
+					ReadUnihanCharacterDataEntry(reader, out unihanCharacterDataEntries[i]);
 				}
 
 				unicodeVersion = fileUnicodeVersion;
@@ -98,7 +107,7 @@ namespace System.Unicode
 			}
 		}
 
-		private static UnicodeCharacterData ReadUnicodeCharacterDataEntry(BinaryReader reader, byte[] nameBuffer)
+		private static void ReadUnicodeCharacterDataEntry(BinaryReader reader, byte[] nameBuffer, out UnicodeCharacterData value)
 		{
 			var fields = (UcdFields)reader.ReadUInt16();
 
@@ -153,7 +162,7 @@ namespace System.Unicode
 			string simpleLowerCaseMapping = (fields & UcdFields.SimpleLowerCaseMapping) != 0 ? reader.ReadString() : null;
 			string simpleTitleCaseMapping = (fields & UcdFields.SimpleTitleCaseMapping) != 0 ? reader.ReadString() : null;
 			ContributoryProperties contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
-			CoreProperties coreProperties = (fields & UcdFields.CoreProperties) != 0 ? (CoreProperties)ReadInt24(reader) : 0;
+			int corePropertiesAndEmojiProperties = (fields & UcdFields.CorePropertiesAndEmojiProperties) != 0 ? ReadInt24(reader) : 0;
 			int[] crossReferences = (fields & UcdFields.CrossRerefences) != 0 ? new int[reader.ReadByte() + 1] : null;
 
 			if (crossReferences != null)
@@ -162,7 +171,7 @@ namespace System.Unicode
 					crossReferences[i] = ReadCodePoint(reader);
 			}
 
-			return new UnicodeCharacterData
+			value = new UnicodeCharacterData
 			(
 				codePointRange,
 				name,
@@ -180,12 +189,12 @@ namespace System.Unicode
 				simpleLowerCaseMapping,
 				simpleTitleCaseMapping,
 				contributoryProperties,
-				coreProperties,
+				corePropertiesAndEmojiProperties,
 				crossReferences
 			);
 		}
 
-		private static UnihanCharacterData ReadUnihanCharacterDataEntry(BinaryReader reader)
+		private static void ReadUnihanCharacterDataEntry(BinaryReader reader, out UnihanCharacterData value)
 		{
 			var fields = (UnihanFields)reader.ReadUInt16();
 
@@ -219,7 +228,7 @@ namespace System.Unicode
 			string simplifiedVariant = (fields & UnihanFields.SimplifiedVariant) != 0 ? reader.ReadString() : null;
 			string traditionalVariant = (fields & UnihanFields.TraditionalVariant) != 0 ? reader.ReadString() : null;
 
-			return new UnihanCharacterData
+			value = new UnihanCharacterData
 			(
 				codePoint,
 				numericType,
@@ -250,14 +259,9 @@ namespace System.Unicode
 		}
 
 		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
-		{
-			return new UnicodeBlock(new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
-		}
+			=> new UnicodeBlock(new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
 
-		private static int ReadInt24(BinaryReader reader)
-		{
-			return reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
-		}
+		private static int ReadInt24(BinaryReader reader) => reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
 
 #if DEBUG
 		internal static int ReadCodePoint(BinaryReader reader)
@@ -285,21 +289,12 @@ namespace System.Unicode
 		/// <summary>Gets the version of the Unicode standard supported by the class.</summary>
 		public static Version UnicodeVersion { get { return unicodeVersion; } }
 
-		private static UnicodeCharacterData FindUnicodeCodePoint(int codePoint)
-		{
-			// For the first code points (this includes all of ASCII, and quite a bit more), the index in the table will be the code point itself.
-			if (codePoint <= maxContiguousIndex)
-			{
-				return unicodeCharacterData[codePoint];
-			}
-			else
-			{
-				// For other code points, we will use a classic binary search with adjusted search indexes.
-				return BinarySearchUnicodeCodePoint(codePoint);
-			}
-		}
+		private static int FindUnicodeCodePointIndex(int codePoint)
+			=> codePoint <= maxContiguousIndex ?
+				codePoint : // For the first code points (this includes all of ASCII, and quite a bit more), the index in the table will be the code point itself.
+				BinarySearchUnicodeCodePointIndex(codePoint); // For other code points, we will use a classic binary search with adjusted search indexes.
 
-		private static UnicodeCharacterData BinarySearchUnicodeCodePoint(int codePoint)
+		private static int BinarySearchUnicodeCodePointIndex(int codePoint)
 		{
 			// NB: Due to the strictly ordered nature of the table, we know that a code point can never happen after the index which is the code point itself.
 			// This will greatly reduce the range to scan for characters close to maxContiguousIndex, and will have a lesser impact on other characters.
@@ -312,22 +307,22 @@ namespace System.Unicode
 
 				int Δ = unicodeCharacterData[index].CodePointRange.CompareCodePoint(codePoint);
 
-				if (Δ == 0) return unicodeCharacterData[index];
+				if (Δ == 0) return index;
 				else if (Δ < 0) maxIndex = index - 1;
 				else minIndex = index + 1;
 			} while (minIndex <= maxIndex);
 
-			return null;
+			return -1;
 		}
 
-		private static UnihanCharacterData FindUnihanCodePoint(int codePoint)
+		private static int FindUnihanCodePointIndex(int codePoint)
 		{
 			int minIndex;
 			int maxIndex;
 
 			if (unihanCharacterData.Length == 0 || codePoint < unihanCharacterData[minIndex = 0].CodePoint || codePoint > unihanCharacterData[maxIndex = unihanCharacterData.Length - 1].CodePoint)
 			{
-				return null;
+				return -1;
 			}
 
 			do
@@ -336,12 +331,12 @@ namespace System.Unicode
 
 				int Δ = codePoint - unihanCharacterData[index].CodePoint;
 
-				if (Δ == 0) return unihanCharacterData[index];
+				if (Δ == 0) return index;
 				else if (Δ < 0) maxIndex = index - 1;
 				else minIndex = index + 1;
 			} while (minIndex <= maxIndex);
 
-			return null;
+			return -1;
 		}
 
 		private static int FindBlockIndex(int codePoint)
@@ -363,16 +358,26 @@ namespace System.Unicode
 			return -1;
 		}
 
+		internal static ref UnicodeCharacterData GetUnicodeCharacterData(int index)
+		{
+			if (index >= 0) return ref unicodeCharacterData[index];
+			return ref DefaultUnicodeCharacterData;
+		}
+
+		internal static ref UnihanCharacterData GetUnihanCharacterData(int index)
+		{
+			if (index >= 0) return ref unihanCharacterData[index];
+			return ref DefaultUnihanCharacterData;
+		}
+
 		/// <summary>Gets the name of the Unicode block containing the character.</summary>
 		/// <remarks>If the character has not been assigned to a block, the value of <see cref="DefaultBlock"/> will be returned.</remarks>
 		/// <param name="codePoint">The Unicode code point whose block should be retrieved.</param>
 		/// <returns>The name of the block the code point was assigned to.</returns>
 		public static string GetBlockName(int codePoint)
-		{
-			int i = FindBlockIndex(codePoint);
-
-			return i >= 0 ? blocks[i].Name : DefaultBlock;
-		}
+			=> FindBlockIndex(codePoint) is int i && i >= 0 ?
+				blocks[i].Name :
+				DefaultBlock;
 
 		/// <summary>Gets Unicode information on the specified code point.</summary>
 		/// <remarks>
@@ -400,9 +405,7 @@ namespace System.Unicode
 		/// <param name="codePoint">The Unicode code point for which the data must be retrieved.</param>
 		/// <returns>The name of the code point, if defined; <see langword="null"/> otherwise.</returns>
 		public static UnicodeCharInfo GetCharInfo(int codePoint)
-		{
-			return new UnicodeCharInfo(codePoint, FindUnicodeCodePoint(codePoint), FindUnihanCodePoint(codePoint), GetBlockName(codePoint));
-		}
+			=> new UnicodeCharInfo(codePoint, FindUnicodeCodePointIndex(codePoint), FindUnihanCodePointIndex(codePoint), GetBlockName(codePoint));
 
 		/// <summary>Gets the category of the specified code point.</summary>
 		/// <remarks>
@@ -412,11 +415,9 @@ namespace System.Unicode
 		/// <param name="codePoint">The Unicode code point for which the category must be retrieved.</param>
 		/// <returns>The category of the code point.</returns>
 		public static UnicodeCategory GetCategory(int codePoint)
-		{
-			var charData = FindUnicodeCodePoint(codePoint);
-
-			return charData != null ? charData.Category : UnicodeCategory.OtherNotAssigned;
-		}
+			=> FindUnicodeCodePointIndex(codePoint) is int unicodeCharacterDataIndex && unicodeCharacterDataIndex >= 0 ?
+				GetUnicodeCharacterData(unicodeCharacterDataIndex).Category :
+				UnicodeCategory.OtherNotAssigned;
 
 		/// <summary>Gets a display text for the specified code point.</summary>
 		/// <param name="charInfo">The information for the code point.</param>
@@ -448,19 +449,16 @@ namespace System.Unicode
 		/// <param name="codePoint">The Unicode code point for which the name must be retrieved.</param>
 		/// <returns>The name of the code point, if defined; <see langword="null"/> otherwise.</returns>
 		public static string GetName(int codePoint)
-		{
-			if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
-			else return GetNameInternal(codePoint);
-		}
+			=> HangulInfo.IsHangul(codePoint) ?
+				HangulInfo.GetHangulName((char)codePoint) :
+				GetNameInternal(codePoint);
 
         private static string GetNameInternal(int codePoint)
-        {
-            var codePointInfo = FindUnicodeCodePoint(codePoint);
+			=> FindUnicodeCodePointIndex(codePoint) is int codePointInfoIndex && codePointInfoIndex >= 0 ?
+				GetName(codePoint, ref GetUnicodeCharacterData(codePointInfoIndex)) :
+				null;
 
-            return codePointInfo != null ? GetName(codePoint, codePointInfo) : null;
-        }
-
-		internal static string GetName(int codePoint, UnicodeCharacterData characterData)
+		internal static string GetName(int codePoint, ref UnicodeCharacterData characterData)
 		{
             if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
             else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
@@ -473,20 +471,15 @@ namespace System.Unicode
 		/// <returns>Information on the specified radical.</returns>
 		/// <exception cref="IndexOutOfRangeException">The <paramref name="radicalIndex"/> parameter is out of range.</exception>
 		public static CjkRadicalInfo GetCjkRadicalInfo(int radicalIndex)
-		{
-			return new CjkRadicalInfo(checked((byte)radicalIndex), radicals[radicalIndex - 1]);
-		}
+			=> new CjkRadicalInfo(checked((byte)radicalIndex), radicals[radicalIndex - 1]);
 
 		/// <summary>Returns the number of CJK radicals in the Unicode data.</summary>
 		/// <remarks>This value will be 214 for the foreseeable future.</remarks>
-		public static int CjkRadicalCount { get { return radicals.Length; } }
+		public static int CjkRadicalCount => radicals.Length;
 
 		/// <summary>Gets all the blocks defined in the Unicode data.</summary>
 		/// <remarks><see cref="DefaultBlock"/> is not the name of a block, but only a value indicating the abscence of block information for a given code point.</remarks>
 		/// <returns>An array containing an entry for every block defined in the Unicode data.</returns>
-		public static UnicodeBlock[] GetBlocks()
-		{
-			return (UnicodeBlock[])blocks.Clone();
-		}
+		public static UnicodeBlock[] GetBlocks() => (UnicodeBlock[])blocks.Clone();
 	}
 }

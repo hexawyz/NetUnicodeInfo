@@ -51,6 +51,7 @@ namespace UnicodeInformation.Tests
 		[InlineData(0x0D5D, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "3/20", "MALAYALAM FRACTION THREE TWENTIETHS", "Malayalam")]
 		[InlineData(0x0D59, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "1/40", "MALAYALAM FRACTION ONE FORTIETH", "Malayalam")]
 		[InlineData(0x1F953, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "BACON", "Supplemental Symbols and Pictographs")]
+		[InlineData(0x1F966, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "BROCCOLI", "Supplemental Symbols and Pictographs")]
 		public void CharacterInfoShouldHaveExpectedResults(int codePoint, UnicodeCategory expectedCategory, UnicodeNumericType expectedNumericType, string expectedNumericValue, string expectedName, string expectedBlock)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);

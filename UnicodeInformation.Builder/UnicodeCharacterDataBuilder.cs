@@ -1,129 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	public sealed class UnicodeCharacterDataBuilder
 	{
-		private readonly UnicodeCodePointRange codePointRange;
-		private string name;
 		private UnicodeCategory category = UnicodeCategory.OtherNotAssigned;
-		private CanonicalCombiningClass canonicalCombiningClass;
-		private BidirectionalClass bidirectionalClass;
-		private CharacterDecompositionMapping characterDecompositionMapping;
-		private UnicodeNumericType numericType;
-		private UnicodeRationalNumber numericValue;
-		private bool bidirectionalMirrored;
-		private string oldName;
-		private string simpleUpperCaseMapping;
-		private string simpleLowerCaseMapping;
-		private string simpleTitleCaseMapping;
-		private ContributoryProperties contributoryProperties;
-		private CoreProperties coreProperties;
 
 		private readonly List<UnicodeNameAlias> nameAliases = new List<UnicodeNameAlias>();
 		private readonly List<int> crossRerefences = new List<int>();
 
-		public UnicodeCodePointRange CodePointRange { get { return codePointRange; } }
+		public UnicodeCodePointRange CodePointRange { get; }
 
-		public string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+		public string Name { get; set; }
 
 		public IList<UnicodeNameAlias> NameAliases { get { return nameAliases; } }
 
 		public UnicodeCategory Category
 		{
-			get { return category; }
-			set
-			{
-				if (!Enum.IsDefined(typeof(UnicodeCategory), value))
-				{
-					throw new ArgumentOutOfRangeException(nameof(value));
-				}
-				category = value;
-			}
+			get => category;
+			set => category = Enum.IsDefined(typeof(UnicodeCategory), value) ?
+				value :
+				throw new ArgumentOutOfRangeException(nameof(value));
 		}
 
-		public CanonicalCombiningClass CanonicalCombiningClass
-		{
-			get { return canonicalCombiningClass; }
-			set { canonicalCombiningClass = value; } // Even values not defined in the enum are allowed here.
-		}
-
-		public BidirectionalClass BidirectionalClass
-		{
-			get { return bidirectionalClass; }
-			set { bidirectionalClass = value; }
-		}
-
-		public CharacterDecompositionMapping CharacterDecompositionMapping
-		{
-			get { return characterDecompositionMapping; }
-			set { characterDecompositionMapping = value; }
-		}
-
-		public UnicodeNumericType NumericType
-		{
-			get { return numericType; }
-			set { numericType = value; }
-		}
-
-		public UnicodeRationalNumber NumericValue
-		{
-			get { return numericValue; }
-			set { numericValue = value; }
-		}
-
-		public string OldName
-		{
-			get { return oldName; }
-			set { oldName = value; }
-		}
-
-		public bool BidirectionalMirrored
-		{
-			get { return bidirectionalMirrored; }
-			set { bidirectionalMirrored = value; }
-		}
-
-		public string SimpleUpperCaseMapping
-		{
-			get { return simpleUpperCaseMapping; }
-			set { simpleUpperCaseMapping = value; }
-		}
-
-		public string SimpleLowerCaseMapping
-		{
-			get { return simpleLowerCaseMapping; }
-			set { simpleLowerCaseMapping = value; }
-		}
-
-		public string SimpleTitleCaseMapping
-		{
-			get { return simpleTitleCaseMapping; }
-			set { simpleTitleCaseMapping = value; }
-		}
-
-		public ContributoryProperties ContributoryProperties
-		{
-			get { return contributoryProperties; }
-			set { contributoryProperties = value; }
-		}
-
-		public CoreProperties CoreProperties
-		{
-			get { return coreProperties; }
-			set { coreProperties = value; }
-		}
-
+		public CanonicalCombiningClass CanonicalCombiningClass { get; set; } // Even values not defined in the enum are allowed here.
+		public BidirectionalClass BidirectionalClass { get; set; }
+		public CharacterDecompositionMapping CharacterDecompositionMapping { get; set; }
+		public UnicodeNumericType NumericType { get; set; }
+		public UnicodeRationalNumber NumericValue { get; set; }
+		public string OldName { get; set; }
+		public bool BidirectionalMirrored { get; set; }
+		public string SimpleUpperCaseMapping { get; set; }
+		public string SimpleLowerCaseMapping { get; set; }
+		public string SimpleTitleCaseMapping { get; set; }
+		public ContributoryProperties ContributoryProperties { get; set; }
+		public CoreProperties CoreProperties { get; set; }
+		public EmojiProperties EmojiProperties { get; set; }
 		public IList<int> CrossRerefences { get { return crossRerefences; } }
 
 		public UnicodeCharacterDataBuilder(int codePoint)
@@ -133,7 +48,7 @@ namespace System.Unicode.Builder
 
 		public UnicodeCharacterDataBuilder(UnicodeCodePointRange codePointRange)
 		{
-			this.codePointRange = codePointRange;
+			CodePointRange = codePointRange;
 			this.category = UnicodeCategory.OtherNotAssigned;
 		}
 
@@ -143,7 +58,7 @@ namespace System.Unicode.Builder
 			(
 				CodePointRange,
 				Name,
-				NameAliases.Count > 0 ? NameAliases.ToArray() : UnicodeNameAlias.EmptyArray,
+				nameAliases.Count > 0 ? nameAliases.ToArray() : UnicodeNameAlias.EmptyArray,
 				Category,
 				CanonicalCombiningClass,
 				BidirectionalClass,
@@ -157,7 +72,7 @@ namespace System.Unicode.Builder
 				SimpleLowerCaseMapping,
 				SimpleTitleCaseMapping,
 				ContributoryProperties,
-				CoreProperties,
+				(int)CoreProperties | (int)EmojiProperties << 20,
 				CrossRerefences.Count > 0 ? CrossRerefences.ToArray() : null
 			);
 		}
@@ -168,27 +83,27 @@ namespace System.Unicode.Builder
 
 			UcdFields fields = default(UcdFields);
 
-			if (!codePointRange.IsSingleCodePoint) fields = UcdFields.CodePointRange;
+			if (!CodePointRange.IsSingleCodePoint) fields = UcdFields.CodePointRange;
 
-			if (name != null || nameAliases.Count > 0) fields |= UcdFields.Name; // This field combines name and alias.
+			if (Name != null || nameAliases.Count > 0) fields |= UcdFields.Name; // This field combines name and alias.
 			if (category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
-			if (canonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
+			if (CanonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
 			/*if (bidirectionalClass != 0)*/
 			fields |= UcdFields.BidirectionalClass;
-			if (characterDecompositionMapping.DecompositionMapping != null) fields |= UcdFields.DecompositionMapping;
-			fields |= (UcdFields)((int)numericType << 6);
-			if (bidirectionalMirrored) fields |= UcdFields.BidirectionalMirrored;
-			if (oldName != null) fields |= UcdFields.OldName;
-			if (simpleUpperCaseMapping != null) fields |= UcdFields.SimpleUpperCaseMapping;
-			if (simpleLowerCaseMapping != null) fields |= UcdFields.SimpleLowerCaseMapping;
-			if (simpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
-			if (contributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
-			if (coreProperties != 0) fields |= UcdFields.CoreProperties;
+			if (CharacterDecompositionMapping.DecompositionMapping != null) fields |= UcdFields.DecompositionMapping;
+			fields |= (UcdFields)((int)NumericType << 6);
+			if (BidirectionalMirrored) fields |= UcdFields.BidirectionalMirrored;
+			if (OldName != null) fields |= UcdFields.OldName;
+			if (SimpleUpperCaseMapping != null) fields |= UcdFields.SimpleUpperCaseMapping;
+			if (SimpleLowerCaseMapping != null) fields |= UcdFields.SimpleLowerCaseMapping;
+			if (SimpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
+			if (ContributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
+			if (CoreProperties != 0 || EmojiProperties != 0) fields |= UcdFields.CorePropertiesAndEmojiProperties;
 			if (crossRerefences.Count > 0) fields |= UcdFields.CrossRerefences;
 
 			writer.Write((ushort)fields);
 
-			writer.WriteCodePoint(codePointRange.FirstCodePoint);
+			writer.WriteCodePoint(CodePointRange.FirstCodePoint);
 			if ((fields & UcdFields.CodePointRange) != 0) writer.WriteCodePoint(CodePointRange.LastCodePoint);
 
 			if ((fields & UcdFields.Name) != 0)
@@ -200,38 +115,38 @@ namespace System.Unicode.Builder
 
 				if (nameAliases.Count > 0)
 				{
-					writer.WritePackedLength((byte)(name != null ? 3 : 2), nameAliases.Count);
+					writer.WritePackedLength((byte)(Name != null ? 3 : 2), nameAliases.Count);
 
-					if (name != null)
-						writer.WriteNamePropertyToFile(name);
+					if (Name != null)
+						writer.WriteNamePropertyToFile(Name);
 
 					foreach (var nameAlias in nameAliases)
 						writer.WriteNameAliasToFile(nameAlias);
 				}
 				else
 				{
-					writer.WriteNamePropertyToFile(name);
+					writer.WriteNamePropertyToFile(Name);
 				}
 			}
 			if ((fields & UcdFields.Category) != 0) writer.Write((byte)category);
-			if ((fields & UcdFields.CanonicalCombiningClass) != 0) writer.Write((byte)canonicalCombiningClass);
-			if ((fields & UcdFields.BidirectionalClass) != 0) writer.Write((byte)bidirectionalClass);
+			if ((fields & UcdFields.CanonicalCombiningClass) != 0) writer.Write((byte)CanonicalCombiningClass);
+			if ((fields & UcdFields.BidirectionalClass) != 0) writer.Write((byte)BidirectionalClass);
 			if ((fields & UcdFields.DecompositionMapping) != 0)
 			{
-				writer.Write((byte)characterDecompositionMapping.DecompositionType);
-				writer.Write(characterDecompositionMapping.DecompositionMapping);
+				writer.Write((byte)CharacterDecompositionMapping.DecompositionType);
+				writer.Write(CharacterDecompositionMapping.DecompositionMapping);
 			}
 			if ((fields & UcdFields.NumericNumeric) != 0)
 			{
-				writer.Write(numericValue.Numerator);
-				writer.Write(numericValue.Denominator);
+				writer.Write(NumericValue.Numerator);
+				writer.Write(NumericValue.Denominator);
 			}
-			if ((fields & UcdFields.OldName) != 0) writer.Write(oldName);
-			if ((fields & UcdFields.SimpleUpperCaseMapping) != 0) writer.Write(simpleUpperCaseMapping);
-			if ((fields & UcdFields.SimpleLowerCaseMapping) != 0) writer.Write(simpleLowerCaseMapping);
-			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(simpleTitleCaseMapping);
-			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)contributoryProperties);
-			if ((fields & UcdFields.CoreProperties) != 0) writer.WriteUInt24((int)coreProperties);
+			if ((fields & UcdFields.OldName) != 0) writer.Write(OldName);
+			if ((fields & UcdFields.SimpleUpperCaseMapping) != 0) writer.Write(SimpleUpperCaseMapping);
+			if ((fields & UcdFields.SimpleLowerCaseMapping) != 0) writer.Write(SimpleLowerCaseMapping);
+			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(SimpleTitleCaseMapping);
+			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)ContributoryProperties);
+			if ((fields & UcdFields.CorePropertiesAndEmojiProperties) != 0) writer.WriteUInt24((int)CoreProperties | (int)EmojiProperties << 20);
 			if ((fields & UcdFields.CrossRerefences) != 0)
 			{
 				writer.Write(checked((byte)(crossRerefences.Count - 1)));

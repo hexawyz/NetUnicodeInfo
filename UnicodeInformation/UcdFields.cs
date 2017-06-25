@@ -34,7 +34,7 @@ namespace System.Unicode
 		SimpleTitleCaseMapping = 4096,
 
 		ContributoryProperties = 8192,
-		CoreProperties = 16384,
+		CorePropertiesAndEmojiProperties = 16384,
 
 		CrossRerefences = 32768,
 	}

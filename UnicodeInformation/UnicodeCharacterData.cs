@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace System.Unicode
 {
-	internal sealed class UnicodeCharacterData
+	internal struct UnicodeCharacterData
 	{
 		public readonly UnicodeCodePointRange CodePointRange;
 		public readonly string Name;
@@ -25,7 +20,9 @@ namespace System.Unicode
 		public readonly string SimpleLowerCaseMapping;
 		public readonly string SimpleTitleCaseMapping;
 		public readonly ContributoryProperties ContributoryProperties;
-		public readonly CoreProperties CoreProperties;
+		private readonly int corePropertiesAndEmojiProperties;
+		public CoreProperties CoreProperties => (CoreProperties)(corePropertiesAndEmojiProperties & 0x000FFFFF);
+		public EmojiProperties EmojiProperties => (EmojiProperties)(corePropertiesAndEmojiProperties >> 20);
 
 		public readonly int[] CrossRerefences; // NB: It seems that parsing NamesList is required in order to provide data for this field ?
 
@@ -47,7 +44,7 @@ namespace System.Unicode
 			string simpleLowerCaseMapping,
 			string simpleTitleCaseMapping,
 			ContributoryProperties contributoryProperties,
-			CoreProperties coreProperties,
+			int corePropertiesAndEmojiProperties,
 			int[] crossRerefences
 		)
 		{
@@ -67,10 +64,10 @@ namespace System.Unicode
 			this.SimpleLowerCaseMapping = simpleLowerCaseMapping;
 			this.SimpleTitleCaseMapping = simpleTitleCaseMapping;
 			this.ContributoryProperties = contributoryProperties;
-			this.CoreProperties = coreProperties;
+			this.corePropertiesAndEmojiProperties = corePropertiesAndEmojiProperties;
 			this.CrossRerefences = crossRerefences;
 		}
 
-		public UnicodeRationalNumber? NumericValue { get { return NumericType != UnicodeNumericType.None ? numericValue : null as UnicodeRationalNumber?; } }
+		public UnicodeRationalNumber? NumericValue => NumericType != UnicodeNumericType.None ? numericValue : null as UnicodeRationalNumber?;
 	}
 }

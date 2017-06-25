@@ -12,6 +12,8 @@ namespace System.Unicode
 	[Flags]
 	public enum CoreProperties : int
 	{
+		// NB: Be careful when adding new properties to the enum, as EmojiProperties will be stored in the 4 upper bits out of 24.
+
 		/// <summary>Represents the Lowercase property.</summary>
 		[ValueName("Lowercase"), ValueName("Lower"), Display(Name = "Lowercase")]
 		Lowercase = 0x00000001,

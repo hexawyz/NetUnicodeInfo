@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Unicode
+﻿namespace System.Unicode
 {
-	internal sealed class UnihanCharacterData
+	internal struct UnihanCharacterData
 	{
 		public readonly int CodePoint;
 		public readonly UnihanNumericType NumericType;
