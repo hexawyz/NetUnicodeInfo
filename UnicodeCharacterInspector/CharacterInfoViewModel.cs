@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Unicode;
 
 namespace UnicodeCharacterInspector
@@ -67,6 +63,7 @@ namespace UnicodeCharacterInspector
 					NotifyPropertyChanged(nameof(NumericValue));
 					NotifyPropertyChanged(nameof(ContributoryProperties));
 					NotifyPropertyChanged(nameof(CoreProperties));
+					NotifyPropertyChanged(nameof(EmojiProperties));
 					NotifyPropertyChanged(nameof(RadicalStrokeCounts));
 					NotifyPropertyChanged(nameof(CrossReferences));
 					NotifyPropertyChanged(nameof(MandarinReading));
@@ -88,145 +85,49 @@ namespace UnicodeCharacterInspector
 
 			displayText = character != null ? UnicodeInfo.GetDisplayText(characterInfo) : null;
 
-			if (displayText != oldValue)
-				NotifyPropertyChanged(nameof(DisplayText));
+			if (displayText != oldValue) NotifyPropertyChanged(nameof(DisplayText));
 		}
 
 		public string DisplayText { get { return displayText; } }
 
-		public int? CodePoint
-		{
-			get { return character != null ? codePoint : null as int?; }
-		}
+		public int? CodePoint => character != null ? codePoint : null as int?;
 
-		public string Name
-		{
-			get { return character != null ? characterInfo.Name : null; }
-		}
+		public string Name => character != null ? characterInfo.Name : null;
+		public string OldName => character != null ? characterInfo.OldName : null;
+		public UnicodeNameAliasCollection NameAliases => character != null ? characterInfo.NameAliases : UnicodeNameAliasCollection.Empty;
 
-		public UnicodeNameAliasCollection NameAliases
-		{
-			get { return character != null ? characterInfo.NameAliases : UnicodeNameAliasCollection.Empty; }
-		}
+		public string Definition => character != null ? characterInfo.Definition : null;
 
-		public string OldName
-		{
-			get { return character != null ? characterInfo.OldName : null; }
-		}
+		public UnicodeCategory? Category => character != null ? characterInfo.Category : null as UnicodeCategory?;
+		public string Block => character != null ? characterInfo.Block : null;
 
-		public string Definition
-		{
-			get { return character != null ? characterInfo.Definition : null; }
-		}
+		public CanonicalCombiningClass? CanonicalCombiningClass => character != null ? characterInfo.CanonicalCombiningClass : null as CanonicalCombiningClass?;
+		public BidirectionalClass? BidirectionalClass => character != null ? characterInfo.BidirectionalClass : null as BidirectionalClass?;
+		public CompatibilityFormattingTag? DecompositionType => character != null && characterInfo.DecompositionMapping != null ? characterInfo.DecompositionType : null as CompatibilityFormattingTag?;
 
-		public UnicodeCategory? Category
-		{
-			get { return character != null ? characterInfo.Category : null as UnicodeCategory?; }
-		}
+		public string DecompositionMapping => character != null ? characterInfo.DecompositionMapping : null;
 
-		public string Block
-		{
-			get { return character != null ? characterInfo.Block : null; }
-		}
+		public UnicodeNumericType? NumericType => character != null ? characterInfo.NumericType : null as UnicodeNumericType?;
+		public UnihanNumericType? UnihanNumericType => character != null ? characterInfo.UnihanNumericType : null as UnihanNumericType?;
+		public UnicodeRationalNumber? NumericValue => character != null && characterInfo.NumericType != UnicodeNumericType.None ? characterInfo.NumericValue : null as UnicodeRationalNumber?;
 
-		public CanonicalCombiningClass? CanonicalCombiningClass
-		{
-			get { return character != null ? characterInfo.CanonicalCombiningClass : null as CanonicalCombiningClass?; }
-		}
+		public ContributoryProperties? ContributoryProperties => character != null ? characterInfo.ContributoryProperties : null as ContributoryProperties?;
+		public CoreProperties? CoreProperties => character != null ? characterInfo.CoreProperties : null as CoreProperties?;
+		public EmojiProperties? EmojiProperties => character != null ? characterInfo.EmojiProperties : null as EmojiProperties?;
 
-		public BidirectionalClass? BidirectionalClass
-		{
-			get { return character != null ? characterInfo.BidirectionalClass : null as BidirectionalClass?; }
-		}
+		public UnicodeRadicalStrokeCountCollection RadicalStrokeCounts => character != null ? characterInfo.UnicodeRadicalStrokeCounts : UnicodeRadicalStrokeCountCollection.Empty;
 
-		public CompatibilityFormattingTag? DecompositionType
-		{
-			get { return character != null && characterInfo.DecompositionMapping != null ? characterInfo.DecompositionType : null as CompatibilityFormattingTag?; }
-		}
+		public UnicodeCrossReferenceCollection CrossReferences => character != null ? characterInfo.CrossRerefences : UnicodeCrossReferenceCollection.Empty;
 
-		public string DecompositionMapping
-		{
-			get { return character != null ? characterInfo.DecompositionMapping : null; }
-		}
+		public string MandarinReading => character != null ? characterInfo.MandarinReading : null;
+		public string CantoneseReading => character != null ? characterInfo.CantoneseReading : null;
+		public string JapaneseKunReading => character != null ? characterInfo.JapaneseKunReading : null;
+		public string JapaneseOnReading => character != null ? characterInfo.JapaneseOnReading : null;
+		public string KoreanReading => character != null ? characterInfo.KoreanReading : null;
+		public string HangulReading => character != null ? characterInfo.HangulReading : null;
+		public string VietnameseReading => character != null ? characterInfo.VietnameseReading : null;
 
-		public UnicodeNumericType? NumericType
-		{
-			get { return character != null ? characterInfo.NumericType : null as UnicodeNumericType?; }
-		}
-
-		public UnihanNumericType? UnihanNumericType
-		{
-			get { return character != null ? characterInfo.UnihanNumericType : null as UnihanNumericType?; }
-		}
-
-		public UnicodeRationalNumber? NumericValue
-		{
-			get { return character != null && characterInfo.NumericType != UnicodeNumericType.None ? characterInfo.NumericValue : null as UnicodeRationalNumber?; }
-		}
-
-		public ContributoryProperties? ContributoryProperties
-		{
-			get { return character != null ? characterInfo.ContributoryProperties : null as ContributoryProperties?; }
-		}
-
-		public CoreProperties? CoreProperties
-		{
-			get { return character != null ? characterInfo.CoreProperties : null as CoreProperties?; }
-		}
-
-		public UnicodeRadicalStrokeCountCollection RadicalStrokeCounts
-		{
-			get { return character != null ? characterInfo.UnicodeRadicalStrokeCounts : UnicodeRadicalStrokeCountCollection.Empty; }
-		}
-
-		public UnicodeCrossReferenceCollection CrossReferences
-		{
-			get { return character != null ? characterInfo.CrossRerefences : UnicodeCrossReferenceCollection.Empty; }
-		}
-
-		public string MandarinReading
-		{
-			get { return character != null ? characterInfo.MandarinReading : null; }
-		}
-
-		public string CantoneseReading
-		{
-			get { return character != null ? characterInfo.CantoneseReading : null; }
-		}
-
-		public string JapaneseKunReading
-		{
-			get { return character != null ? characterInfo.JapaneseKunReading : null; }
-		}
-
-		public string JapaneseOnReading
-		{
-			get { return character != null ? characterInfo.JapaneseOnReading : null; }
-		}
-
-		public string KoreanReading
-		{
-			get { return character != null ? characterInfo.KoreanReading : null; }
-		}
-
-		public string HangulReading
-		{
-			get { return character != null ? characterInfo.HangulReading : null; }
-		}
-
-		public string VietnameseReading
-		{
-			get { return character != null ? characterInfo.VietnameseReading : null; }
-		}
-
-		public string SimplifiedVariant
-		{
-			get { return character != null ? characterInfo.SimplifiedVariant : null; }
-		}
-
-		public string TraditionalVariant
-		{
-			get { return character != null ? characterInfo.TraditionalVariant : null; }
-		}
+		public string SimplifiedVariant => character != null ? characterInfo.SimplifiedVariant : null;
+		public string TraditionalVariant => character != null ? characterInfo.TraditionalVariant : null;
 	}
 }

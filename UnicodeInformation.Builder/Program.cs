@@ -11,6 +11,9 @@ namespace System.Unicode.Builder
 {
 	internal class Program
 	{
+		public static readonly Uri UnicodeCharacterDataUri = new Uri("http://www.unicode.org/Public/UCD/latest/ucd/", UriKind.Absolute);
+		public static readonly Uri EmojiDataUri = new Uri("http://www.unicode.org/Public/emoji/latest/", UriKind.Absolute);
+
 		public const string UnihanDirectoryName = "Unihan";
 		public const string UnihanArchiveName = "Unihan.zip";
 		public const string UcdDirectoryName = "UCD";
@@ -36,22 +39,28 @@ namespace System.Unicode.Builder
 			"Unihan_IRGSources.txt",
 		};
 
+		public static readonly string[] emojiRequiredFiles = new[]
+		{
+			"emoji-data.txt",
+			"emoji-sequences.txt",
+			"emoji-variation-sequences.txt",
+			"emoji-zwj-sequences.txt",
+		};
+
 		private static HttpClient httpClient;
 
 		// The only purpose of this is for tests…
 		internal static void SetHttpMessageHandler(HttpMessageHandler handler)
 		{
 			httpClient = new HttpClient(handler ?? new HttpClientHandler());
-        }
-
-		private static HttpClient HttpClient { get { return httpClient ?? (httpClient = new HttpClient()); } }
-
-		private static byte[] DownloadDataArchive(string archiveName)
-		{
-			return HttpClient.GetByteArrayAsync(HttpDataSource.UnicodeCharacterDataUri + archiveName).Result;
 		}
 
-		internal static IDataSource GetDataSource(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
+		internal static HttpClient HttpClient { get { return httpClient ?? (httpClient = new HttpClient()); } }
+
+		private static Task<byte[]> DownloadDataArchiveAsync(string archiveName)
+			=> HttpClient.GetByteArrayAsync(UnicodeCharacterDataUri + archiveName);
+
+		internal static async Task<IDataSource> GetDataSourceAsync(string archiveName, string directoryName, string[] requiredFiles, bool? shouldDownload, bool? shouldSaveArchive, bool? shouldExtract)
 		{
 			string baseDirectory = Directory.GetCurrentDirectory();
 			string dataDirectory = Path.Combine(baseDirectory, UcdDirectoryName);
@@ -94,15 +103,14 @@ namespace System.Unicode.Builder
 
 			if (shouldDownload != false)
 			{
-				var dataArchiveData = DownloadDataArchive(archiveName);
+				var dataArchiveData = await DownloadDataArchiveAsync(archiveName).ConfigureAwait(false);
 
 				if (shouldSaveArchive == true)
 				{
-					var stream = File.Open(dataArchiveFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-					try
+					using (var stream = File.Open(dataArchiveFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
 					{
-						stream.Write(dataArchiveData, 0, dataArchiveData.Length);
-						dataArchiveData = null;	// Release the reference now, since we won't need it anymore.
+						await stream.WriteAsync(dataArchiveData, 0, dataArchiveData.Length).ConfigureAwait(false);
+						dataArchiveData = null; // Release the reference now, since we won't need it anymore.
 
 						if (shouldExtract == true)
 						{
@@ -118,11 +126,6 @@ namespace System.Unicode.Builder
 							return new ZipDataSource(stream);
 						}
 					}
-					catch
-					{
-						stream.Dispose();
-						throw;
-					}
 				}
 				else
 				{
@@ -133,18 +136,21 @@ namespace System.Unicode.Builder
 			throw new InvalidOperationException();
 		}
 
-		private static void Main(string[] args)
+		private static async Task MainAsync(string[] args)
 		{
 			UnicodeInfoBuilder data;
 
-			using (var ucdSource = GetDataSource(UcdArchiveName, UcdDirectoryName, ucdRequiredFiles, null, null, null))
-			using (var unihanSource = GetDataSource(UnihanArchiveName, UnihanDirectoryName, unihanRequiredFiles, null, null, null))
+			using (var ucdSource = await GetDataSourceAsync(UcdArchiveName, UcdDirectoryName, ucdRequiredFiles, null, null, null))
+			using (var unihanSource = await GetDataSourceAsync(UnihanArchiveName, UnihanDirectoryName, unihanRequiredFiles, null, null, null))
+			using (var emojiSource = new HttpDataSource(EmojiDataUri, HttpClient))
 			{
-				data = UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource).Result;
+				data = await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource, emojiSource);
 			}
 
 			using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
 				data.WriteToStream(stream);
 		}
+
+		private static void Main(string[] args) => MainAsync(args).Wait();
 	}
 }

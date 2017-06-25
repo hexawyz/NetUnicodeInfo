@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode
 {
@@ -82,14 +78,14 @@ namespace System.Unicode
 
 				for (i = 0; i < blockEntries.Length; ++i)
 				{
-					blockEntries[i] = ReadBlockEntry(reader);
+					ReadBlockEntry(reader, out blockEntries[i]);
 				}
 
 				var cjkRadicalEntries = new CjkRadicalData[reader.ReadByte()];
 
 				for (i = 0; i < cjkRadicalEntries.Length; ++i)
 				{
-					cjkRadicalEntries[i] = ReadCjkRadicalInfo(reader);
+					ReadCjkRadicalInfo(reader, out cjkRadicalEntries[i]);
 				}
 
 				var unihanCharacterDataEntries = new UnihanCharacterData[ReadCodePoint(reader)];
@@ -247,7 +243,7 @@ namespace System.Unicode
 			);
 		}
 
-		private static CjkRadicalData ReadCjkRadicalInfo(BinaryReader reader)
+		private static void ReadCjkRadicalInfo(BinaryReader reader, out CjkRadicalData value)
 		{
 			char tr;
 			char tc;
@@ -255,11 +251,13 @@ namespace System.Unicode
 			tr = (char)reader.ReadUInt16();
 			tc = (char)reader.ReadUInt16();
 
-			return (tr & 0x8000) == 0 ? new CjkRadicalData(tr, tc) : new CjkRadicalData((char)(tr & 0x7FFF), tc, (char)reader.ReadUInt16(), (char)reader.ReadUInt16());
+			value = (tr & 0x8000) == 0 ?
+				new CjkRadicalData(tr, tc) :
+				new CjkRadicalData((char)(tr & 0x7FFF), tc, (char)reader.ReadUInt16(), (char)reader.ReadUInt16());
 		}
 
-		private static UnicodeBlock ReadBlockEntry(BinaryReader reader)
-			=> new UnicodeBlock(new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
+		private static void ReadBlockEntry(BinaryReader reader, out UnicodeBlock value)
+			=> value = new UnicodeBlock(new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
 
 		private static int ReadInt24(BinaryReader reader) => reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
 

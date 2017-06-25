@@ -10,6 +10,7 @@
          <local:Utf32ToDisplayTextConverter x:Key="Utf32ToDisplayTextConverter" />
          <local:Utf32ToNameConverter x:Key="Utf32ToNameConverter" />
          <local:StringToUtf32Converter x:Key="StringToUtf32Converter" />
-         <local:RadicalStrokeCountToCharConverter x:Key="RadicalStrokeCountToCharConverter" />
+        <local:RadicalStrokeCountToCharConverter x:Key="RadicalStrokeCountToCharConverter" />
+        <local:CodePointToFontFamilyConverter x:Key="CodePointToFontFamilyConverter" DefaultFontFamily="Segoe UI" EmojiFontFamily="Segoe UI Emoji" />
     </Application.Resources>
 </Application>

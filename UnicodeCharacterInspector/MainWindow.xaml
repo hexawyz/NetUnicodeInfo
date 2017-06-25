@@ -38,14 +38,14 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<TextBox Grid.ColumnSpan="2" ScrollViewer.VerticalScrollBarVisibility="Auto" MinLines="1" MaxLines="5" AcceptsTab="True" AcceptsReturn="True" local:Placeholder.Text="Text to analyse" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
-		<ListBox Grid.Row="1" Grid.RowSpan="3" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}">
+        <ListBox Grid.Row="1" Grid.RowSpan="3" ItemsSource="{Binding Characters}" SelectedIndex="{Binding SelectedCharacterIndex}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock><Run Text="{Binding DisplayText, Mode=OneWay}" /> <Run Text="{Binding CodePoint, Mode=OneWay, StringFormat=U+{0:X4}}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" FontStyle="Italic" /></TextBlock>
+                    <TextBlock FontFamily="{Binding CodePoint, Mode=OneWay, Converter={StaticResource CodePointToFontFamilyConverter}}"><Run Text="{Binding DisplayText, Mode=OneWay}" /> <Run Text="{Binding CodePoint, Mode=OneWay, StringFormat=U+{0:X4}}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" FontStyle="Italic" /></TextBlock>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-		<TextBlock Grid.Row="1" Grid.Column="1" TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.DisplayText}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="1" Grid.Column="1" TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale" Text="{Binding SelectedCharacterInfo.DisplayText}" FontSize="96" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{Binding SelectedCharacterInfo.CodePoint, Mode=OneWay, Converter={StaticResource CodePointToFontFamilyConverter}}" />
 		<ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
 			<Grid>
 				<Grid.Resources>
@@ -86,7 +86,8 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
@@ -158,8 +159,10 @@
 				<TextBlock Grid.Row="23" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.ContributoryProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.ContributoryProperties}" />
 				<TextBlock Grid.Row="24" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CoreProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Core Properties" />
 				<TextBlock Grid.Row="24" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.CoreProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.CoreProperties}" />
-				<TextBlock Grid.Row="25" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Cross-References" />
-				<ItemsControl Grid.Row="25" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" ItemsSource="{Binding SelectedCharacterInfo.CrossReferences}">
+                <TextBlock Grid.Row="25" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.EmojiProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Emoji Properties" />
+                <TextBlock Grid.Row="25" Grid.Column="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Visibility="{Binding SelectedCharacterInfo.EmojiProperties, Converter={StaticResource ZeroToVisibilityConverter}}" Text="{Binding SelectedCharacterInfo.EmojiProperties}" />
+                <TextBlock Grid.Row="26" Grid.Column="0" VerticalAlignment="Top" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" Text="Cross-References" />
+				<ItemsControl Grid.Row="26" Grid.Column="1" Visibility="{Binding SelectedCharacterInfo.CrossReferences.Count, Converter={StaticResource ZeroToVisibilityConverter}}" ItemsSource="{Binding SelectedCharacterInfo.CrossReferences}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<TextBlock TextWrapping="WrapWithOverflow">

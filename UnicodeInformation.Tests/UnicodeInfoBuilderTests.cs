@@ -8,6 +8,7 @@ using System.Text;
 using System.Net.Http;
 using System.Collections.Generic;
 using Xunit;
+using System.Linq;
 
 namespace System.Unicode.Tests
 {
@@ -65,8 +66,9 @@ namespace System.Unicode.Tests
 
 			var handler = new FileHttpResponseHandler();
 
-			var ucdTask = RegisterAndDownloadFile(handler, httpCacheDirectory, HttpDataSource.UnicodeCharacterDataUri, Program.UcdArchiveName);
-			var unihanTask = RegisterAndDownloadFile(handler, httpCacheDirectory, HttpDataSource.UnicodeCharacterDataUri, Program.UnihanArchiveName);
+			var ucdTask = RegisterAndDownloadFile(handler, httpCacheDirectory, Program.UnicodeCharacterDataUri, Program.UcdArchiveName);
+			var unihanTask = RegisterAndDownloadFile(handler, httpCacheDirectory, Program.UnicodeCharacterDataUri, Program.UnihanArchiveName);
+			var emojiTasks = Program.emojiRequiredFiles.Select(f => RegisterAndDownloadFile(handler, httpCacheDirectory, Program.EmojiDataUri, f)).ToArray();
 
 			Program.SetHttpMessageHandler(handler);
 
@@ -75,13 +77,13 @@ namespace System.Unicode.Tests
 			if (Directory.Exists(Program.UnihanDirectoryName)) Directory.Delete(Program.UnihanDirectoryName, true);
 			if (File.Exists(Program.UnihanArchiveName)) File.Delete(Program.UnihanArchiveName);
 
-			Task.WaitAll(ucdTask, unihanTask);
+			Task.WaitAll(ucdTask, unihanTask, Task.WhenAll(emojiTasks));
 		}
 
 		[Fact]
 		public void DownloadUcdArchive()
 		{
-			using (var source = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, false, false))
+			using (var source = Program.GetDataSourceAsync(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, false, false).Result)
 			{
 			}
 		}
@@ -89,7 +91,7 @@ namespace System.Unicode.Tests
 		[Fact]
 		public void DownloadAndSaveUcdArchive()
 		{
-			using (var source = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, true, false))
+			using (var source = Program.GetDataSourceAsync(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, true, false).Result)
 			{
 			}
 		}
@@ -97,7 +99,7 @@ namespace System.Unicode.Tests
 		[Fact]
 		public void ExtractUcdArchive()
 		{
-			using (var source = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, true, true))
+			using (var source = Program.GetDataSourceAsync(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, true, true, true).Result)
 			{
 			}
 		}
@@ -105,7 +107,7 @@ namespace System.Unicode.Tests
 		[Fact]
 		public void DownloadUnihanArchive()
 		{
-			using (var source = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, false, false))
+			using (var source = Program.GetDataSourceAsync(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, false, false).Result)
 			{
 			}
 		}
@@ -113,7 +115,7 @@ namespace System.Unicode.Tests
 		[Fact]
 		public void DownloadAndSaveUnihanArchive()
 		{
-			using (var source = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, true, false))
+			using (var source = Program.GetDataSourceAsync(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, true, false).Result)
 			{
 			}
 		}
@@ -121,7 +123,7 @@ namespace System.Unicode.Tests
 		[Fact]
 		public void ExtractUnihanArchive()
 		{
-			using (var source = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, true, true))
+			using (var source = Program.GetDataSourceAsync(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, true, true, true).Result)
 			{
 			}
 		}
@@ -129,10 +131,11 @@ namespace System.Unicode.Tests
 		[Fact]
 		public async Task BuildDataAsync()
 		{
-			using (var ucdSource = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, null, null, null))
-			using (var unihanSource = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, null, null, null))
+			using (var ucdSource = await Program.GetDataSourceAsync(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, null, null, null))
+			using (var unihanSource = await Program.GetDataSourceAsync(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, null, null, null))
+			using (var emojiSource = new HttpDataSource(Program.EmojiDataUri, Program.HttpClient))
 			{
-				var data = (await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource));
+				var data = (await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource, emojiSource));
 
 				Assert.Equal((int)'\t', data.GetUcd('\t').CodePointRange.FirstCodePoint);
 			}
@@ -141,10 +144,11 @@ namespace System.Unicode.Tests
 		[Fact]
 		public async Task BuildAndWriteDataAsync()
 		{
-			using (var ucdSource = Program.GetDataSource(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, null, null, null))
-			using (var unihanSource = Program.GetDataSource(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, null, null, null))
+			using (var ucdSource = await Program.GetDataSourceAsync(Program.UcdArchiveName, Program.UcdDirectoryName, Program.ucdRequiredFiles, null, null, null))
+			using (var unihanSource = await Program.GetDataSourceAsync(Program.UnihanArchiveName, Program.UnihanDirectoryName, Program.ucdRequiredFiles, null, null, null))
+			using (var emojiSource = new HttpDataSource(Program.EmojiDataUri, Program.HttpClient))
 			{
-				var data = (await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource));
+				var data = (await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource, emojiSource));
 
 				//using (var stream = new DeflateStream(File.Create("ucd.dat"), CompressionLevel.Optimal, false))
 				using (var stream = File.Create("ucd.dat"))

@@ -23,6 +23,7 @@ namespace System.Unicode.Builder
 		public const string UnihanVariantsFileName = "Unihan_Variants.txt";
 		public const string UnihanNumericValuesFileName = "Unihan_NumericValues.txt";
 		public const string UnihanIrgSourcesFileName = "Unihan_IRGSources.txt";
+		public const string EmojiDataFileName = "emoji-data.txt";
 
 		private static string ParseSimpleCaseMapping(string mapping)
 		{
@@ -36,13 +37,14 @@ namespace System.Unicode.Builder
 			return string.IsNullOrEmpty(s) ? null : s;
 		}
 
-		public static async Task<UnicodeInfoBuilder> BuildDataAsync(IDataSource ucdSource, IDataSource unihanSource)
+		public static async Task<UnicodeInfoBuilder> BuildDataAsync(IDataSource ucdSource, IDataSource unihanSource, IDataSource emojiSource)
 		{
 			var builder = new UnicodeInfoBuilder(await ReadUnicodeVersionAsync(ucdSource).ConfigureAwait(false));
 
 			await ProcessUnicodeDataFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessPropListFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessDerivedCorePropertiesFile(ucdSource, builder).ConfigureAwait(false);
+			await ProcessEmojiDataFile(emojiSource, builder).ConfigureAwait(false);
 			await ProcessCjkRadicalsFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNameAliasesFile(ucdSource, builder).ConfigureAwait(false);
 			await ProcessNamesListFile(ucdSource, builder).ConfigureAwait(false);
@@ -212,6 +214,21 @@ namespace System.Unicode.Builder
 				{
 					var range = UnicodeCodePointRange.Parse(reader.ReadTrimmedField());
 					if (EnumHelper<CoreProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out var property))
+					{
+						builder.SetProperties(property, range);
+					}
+				}
+			}
+		}
+
+		private static async Task ProcessEmojiDataFile(IDataSource emojiSource, UnicodeInfoBuilder builder)
+		{
+			using (var reader = new UnicodeDataFileReader(await emojiSource.OpenDataFileAsync(EmojiDataFileName).ConfigureAwait(false), ';'))
+			{
+				while (reader.MoveToNextLine())
+				{
+					var range = UnicodeCodePointRange.Parse(reader.ReadTrimmedField());
+					if (EnumHelper<EmojiProperties>.TryGetNamedValue(reader.ReadTrimmedField(), out var property))
 					{
 						builder.SetProperties(property, range);
 					}

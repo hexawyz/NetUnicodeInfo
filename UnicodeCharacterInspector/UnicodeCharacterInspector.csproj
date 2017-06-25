@@ -42,9 +42,9 @@
   <PropertyGroup>
     <ApplicationIcon>UnicodeCharacterInspector.ico</ApplicationIcon>
   </PropertyGroup>
-	<PropertyGroup>
-		<UICulture>en-US</UICulture>
-	</PropertyGroup>
+  <PropertyGroup>
+    <UICulture>en-US</UICulture>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -79,6 +79,7 @@
     <Compile Include="BindableObject.cs" />
     <Compile Include="CharacterInfoViewModel.cs" />
     <Compile Include="CharacterInspectorViewModel.cs" />
+    <Compile Include="CodePointToFontFamilyConverter.cs" />
     <Compile Include="Placeholder.cs" />
     <Compile Include="PlaceholderAdorner.cs">
       <DependentUpon>Placeholder.cs</DependentUpon>

@@ -123,6 +123,9 @@ namespace System.Unicode
 		/// <summary>Gets a value indicating which of the boolean core properties are defined for the code point.</summary>
 		/// <remarks>The core properties are computed by combining various character information together with contributory properties.</remarks>
 		public CoreProperties CoreProperties => UnicodeCharacterData.CoreProperties;
+		/// <summary>Gets a value indicating which of the boolean emoji properties are defined for the code point.</summary>
+		/// <remarks>The emoji properties are provided by the Unicode Emoji standard, which is not directly part of UCD.</remarks>
+		public EmojiProperties EmojiProperties => UnicodeCharacterData.EmojiProperties;
 		/// <summary>Gets a collection of cross references associated with the code point.</summary>
 		/// <remarks>The cross references have been extracted from Unicode data but are not normative.</remarks>
 		public UnicodeCrossReferenceCollection CrossRerefences => new UnicodeCrossReferenceCollection(UnicodeCharacterData.CrossRerefences);

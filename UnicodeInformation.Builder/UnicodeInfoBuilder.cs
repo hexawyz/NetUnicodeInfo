@@ -226,7 +226,7 @@ namespace System.Unicode.Builder
 				|| ucdEntries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
 				|| ucdEntries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Unable to find code point for setting core property.");
 			}
 
 			int i = firstIndex;
@@ -234,6 +234,37 @@ namespace System.Unicode.Builder
 			while (true)
 			{
 				ucdEntries[i].CoreProperties |= property;
+
+				if (i == lastIndex) break;
+
+				++i;
+			}
+		}
+
+		public void SetProperties(EmojiProperties property, UnicodeCodePointRange codePointRange)
+		{
+			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
+			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
+
+			if (firstIndex < 0 && lastIndex < 0)
+			{
+				Insert(new UnicodeCharacterDataBuilder(codePointRange) { EmojiProperties = property });
+				return;
+			}
+
+			if (firstIndex < 0
+				|| lastIndex < 0
+				|| ucdEntries[firstIndex].CodePointRange.FirstCodePoint < codePointRange.FirstCodePoint
+				|| ucdEntries[lastIndex].CodePointRange.LastCodePoint > codePointRange.LastCodePoint)
+			{
+				throw new InvalidOperationException("Unable to find code point for setting emoji property.");
+			}
+
+			int i = firstIndex;
+
+			while (true)
+			{
+				ucdEntries[i].EmojiProperties |= property;
 
 				if (i == lastIndex) break;
 

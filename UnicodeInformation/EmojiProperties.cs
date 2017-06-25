@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace System.Unicode
 {
@@ -16,13 +13,13 @@ namespace System.Unicode
 		/// <summary>Represents the Emoji property.</summary>
 		[ValueName("Emoji"), Display(Name = "Emoji")]
 		Emoji = 0x1,
-		/// <summary>Represents the Emoji property.</summary>
+		/// <summary>Represents the Emoji_Presentation property.</summary>
 		[ValueName("Emoji_Presentation"), Display(Name = "Emoji_Presentation")]
 		EmojiPresentation = 0x2,
-		/// <summary>Represents the Emoji property.</summary>
+		/// <summary>Represents the Emoji_Modifier_Base property.</summary>
 		[ValueName("Emoji_Modifier_Base"), Display(Name = "Emoji_Modifier_Base")]
 		EmojiModifierBase = 0x4,
-		/// <summary>Represents the Emoji property.</summary>
+		/// <summary>Represents the Emoji_Component property.</summary>
 		[ValueName("Emoji_Component"), Display(Name = "Emoji_Component")]
 		EmojiComponent = 0x8,
 	}
