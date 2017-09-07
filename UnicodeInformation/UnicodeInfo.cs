@@ -24,6 +24,7 @@ namespace System.Unicode
 		private static readonly UnicodeBlock[] blocks;
 		private static readonly CjkRadicalData[] radicals;
 		private static readonly int maxContiguousIndex;
+		private static readonly string[] emojiSequences;
 
 		static UnicodeInfo()
 		{
@@ -49,7 +50,7 @@ namespace System.Unicode
 				if (formatVersion != 2) throw new InvalidDataException();
 
 				var fileUnicodeVersion = new Version(reader.ReadUInt16(), reader.ReadByte(), reader.ReadByte());
-				
+
 				var unicodeCharacterDataEntries = new UnicodeCharacterData[ReadCodePoint(reader)]; // Allocate one extra entry to act as a dummy entry.
 				byte[] nameBuffer = new byte[128];
 				int mci = 0;
@@ -72,7 +73,7 @@ namespace System.Unicode
 
 				for (; i < unicodeCharacterDataEntries.Length; ++i)
 				{
-					 ReadUnicodeCharacterDataEntry(reader, nameBuffer, out unicodeCharacterDataEntries[i]);
+					ReadUnicodeCharacterDataEntry(reader, nameBuffer, out unicodeCharacterDataEntries[i]);
 				}
 
 				var blockEntries = new UnicodeBlock[reader.ReadUInt16()];
@@ -430,11 +431,11 @@ namespace System.Unicode
 		/// <returns>A display text for the code point, which may be the representation of the code point itself.</returns>
 		public static string GetDisplayText(int codePoint)
 		{
-            if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString(); // Provide a display text for control characters, including space.
+			if (codePoint <= 0x0020) return ((char)(0x2400 + codePoint)).ToString(); // Provide a display text for control characters, including space.
 			else if (GetCategory(codePoint) == UnicodeCategory.NonSpacingMark) return "\u25CC" + char.ConvertFromUtf32(codePoint);
-            else if (codePoint >= 0xD800 && codePoint <= 0xDFFF) return "\xFFFD";
+			else if (codePoint >= 0xD800 && codePoint <= 0xDFFF) return "\xFFFD";
 			else if (codePoint >= 0xE0020 && codePoint < 0xE007F) return char.ConvertFromUtf32(codePoint - 0xE0000); // Handle "TAG" ASCII subset by remapping it to regular ASCII
-            else return char.ConvertFromUtf32(codePoint);
+			else return char.ConvertFromUtf32(codePoint);
 		}
 
 		private static string GetDisplayText(int codePoint, int unicodeCharacterDataIndex)
@@ -458,18 +459,18 @@ namespace System.Unicode
 				HangulInfo.GetHangulName((char)codePoint) :
 				GetNameInternal(codePoint);
 
-        private static string GetNameInternal(int codePoint)
+		private static string GetNameInternal(int codePoint)
 			=> FindUnicodeCodePointIndex(codePoint) is int codePointInfoIndex && codePointInfoIndex >= 0 ?
 				GetName(codePoint, ref GetUnicodeCharacterData(codePointInfoIndex)) :
 				null;
 
 		internal static string GetName(int codePoint, ref UnicodeCharacterData characterData)
 		{
-            if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
-            else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
-            else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
-            else return null;
-        }
+			if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
+			else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
+			else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
+			else return null;
+		}
 
 		/// <summary>Returns information for a CJK radical.</summary>
 		/// <param name="radicalIndex">The index of the radical. Must be between 1 and <see cref="CjkRadicalCount"/>.</param>

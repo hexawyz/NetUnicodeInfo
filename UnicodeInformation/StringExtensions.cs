@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Unicode
+﻿namespace System.Unicode
 {
 	/// <summary>Contains extension methods applicable to the <see cref="string"/> type.</summary>
 	public static class StringExtensions

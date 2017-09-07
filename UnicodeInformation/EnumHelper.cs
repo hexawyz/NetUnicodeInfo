@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode
 {
-	internal sealed class EnumHelper<T>
+	internal static class EnumHelper<T>
 		where T : struct
 	{
-		private static readonly Dictionary<string, T> namedValueDictionary = CreateNamedValueDictionary();
+		private static readonly Dictionary<T, string[]> valueNameDictionary = CreateValueNameDictionary();
 
-		private static Dictionary<string, T> CreateNamedValueDictionary()
+		private static Dictionary<T, string[]> CreateValueNameDictionary()
 		{
 			var type = typeof(T).GetTypeInfo();
 
@@ -22,15 +18,19 @@ namespace System.Unicode
 			return
 			(
 				from field in type.DeclaredFields
-				from attr in field.GetCustomAttributes<ValueNameAttribute>()
-				where attr.Name != null
-				select new KeyValuePair<string, T>(attr.Name, (T)field.GetValue(null))
-			).ToDictionary(kvp => kvp.Key, kvp => kvp.Value, StringComparer.OrdinalIgnoreCase);
+				where field.IsPublic && field.IsLiteral
+				select new KeyValuePair<T, string[]>
+				(
+					(T)field.GetValue(null),
+					(
+						from attr in field.GetCustomAttributes<ValueNameAttribute>()
+						where attr.Name != null
+						select attr.Name
+					).ToArray()
+				)
+			).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
-		public static bool TryGetNamedValue(string name, out T value)
-		{
-			return namedValueDictionary.TryGetValue(name, out value);
-		}
+		public static string[] GetValueNames(T value) => valueNameDictionary.TryGetValue(value, out string[] names) ? names : null;
 	}
 }

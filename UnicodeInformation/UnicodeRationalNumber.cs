@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Unicode
+﻿namespace System.Unicode
 {
 	/// <summary>Represents a rational number in a format compatible with the Unicode standard.</summary>
 	public struct UnicodeRationalNumber : IEquatable<UnicodeRationalNumber>

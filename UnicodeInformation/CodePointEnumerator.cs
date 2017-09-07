@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode
 {
@@ -28,9 +24,9 @@ namespace System.Unicode
 
 		/// <summary>Gets the element in the collection at the current position of the enumerator..</summary>
 		/// <value>The element in the collection at the current position of the enumerator.</value>
-		public int Current { get { return current; } }
+		public int Current => current;
 
-		object IEnumerator.Current { get { return current; } }
+		object IEnumerator.Current => current;
 
 		void IDisposable.Dispose() { }
 

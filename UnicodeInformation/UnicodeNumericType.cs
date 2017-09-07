@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Unicode
+﻿namespace System.Unicode
 {
 	/// <summary>Represents the value of the Numeric_Type property.</summary>
 	public enum UnicodeNumericType : byte

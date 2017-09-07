@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode
 {
@@ -84,26 +80,17 @@ namespace System.Unicode
 		/// <summary>Gets an <see cref="UnicodeCategoryInfo"/> value providing information on the specified unicode category.</summary>
 		/// <param name="category">The category on which information should be retrieved.</param>
 		/// <returns>Information on the specified category.</returns>
-		public static UnicodeCategoryInfo Get(UnicodeCategory category)
-		{
-			return categories[(int)category];
-		}
+		public static UnicodeCategoryInfo Get(UnicodeCategory category) => categories[(int)category];
 
 		/// <summary>Gets an <see cref="UnicodeCategoryInfo"/> value providing information on the unicode category, accessed by its short name, as per the Unicode standard.</summary>
 		/// <param name="name">The short name for which information should be retrieved .</param>
 		/// <returns>Information on the specified category.</returns>
-		public static UnicodeCategoryInfo FromShortName(string name)
-		{
-			return Get(GetCategoryFromShortName(name));
-		}
+		public static UnicodeCategoryInfo FromShortName(string name) => Get(GetCategoryFromShortName(name));
 
 		/// <summary>Gets an <see cref="UnicodeCategoryInfo"/> value providing information on the unicode category, accessed by its long name, as per the Unicode standard.</summary>
 		/// <param name="name">The long name for which information should be retrieved .</param>
 		/// <returns>Information on the specified category.</returns>
-		public static UnicodeCategoryInfo FromLongName(string name)
-		{
-			return Get(GetCategoryFromLongName(name));
-		}
+		public static UnicodeCategoryInfo FromLongName(string name) => Get(GetCategoryFromLongName(name));
 
 		/// <summary>The unicode category described.</summary>
 		public readonly UnicodeCategory Category;
@@ -114,47 +101,32 @@ namespace System.Unicode
 
 		private UnicodeCategoryInfo(UnicodeCategory category, string shortName, string longName)
 		{
-			this.Category = category;
-			this.ShortName = shortName;
-			this.LongName = longName;
+			Category = category;
+			ShortName = shortName;
+			LongName = longName;
 		}
 
-		/// <summary>Returns a <see cref="System.String" /> that represents this instance.</summary>
-		/// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-		public override string ToString()
-		{
-			return Category.ToString();
-		}
+		/// <summary>Returns a <see cref="string" /> that represents this instance.</summary>
+		/// <returns>A <see cref="string" /> that represents this instance.</returns>
+		public override string ToString() => Category.ToString();
 
-		/// <summary>Determines whether the specified <see cref="System.Object" />, is equal to this instance.</summary>
-		/// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
-		/// <returns><see langword="true" /> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <see langword="false" />.</returns>
-		public override bool Equals(object obj)
-		{
-			return obj is UnicodeCategoryInfo && Equals((UnicodeCategoryInfo)obj);
-		}
+		/// <summary>Determines whether the specified <see cref="object" />, is equal to this instance.</summary>
+		/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
+		/// <returns><see langword="true" /> if the specified <see cref="object" /> is equal to this instance; otherwise, <see langword="false" />.</returns>
+		public override bool Equals(object obj) => obj is UnicodeCategoryInfo && Equals((UnicodeCategoryInfo)obj);
 
 		/// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
 		/// <param name="other">An object to compare with this object.</param>
 		/// <returns><see langword="true" /> if the current object is equal to the other parameter; otherwise, <see langword="false" />.</returns>
-		public bool Equals(UnicodeCategoryInfo other)
-		{
-			return other.Category == Category && (other.Category != 0 || other.ShortName != null);
-		}
+		public bool Equals(UnicodeCategoryInfo other) => other.Category == Category && (other.Category != 0 || other.ShortName != null);
 
 		/// <summary>Returns a hash code for this instance.</summary>
 		/// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
-		public override int GetHashCode()
-		{
-			return (int)Category;
-		}
+		public override int GetHashCode() => (int)Category;
 
 		/// <summary>Performs an implicit conversion from <see cref="UnicodeCategoryInfo"/> to <see cref="UnicodeCategory"/>.</summary>
 		/// <param name="info">The information.</param>
 		/// <returns>The result of the conversion.</returns>
-		public static implicit operator UnicodeCategory(UnicodeCategoryInfo info)
-		{
-			return info.Category;
-		}
+		public static implicit operator UnicodeCategory(UnicodeCategoryInfo info) => info.Category;
 	}
 }

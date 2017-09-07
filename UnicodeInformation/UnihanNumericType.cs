@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Unicode
+﻿namespace System.Unicode
 {
 	/// <summary>Represents the different numeric types from the Unihan database.</summary>
 	public enum UnihanNumericType : byte

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace System.Unicode
 {
 	/// <summary>Provides information on a specific CJK radical.</summary>
+	[DebuggerDisplay("{RadicalIndex} - {TraditionalRadicalCodePoint.ToString(),nq} / {SimplifiedRadicalCodePoint.ToString(),nq}")]
 	public struct CjkRadicalInfo
 	{
 		private readonly byte radicalIndex;

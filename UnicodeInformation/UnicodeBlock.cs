@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace System.Unicode
 {
 	/// <summary>Represents a Unicode block.</summary>
+	[DebuggerDisplay("[{CodePointRange.ToString(),nq}] {Name,nq}")]
 	public struct UnicodeBlock
 	{
 		/// <summary>The code point range of this block.</summary>
@@ -16,8 +13,8 @@ namespace System.Unicode
 
 		internal UnicodeBlock(UnicodeCodePointRange codePointRange, string name)
 		{
-			this.CodePointRange = codePointRange;
-			this.Name = name;
+			CodePointRange = codePointRange;
+			Name = name;
 		}
 	}
 }

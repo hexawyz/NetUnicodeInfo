@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode
 {
@@ -41,7 +37,7 @@ namespace System.Unicode
 			if (index < text.Length && (index += current > 0xFFFF ? 2 : 1) < text.Length)
 			{
 				current = GetUtf32(text, index);
-                return true;
+				return true;
 			}
 			else
 			{

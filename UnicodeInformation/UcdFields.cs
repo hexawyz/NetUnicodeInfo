@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Unicode
+﻿namespace System.Unicode
 {
 	/// <summary>Represents the fields available for an UCD entry.</summary>
 	/// <remarks>Not all the enumeration member directly map to a field.</remarks>
