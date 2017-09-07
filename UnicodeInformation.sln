@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicodeCharacterInspector", "UnicodeCharacterInspector\UnicodeCharacterInspector.csproj", "{04E97F21-EF04-441F-83CF-2E71F3AAB089}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicodeInformation", "UnicodeInformation\UnicodeInformation.csproj", "{CB722958-A1C4-4121-804B-7D5A671491B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnicodeInformation", "UnicodeInformation\UnicodeInformation.csproj", "{CB722958-A1C4-4121-804B-7D5A671491B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicodeInformation.Tests", "UnicodeInformation.Tests\UnicodeInformation.Tests.csproj", "{50337426-E884-4394-9E1A-F6F7A555F5D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnicodeInformation.Tests", "UnicodeInformation.Tests\UnicodeInformation.Tests.csproj", "{50337426-E884-4394-9E1A-F6F7A555F5D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicodeInformation.Builder", "UnicodeInformation.Builder\UnicodeInformation.Builder.csproj", "{8DFDEE6C-4F0D-4DE1-B346-574CB56D2B8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnicodeInformation.Builder", "UnicodeInformation.Builder\UnicodeInformation.Builder.csproj", "{8DFDEE6C-4F0D-4DE1-B346-574CB56D2B8B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73097DF3-04B7-4C5F-B4EA-0EB800E40702}"
 	ProjectSection(SolutionItems) = preProject
@@ -52,5 +52,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B155A7AA-DB01-4F49-8985-33AC25BC4B98}
 	EndGlobalSection
 EndGlobal

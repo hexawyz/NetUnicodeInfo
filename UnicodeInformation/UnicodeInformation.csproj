@@ -18,15 +18,21 @@
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GoldenCrystal/NetUnicodeInfo</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/UnicodeCharacterInspector/UnicodeCharacterInspector.ico</PackageIconUrl>
-    <PackageReleaseNotes>
-      Version 2.1
-      -------------
-      Support for Unicode 10.0.
+    <PackageReleaseNotes>Version 2.2.1
+-------------
+Added DebuggerDisplay attributes on various types.
 
-      Version 2.0
-      -------------
-      Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.
-    </PackageReleaseNotes>
+Version 2.2.0
+-------------
+Added emoji properties.
+      
+Version 2.1.0
+-------------
+Support for Unicode 10.0.
+
+Version 2.0.0
+-------------
+Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="ucd.dat" />
