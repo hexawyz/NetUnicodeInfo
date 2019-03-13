@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
@@ -16,6 +12,20 @@ namespace System.Unicode.Builder
 			writer.Write((byte)(value));
 			writer.Write((byte)(value >> 8));
 			writer.Write((byte)(value >> 16));
+		}
+
+		public static void WriteVariableUInt64(this BinaryWriter writer, ulong value)
+		{
+			byte b = (byte)(value & 0x7F);
+			value >>= 7;
+
+			while (value > 0)
+			{
+				writer.Write((byte)(b | 0x80));
+				b = (byte)(value & 0x7F);
+				value >>= 7;
+			}
+			writer.Write(b);
 		}
 
 		/// <summary>Writes code point in a custom, but compact encoding.</summary>

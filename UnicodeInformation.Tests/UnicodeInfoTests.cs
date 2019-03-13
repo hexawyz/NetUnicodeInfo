@@ -10,7 +10,7 @@ namespace UnicodeInformation.Tests
 		[Fact]
 		public void UnicodeVersionShouldBeTheLatestSupported()
 		{
-			Assert.Equal(new Version(10, 0, 0), UnicodeInfo.UnicodeVersion);
+			Assert.Equal(new Version(12, 0, 0), UnicodeInfo.UnicodeVersion);
 		}
 		
 		[Fact]
@@ -50,8 +50,11 @@ namespace UnicodeInformation.Tests
 		[InlineData(0x0D76, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "1/16", "MALAYALAM FRACTION ONE SIXTEENTH", "Malayalam")]
 		[InlineData(0x0D5D, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "3/20", "MALAYALAM FRACTION THREE TWENTIETHS", "Malayalam")]
 		[InlineData(0x0D59, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "1/40", "MALAYALAM FRACTION ONE FORTIETH", "Malayalam")]
+		[InlineData(0x11FC0, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "1/320", "TAMIL FRACTION ONE THREE-HUNDRED-AND-TWENTIETH", "Tamil Supplement")]
 		[InlineData(0x1F953, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "BACON", "Supplemental Symbols and Pictographs")]
 		[InlineData(0x1F966, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "BROCCOLI", "Supplemental Symbols and Pictographs")]
+		[InlineData(0x1F99E, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "LOBSTER", "Supplemental Symbols and Pictographs")]
+		[InlineData(0x1F9A6, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "OTTER", "Supplemental Symbols and Pictographs")]
 		public void CharacterInfoShouldHaveExpectedResults(int codePoint, UnicodeCategory expectedCategory, UnicodeNumericType expectedNumericType, string expectedNumericValue, string expectedName, string expectedBlock)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);

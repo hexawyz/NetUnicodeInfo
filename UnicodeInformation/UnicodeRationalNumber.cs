@@ -19,13 +19,13 @@
 
 			int fractionBarIndex = s.IndexOf('/');
 
-			return new UnicodeRationalNumber(long.Parse(fractionBarIndex >= 0 ? s.Substring(0, fractionBarIndex) : s), fractionBarIndex >= 0 ? byte.Parse(s.Substring(fractionBarIndex + 1)) : (byte)1);
+			return new UnicodeRationalNumber(long.Parse(fractionBarIndex >= 0 ? s.Substring(0, fractionBarIndex) : s), fractionBarIndex >= 0 ? ushort.Parse(s.Substring(fractionBarIndex + 1)) : (byte)1);
 		}
 
 		/// <summary>The numerator of the fraction.</summary>
 		public readonly long Numerator;
 		/// <summary>The denominator of the fraction.</summary>
-		public readonly byte Denominator;
+		public readonly ushort Denominator;
 
 		/// <summary>Initializes a new instance of the <see cref="UnicodeRationalNumber"/> structure that represents a signed integer..</summary>
 		/// <param name="number">The number which should be represented as a rational number.</param>
@@ -38,7 +38,7 @@
 		/// <summary>Initializes a new instance of the <see cref="UnicodeRationalNumber"/> structure that represents a signed integer..</summary>
 		/// <param name="numerator">The number which should be used as numerator in the rational number.</param>
 		/// <param name="denominator">The number which should be used as denominator in the rational number.</param>
-		public UnicodeRationalNumber(long numerator, byte denominator)
+		public UnicodeRationalNumber(long numerator, ushort denominator)
 		{
 			this.Numerator = numerator;
 			this.Denominator = denominator;

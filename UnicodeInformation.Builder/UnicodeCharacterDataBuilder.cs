@@ -139,7 +139,7 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.NumericNumeric) != 0)
 			{
 				writer.Write(NumericValue.Numerator);
-				writer.Write(NumericValue.Denominator);
+				writer.WriteVariableUInt64(NumericValue.Denominator);
 			}
 			if ((fields & UcdFields.OldName) != 0) writer.Write(OldName);
 			if ((fields & UcdFields.SimpleUpperCaseMapping) != 0) writer.Write(SimpleUpperCaseMapping);

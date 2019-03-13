@@ -149,17 +149,17 @@ namespace System.Unicode
 			var category = (fields & UcdFields.Category) != 0 ? (UnicodeCategory)reader.ReadByte() : UnicodeCategory.OtherNotAssigned;
 			var canonicalCombiningClass = (fields & UcdFields.CanonicalCombiningClass) != 0 ? (CanonicalCombiningClass)reader.ReadByte() : CanonicalCombiningClass.NotReordered;
 			var bidirectionalClass = (fields & UcdFields.BidirectionalClass) != 0 ? (BidirectionalClass)reader.ReadByte() : 0;
-			CompatibilityFormattingTag decompositionType = (fields & UcdFields.DecompositionMapping) != 0 ? (CompatibilityFormattingTag)reader.ReadByte() : CompatibilityFormattingTag.Canonical;
+			var decompositionType = (fields & UcdFields.DecompositionMapping) != 0 ? (CompatibilityFormattingTag)reader.ReadByte() : CompatibilityFormattingTag.Canonical;
 			string decompositionMapping = (fields & UcdFields.DecompositionMapping) != 0 ? reader.ReadString() : null;
 			var numericType = (UnicodeNumericType)((int)(fields & UcdFields.NumericNumeric) >> 6);
-			UnicodeRationalNumber numericValue = numericType != UnicodeNumericType.None ?
-				new UnicodeRationalNumber(reader.ReadInt64(), reader.ReadByte()) :
-				default(UnicodeRationalNumber);
+			var numericValue = numericType != UnicodeNumericType.None ?
+				new UnicodeRationalNumber(reader.ReadInt64(), ReadVariableUInt16(reader)) :
+				default;
 			string oldName = (fields & UcdFields.OldName) != 0 ? reader.ReadString() : null;
 			string simpleUpperCaseMapping = (fields & UcdFields.SimpleUpperCaseMapping) != 0 ? reader.ReadString() : null;
 			string simpleLowerCaseMapping = (fields & UcdFields.SimpleLowerCaseMapping) != 0 ? reader.ReadString() : null;
 			string simpleTitleCaseMapping = (fields & UcdFields.SimpleTitleCaseMapping) != 0 ? reader.ReadString() : null;
-			ContributoryProperties contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
+			var contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
 			int corePropertiesAndEmojiProperties = (fields & UcdFields.CorePropertiesAndEmojiProperties) != 0 ? ReadInt24(reader) : 0;
 			int[] crossReferences = (fields & UcdFields.CrossRerefences) != 0 ? new int[reader.ReadByte() + 1] : null;
 
@@ -260,6 +260,26 @@ namespace System.Unicode
 
 		private static void ReadBlockEntry(BinaryReader reader, out UnicodeBlock value)
 			=> value = new UnicodeBlock(new UnicodeCodePointRange(ReadCodePoint(reader), ReadCodePoint(reader)), reader.ReadString());
+
+		private static ushort ReadVariableUInt16(BinaryReader reader)
+		{
+			byte b = reader.ReadByte();
+			ushort value = unchecked((ushort)(b & 0x7F));
+
+			if (unchecked((sbyte)b) < 0)
+			{
+				b = reader.ReadByte();
+				value |= unchecked((ushort)((b & 0x7F) << 7)) ;
+
+				if (unchecked((sbyte)b) < 0)
+				{
+					b = reader.ReadByte();
+					value |= unchecked((ushort)((b & 0x7F) << 14));
+				}
+			}
+
+			return value;
+		}
 
 		private static int ReadInt24(BinaryReader reader) => reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
 
