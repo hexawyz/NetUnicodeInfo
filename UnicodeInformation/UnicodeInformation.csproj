@@ -8,6 +8,10 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\System.Unicode.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <PropertyGroup Label="Package">
     <PackageId>UnicodeInformation</PackageId>
@@ -18,6 +22,8 @@
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GoldenCrystal/NetUnicodeInfo</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/UnicodeCharacterInspector/UnicodeCharacterInspector.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>Version 2.3.0
 -------------
 Support for Unicode 12.0.
@@ -49,6 +55,7 @@ Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is n
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
   </ItemGroup>
 </Project>
