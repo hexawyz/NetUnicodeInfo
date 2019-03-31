@@ -1,4 +1,4 @@
-﻿namespace System.Unicode.Builder
+namespace System.Unicode.Builder
 {
 	public static class HexCodePoint
 	{
@@ -11,10 +11,7 @@
 			return Parse(s, 2);
 		}
 
-		public static int Parse(string s, int index)
-		{
-			return Parse(s, ref index);
-		}
+		public static int Parse(string s, int index) => Parse(s, ref index);
 
 		public static int Parse(string s, ref int index)
 		{

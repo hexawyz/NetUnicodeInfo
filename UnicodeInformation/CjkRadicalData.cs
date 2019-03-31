@@ -1,6 +1,6 @@
-﻿namespace System.Unicode
+namespace System.Unicode
 {
-	internal struct CjkRadicalData
+	internal readonly struct CjkRadicalData
 	{
 		public readonly char TraditionalRadicalCodePoint;
 		public readonly char TraditionalCharacterCodePoint;
@@ -23,6 +23,8 @@
 			SimplifiedCharacterCodePoint = simplifiedCharacterCodePoint;
 		}
 
-		public bool HasSimplifiedForm { get { return SimplifiedRadicalCodePoint != TraditionalRadicalCodePoint || SimplifiedCharacterCodePoint != TraditionalCharacterCodePoint; } }
-    }
+		public bool HasSimplifiedForm
+			=> SimplifiedRadicalCodePoint != TraditionalRadicalCodePoint
+			|| SimplifiedCharacterCodePoint != TraditionalCharacterCodePoint;
+	}
 }

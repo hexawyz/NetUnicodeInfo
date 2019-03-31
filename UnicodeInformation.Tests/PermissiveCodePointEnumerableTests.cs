@@ -1,9 +1,8 @@
-﻿using System;
-using System.Unicode;
-using System.Collections.Generic;
-using Xunit;
+using System;
 using System.Collections;
 using System.Linq;
+using System.Unicode;
+using Xunit;
 
 namespace UnicodeInformation.Tests
 {
@@ -62,8 +61,6 @@ namespace UnicodeInformation.Tests
 
 		[Fact]
 		public void NullArgumentShouldThrowArgumentNullException()
-		{
-			Assert.Throws<ArgumentNullException>(() => { foreach (int c in (null as string).AsPermissiveCodePointEnumerable()) { } });
-		}
+			=> Assert.Throws<ArgumentNullException>(() => { foreach (int c in (null as string).AsPermissiveCodePointEnumerable()) { } });
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Unicode;
 using System.Globalization;
 using Xunit;
@@ -9,10 +9,8 @@ namespace UnicodeInformation.Tests
 	{
 		[Fact]
 		public void UnicodeVersionShouldBeTheLatestSupported()
-		{
-			Assert.Equal(new Version(12, 0, 0), UnicodeInfo.UnicodeVersion);
-		}
-		
+			=> Assert.Equal(new Version(12, 0, 0), UnicodeInfo.UnicodeVersion);
+
 		[Fact]
 		public void ControlCharactersShouldHaveSpecificDisplayText()
 		{
@@ -28,9 +26,7 @@ namespace UnicodeInformation.Tests
 		[InlineData("\U0001F600", 0x1F600)]
 		[InlineData("\u00E9", 0x00E9)]
 		public void DisplayTextShouldReturnExpectedResult(string expectedText, int codePoint)
-		{
-			Assert.Equal(expectedText, UnicodeInfo.GetDisplayText(codePoint));
-		}
+			=> Assert.Equal(expectedText, UnicodeInfo.GetDisplayText(codePoint));
 
 		[Theory]
 		[InlineData(0x0030, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, "0", "DIGIT ZERO", "Basic Latin")]
@@ -74,9 +70,7 @@ namespace UnicodeInformation.Tests
 		[InlineData('\uABFF')]
 		[InlineData('\uD7A5')]
 		public void HangulNameShouldFailForNonHangulCodePoints(char codePoint)
-		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName(codePoint));
-		}
+			=> Assert.Throws<ArgumentOutOfRangeException>(() => HangulInfo.GetHangulName(codePoint));
 #endif
 
 		[Theory]
@@ -85,9 +79,7 @@ namespace UnicodeInformation.Tests
 		[InlineData("HANGUL SYLLABLE PANJ", 0xD311)]
 		[InlineData("HANGUL SYLLABLE TOLM", 0xD1AA)]
 		public void HangulNameShouldReturnExpectedResult(string expectedName, int codePoint)
-		{
-			Assert.Equal(expectedName, UnicodeInfo.GetName(codePoint));
-		}
+			=> Assert.Equal(expectedName, UnicodeInfo.GetName(codePoint));
 
 		[Theory]
 		[InlineData("Basic Latin", 0x0041)]
@@ -95,9 +87,7 @@ namespace UnicodeInformation.Tests
 		[InlineData("Hangul Syllables", 0xD311)]
 		[InlineData("Miscellaneous Symbols and Pictographs", 0x1F574)]
 		public void MethodGetBlockNameShouldHaveExpectedResult(string expectedBlockName, int codePoint)
-		{
-			Assert.Equal(expectedBlockName, UnicodeInfo.GetBlockName(codePoint));
-		}
+			=> Assert.Equal(expectedBlockName, UnicodeInfo.GetBlockName(codePoint));
 
 		[Fact]
 		public void RadicalStrokeCountShouldHaveExpectedResults()

@@ -1,48 +1,38 @@
-﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	public struct Utf8Buffer : IDisposable
 	{
-		private static readonly ConcurrentStack<byte[]> bufferStack = new ConcurrentStack<byte[]>();
+		private static readonly ConcurrentStack<byte[]> BufferStack = new ConcurrentStack<byte[]>();
 
-		public static Utf8Buffer Get()
-		{
-			byte[] buffer;
+		public static Utf8Buffer Get() => new Utf8Buffer(BufferStack.TryPop(out var buffer) ? buffer : new byte[100]);
 
-			return new Utf8Buffer(bufferStack.TryPop(out buffer) ? buffer : new byte[100]);
-		}
+		private byte[] _buffer;
 
-		private byte[] buffer;
-		private int length;
+		public int Length { get; private set; }
 
 		private Utf8Buffer(byte[] buffer)
 		{
-			this.buffer = buffer;
-			this.length = 0;
+			_buffer = buffer;
+			Length = 0;
 		}
 
 		public void Dispose()
 		{
-			if (buffer != null)
+			if (_buffer != null)
 			{
-				bufferStack.Push(buffer);
-				this = default(Utf8Buffer);
+				BufferStack.Push(_buffer);
+				this = default;
 			}
 		}
-
-		public int Length { get { return length; } }
 
 		private void EnsureExtraCapacity(int count)
 		{
 			if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-			if (buffer.Length < checked(length + count))
-				Array.Resize(ref buffer, Math.Max(length + count, buffer.Length << 1));
+			if (_buffer.Length < checked(Length + count))
+				Array.Resize(ref _buffer, Math.Max(Length + count, _buffer.Length << 1));
 		}
 
 		public void Append(byte[] value, int startIndex, int count)
@@ -53,28 +43,25 @@ namespace System.Unicode.Builder
 
 			EnsureExtraCapacity(value.Length);
 
-			var buffer = this.buffer;
+			var buffer = _buffer;
 
 			for (int i = startIndex; i < count; ++i)
 			{
-				buffer[length++] = value[i];
+				buffer[Length++] = value[i];
 			}
 		}
 
-		public override string ToString()
-		{
-			return length > 0 ? Encoding.UTF8.GetString(buffer, 0, length) : string.Empty;
-		}
+		public override string ToString() => Length > 0 ? Encoding.UTF8.GetString(_buffer, 0, Length) : string.Empty;
 
 		public string ToTrimmedString()
 		{
-			if (length == 0) return string.Empty;
+			if (Length == 0) return string.Empty;
 
-			var buffer = this.buffer;
+			var buffer = _buffer;
 			int start = 0;
-			int end = length;
+			int end = Length;
 
-			while (buffer[start] == ' ') if (++start == length) return string.Empty;
+			while (buffer[start] == ' ') if (++start == Length) return string.Empty;
 			while (buffer[--end] == ' ') ;
 
 			return end > start ? Encoding.UTF8.GetString(buffer, start, end - start + 1) : string.Empty;

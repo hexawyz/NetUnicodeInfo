@@ -1,12 +1,6 @@
-﻿using System;
-using System.Unicode;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Collections;
-using Xunit;
-using System.Linq;
-using Xunit.Abstractions;
+using System;
 using System.Text;
+using Xunit.Abstractions;
 
 namespace UnicodeInformation.Tests
 {
@@ -14,36 +8,34 @@ namespace UnicodeInformation.Tests
 	// This is just a wrapper over regular strings… Data is serialized as an array of chars instead of a string. This seems to do the trick.
 	public class XUnitSerializableString : IEquatable<XUnitSerializableString>, IXunitSerializable
 	{
-		private string value;
+		private string _value;
 
 		public XUnitSerializableString() : this(null) { }
 
 		public XUnitSerializableString(string value)
 		{
-			this.value = value;
+			_value = value;
 		}
 
 		void IXunitSerializable.Deserialize(IXunitSerializationInfo info)
 		{
 			var chars = info.GetValue<char[]>("Chars");
 
-			value = chars != null ?
+			_value = chars != null ?
 				new string(chars) :
 				null;
 		}
 
 		void IXunitSerializable.Serialize(IXunitSerializationInfo info)
-		{
-			info.AddValue("Chars", value?.ToCharArray(), typeof(char[]));
-		}
+			=> info.AddValue("Chars", _value?.ToCharArray(), typeof(char[]));
 
 		public override string ToString()
 		{
-			if (string.IsNullOrEmpty(value)) return value;
+			if (string.IsNullOrEmpty(_value)) return _value;
 
-			var sb = new StringBuilder(value.Length * 6);
+			var sb = new StringBuilder(_value.Length * 6);
 
-			foreach (char c in value)
+			foreach (char c in _value)
 			{
 				sb.Append(@"\u")
 					.Append(((ushort)c).ToString("X4"));
@@ -52,11 +44,11 @@ namespace UnicodeInformation.Tests
 			return sb.ToString();
 		}
 
-		public bool Equals(XUnitSerializableString other) => value == other.value;
+		public bool Equals(XUnitSerializableString other) => _value == other._value;
 		public override bool Equals(object obj) => obj is XUnitSerializableString && Equals((XUnitSerializableString)obj);
-		public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(value);
+		public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(_value);
 
-		public static implicit operator string(XUnitSerializableString text) => text.value;
+		public static implicit operator string(XUnitSerializableString text) => text._value;
 		public static implicit operator XUnitSerializableString(string text) => new XUnitSerializableString(text);
 	}
 }

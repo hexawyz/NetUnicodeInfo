@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
@@ -19,7 +15,7 @@ namespace System.Unicode.Builder
 		public const string UcdDirectoryName = "UCD";
 		public const string UcdArchiveName = "UCD.zip";
 
-		public static readonly string[] ucdRequiredFiles = new[]
+		public static readonly string[] UcdRequiredFiles = new[]
 		{
 			"UnicodeData.txt",
 			"PropList.txt",
@@ -31,7 +27,7 @@ namespace System.Unicode.Builder
 			"Blocks.txt",
 		};
 
-		public static readonly string[] unihanRequiredFiles = new[]
+		public static readonly string[] UnihanRequiredFiles = new[]
 		{
 			"Unihan_NumericValues.txt",
 			"Unihan_Readings.txt",
@@ -39,7 +35,7 @@ namespace System.Unicode.Builder
 			"Unihan_IRGSources.txt",
 		};
 
-		public static readonly string[] emojiRequiredFiles = new[]
+		public static readonly string[] EmojiRequiredFiles = new[]
 		{
 			"emoji-data.txt",
 			"emoji-sequences.txt",
@@ -47,15 +43,15 @@ namespace System.Unicode.Builder
 			"emoji-zwj-sequences.txt",
 		};
 
-		private static HttpClient httpClient;
+		private static HttpClient _httpClient;
 
 		// The only purpose of this is for tests…
 		internal static void SetHttpMessageHandler(HttpMessageHandler handler)
 		{
-			httpClient = new HttpClient(handler ?? new HttpClientHandler());
+			_httpClient = new HttpClient(handler ?? new HttpClientHandler());
 		}
 
-		internal static HttpClient HttpClient { get { return httpClient ?? (httpClient = new HttpClient()); } }
+		internal static HttpClient HttpClient => _httpClient ?? (_httpClient = new HttpClient());
 
 		private static Task<byte[]> DownloadDataArchiveAsync(string archiveName)
 			=> HttpClient.GetByteArrayAsync(UnicodeCharacterDataUri + archiveName);
@@ -140,8 +136,8 @@ namespace System.Unicode.Builder
 		{
 			UnicodeInfoBuilder data;
 
-			using (var ucdSource = await GetDataSourceAsync(UcdArchiveName, UcdDirectoryName, ucdRequiredFiles, null, null, null))
-			using (var unihanSource = await GetDataSourceAsync(UnihanArchiveName, UnihanDirectoryName, unihanRequiredFiles, null, null, null))
+			using (var ucdSource = await GetDataSourceAsync(UcdArchiveName, UcdDirectoryName, UcdRequiredFiles, null, null, null))
+			using (var unihanSource = await GetDataSourceAsync(UnihanArchiveName, UnihanDirectoryName, UnihanRequiredFiles, null, null, null))
 			using (var emojiSource = new HttpDataSource(EmojiDataUri, HttpClient))
 			{
 				data = await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource, emojiSource);

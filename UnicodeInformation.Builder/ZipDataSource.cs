@@ -1,30 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	public sealed class ZipDataSource : IDataSource
 	{
-		private readonly ZipArchive archive;
+		private readonly ZipArchive _archive;
 
-		public ZipDataSource(Stream stream)
-		{
-			archive = new ZipArchive(stream, ZipArchiveMode.Read, false);
-		}
+		public ZipDataSource(Stream stream) => _archive = new ZipArchive(stream, ZipArchiveMode.Read, false);
 
-		public void Dispose()
-		{
-			archive.Dispose();
-		}
+		public void Dispose() => _archive.Dispose();
 
 		public Task<Stream> OpenDataFileAsync(string fileName)
 		{
-			var entry = archive.Entries.Where(e => e.FullName == fileName).FirstOrDefault();
+			var entry = _archive.Entries.Where(e => e.FullName == fileName).FirstOrDefault();
 
 			if (entry == null) throw new FileNotFoundException();
 

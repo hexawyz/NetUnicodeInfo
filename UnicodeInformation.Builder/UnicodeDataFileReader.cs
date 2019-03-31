@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	public class UnicodeDataFileReader : IDisposable
 	{
-		private readonly Stream stream;
-		private readonly byte[] byteBuffer;
-		private int index;
-		private int length;
-		private readonly char fieldSeparator;
-		private bool hasField = false;
-		private readonly bool leaveOpen;
+		private readonly Stream _stream;
+		private readonly byte[] _byteBuffer;
+		private int _index;
+		private int _length;
+		private readonly char _fieldSeparator;
+		private bool _hasField = false;
+		private readonly bool _leaveOpen;
 
 		public UnicodeDataFileReader(Stream stream, char fieldSeparator)
 			: this(stream, fieldSeparator, false)
@@ -24,39 +19,35 @@ namespace System.Unicode.Builder
 
 		public UnicodeDataFileReader(Stream stream, char fieldSeparator, bool leaveOpen)
 		{
-			this.stream = stream;
-			this.fieldSeparator = fieldSeparator;
-			this.byteBuffer = new byte[8192];
-			this.leaveOpen = leaveOpen;
+			_stream = stream;
+			_fieldSeparator = fieldSeparator;
+			_byteBuffer = new byte[8192];
+			_leaveOpen = leaveOpen;
 		}
 
 		public void Dispose()
 		{
-			if (!leaveOpen) stream.Dispose();
+			if (!_leaveOpen) _stream.Dispose();
 		}
 
 		private bool RefillBuffer()
-		{
 			// Evilish line of code. 😈
-			return (length = stream.Read(byteBuffer, 0, byteBuffer.Length)) != (index = 0);
-		}
+			=> (_length = _stream.Read(_byteBuffer, 0, _byteBuffer.Length)) != (_index = 0);
 
 		private static bool IsNewLineOrComment(byte b)
-		{
-			return b == '\n' || b == '#';
-		}
+			=> b == '\n' || b == '#';
 
 		/// <summary>Moves the stream to the next valid data row.</summary>
 		/// <returns><see langword="true"/> if data is available; <see langword="false"/> otherwise.</returns>
 		public bool MoveToNextLine()
 		{
-			if (length == 0)
+			if (_length == 0)
 			{
 				if (RefillBuffer())
 				{
-					if (!IsNewLineOrComment(byteBuffer[index]))
+					if (!IsNewLineOrComment(_byteBuffer[_index]))
 					{
-						hasField = true;
+						_hasField = true;
 						goto Completed;
 					}
 				}
@@ -68,37 +59,37 @@ namespace System.Unicode.Builder
 
 			do
 			{
-				while (index < length)
+				while (_index < _length)
 				{
-					if (byteBuffer[index++] == '\n')
+					if (_byteBuffer[_index++] == '\n')
 					{
-						if ((index < length || RefillBuffer()) && !IsNewLineOrComment(byteBuffer[index]))
+						if ((_index < _length || RefillBuffer()) && !IsNewLineOrComment(_byteBuffer[_index]))
 						{
-							hasField = true;
+							_hasField = true;
 							goto Completed;
 						}
 					}
 				}
 			} while (RefillBuffer());
 
-			hasField = false;
-			Completed:;
-			return hasField;
+			_hasField = false;
+		Completed:;
+			return _hasField;
 		}
 
 		private string ReadFieldInternal(bool trim)
 		{
-			if (length == 0) throw new InvalidOperationException();
+			if (_length == 0) throw new InvalidOperationException();
 
-			if (!hasField) return null;
-			else if (index >= length) RefillBuffer();
+			if (!_hasField) return null;
+			else if (_index >= _length) RefillBuffer();
 
 			// If the current character is a new line or a comment, we are at the end of a line.
-			if (IsNewLineOrComment(byteBuffer[index]))
+			if (IsNewLineOrComment(_byteBuffer[_index]))
 			{
-				if (hasField)
+				if (_hasField)
 				{
-					hasField = false;
+					_hasField = false;
 					return string.Empty;
 				}
 				else
@@ -114,38 +105,38 @@ namespace System.Unicode.Builder
 
 				do
 				{
-					startOffset = index;
+					startOffset = _index;
 					endOffset = -1;
 
-					while (index < length)
+					while (_index < _length)
 					{
-						byte b = byteBuffer[index];
+						byte b = _byteBuffer[_index];
 
-						if (IsNewLineOrComment(b))	 // NB: Do not advance to the next byte when end of line has been reached.
+						if (IsNewLineOrComment(b))   // NB: Do not advance to the next byte when end of line has been reached.
 						{
-							endOffset = index;
-							hasField = false;
+							endOffset = _index;
+							_hasField = false;
 							break;
 						}
-						else if (b == fieldSeparator)
+						else if (b == _fieldSeparator)
 						{
-							endOffset = index++;
+							endOffset = _index++;
 							break;
 						}
 						else
 						{
-							++index;
+							++_index;
 						}
 					}
 
 					if (endOffset >= 0)
 					{
-						buffer.Append(byteBuffer, startOffset, endOffset - startOffset);
+						buffer.Append(_byteBuffer, startOffset, endOffset - startOffset);
 						break;
 					}
-					else if (index > startOffset)
+					else if (_index > startOffset)
 					{
-						buffer.Append(byteBuffer, startOffset, index - startOffset);
+						buffer.Append(_byteBuffer, startOffset, _index - startOffset);
 					}
 				} while (RefillBuffer());
 
@@ -156,52 +147,46 @@ namespace System.Unicode.Builder
 		/// <summary>Reads the next data field.</summary>
 		/// <remarks>This method will return <see langword="null"/> on end of line.</remarks>
 		/// <returns>The text value of the read field, if available; <see langword="null"/> otherwise.</returns>
-		public string ReadField()
-		{
-			return ReadFieldInternal(false);
-		}
+		public string ReadField() => ReadFieldInternal(false);
 
 		/// <summary>Reads the next data field as a trimmed value.</summary>
 		/// <remarks>This method will return <see langword="null"/> on end of line.</remarks>
 		/// <returns>The trimmed text value of the read field, if available; <see langword="null"/> otherwise.</returns>
-		public string ReadTrimmedField()
-		{
-			return ReadFieldInternal(true);
-		}
+		public string ReadTrimmedField() => ReadFieldInternal(true);
 
 		/// <summary>Skips the next data field.</summary>
 		/// <remarks>This method will return <see langword="false"/> on end of line.</remarks>
 		/// <returns><see langword="true"/> if a field was skipped; <see langword="false"/> otherwise.</returns>
 		public bool SkipField()
 		{
-			if (length == 0) throw new InvalidOperationException();
+			if (_length == 0) throw new InvalidOperationException();
 
-			if (!hasField) return false;
-			else if (index >= length) RefillBuffer();
+			if (!_hasField) return false;
+			else if (_index >= _length) RefillBuffer();
 
 			// If the current character is a new line or a comment, we are at the end of a line.
-			if (IsNewLineOrComment(byteBuffer[index]))
+			if (IsNewLineOrComment(_byteBuffer[_index]))
 			{
-				hasField = false;
+				_hasField = false;
 				return false;
 			}
 
 			do
 			{
-				while (index < length)
+				while (_index < _length)
 				{
-					byte b = byteBuffer[index];
+					byte b = _byteBuffer[_index];
 
 					if (IsNewLineOrComment(b))   // NB: Do not advance to the next byte when end of line has been reached.
 					{
-						hasField = false;
+						_hasField = false;
 						return true;
 					}
 					else
 					{
-						++index;
+						++_index;
 
-						if (b == fieldSeparator)
+						if (b == _fieldSeparator)
 						{
 							return true;
 						}

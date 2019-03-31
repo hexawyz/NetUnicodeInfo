@@ -1,6 +1,6 @@
-﻿namespace System.Unicode
+namespace System.Unicode
 {
-	internal struct UnihanCharacterData
+	internal readonly struct UnihanCharacterData
 	{
 		public readonly int CodePoint;
 		public readonly UnihanNumericType NumericType;

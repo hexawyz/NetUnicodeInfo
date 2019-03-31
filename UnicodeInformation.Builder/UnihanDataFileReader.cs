@@ -1,58 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	public sealed class UnihanDataFileReader : IDisposable
 	{
-		private readonly UnicodeDataFileReader reader;
-		private int codePoint;
-		private string propertyName;
-		private string propertyValue;
+		private readonly UnicodeDataFileReader _reader;
+
+		public int CodePoint { get; private set; }
+
+		public string PropertyName { get; private set; }
+
+		public string PropertyValue { get; private set; }
 
 		public UnihanDataFileReader(Stream stream)
 			: this(stream, false)
 		{
 		}
 
-		public UnihanDataFileReader(Stream stream, bool leaveOpen)
-		{
-			reader = new UnicodeDataFileReader(stream, '\t', leaveOpen);
-		}
+		public UnihanDataFileReader(Stream stream, bool leaveOpen) => _reader = new UnicodeDataFileReader(stream, '\t', leaveOpen);
 
-		public void Dispose()
-		{
-			reader.Dispose();
-		}
+		public void Dispose() => _reader.Dispose();
 
 		public bool Read()
 		{
 			bool result;
 
-			if (result = reader.MoveToNextLine())
+			if (result = _reader.MoveToNextLine())
 			{
-				codePoint = HexCodePoint.ParsePrefixed(reader.ReadField());
-				propertyName = reader.ReadField();
-				propertyValue = reader.ReadField();
+				CodePoint = HexCodePoint.ParsePrefixed(_reader.ReadField());
+				PropertyName = _reader.ReadField();
+				PropertyValue = _reader.ReadField();
 			}
 			else
 			{
-				codePoint = 0;
-				propertyName = null;
-				propertyValue = null;
+				CodePoint = 0;
+				PropertyName = null;
+				PropertyValue = null;
 			}
 
 			return result;
 		}
-
-		public int CodePoint { get { return codePoint; } }
-
-		public string PropertyName { get { return propertyName; } }
-
-		public string PropertyValue { get { return propertyValue; } }
 	}
 }

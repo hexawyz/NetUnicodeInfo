@@ -1,4 +1,4 @@
-﻿namespace System.Unicode
+namespace System.Unicode
 {
 	/// <summary>Contains extension methods applicable to the <see cref="string"/> type.</summary>
 	public static class StringExtensions
@@ -11,9 +11,7 @@
 		/// <param name="s">The string to encapsulate.</param>
 		/// <returns>An enumerable object, which can be used to enumerate code points in the string.</returns>
 		public static CodePointEnumerable AsCodePointEnumerable(this string s)
-		{
-			return new CodePointEnumerable(s);
-		}
+			=> new CodePointEnumerable(s);
 
 		/// <summary>Encapsulates the string in an object which can be used to enumerate code points in a permissive way.</summary>
 		/// <remarks>
@@ -23,8 +21,6 @@
 		/// <param name="s">The string to encapsulate.</param>
 		/// <returns>An enumerable object, which can be used to enumerate code points in the string.</returns>
 		public static PermissiveCodePointEnumerable AsPermissiveCodePointEnumerable(this string s)
-		{
-			return new PermissiveCodePointEnumerable(s);
-		}
+			=> new PermissiveCodePointEnumerable(s);
 	}
 }

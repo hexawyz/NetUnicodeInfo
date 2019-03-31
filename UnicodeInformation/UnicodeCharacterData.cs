@@ -1,8 +1,8 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace System.Unicode
 {
-	internal struct UnicodeCharacterData
+	internal readonly struct UnicodeCharacterData
 	{
 		public readonly UnicodeCodePointRange CodePointRange;
 		public readonly string Name;
@@ -13,16 +13,16 @@ namespace System.Unicode
 		public readonly CompatibilityFormattingTag DecompositionType;
 		public readonly string DecompositionMapping;
 		public readonly UnicodeNumericType NumericType;
-		private readonly UnicodeRationalNumber numericValue;
+		private readonly UnicodeRationalNumber _numericValue;
 		public readonly bool BidirectionalMirrored;
 		public readonly string OldName;
 		public readonly string SimpleUpperCaseMapping;
 		public readonly string SimpleLowerCaseMapping;
 		public readonly string SimpleTitleCaseMapping;
 		public readonly ContributoryProperties ContributoryProperties;
-		private readonly int corePropertiesAndEmojiProperties;
-		public CoreProperties CoreProperties => (CoreProperties)(corePropertiesAndEmojiProperties & 0x000FFFFF);
-		public EmojiProperties EmojiProperties => (EmojiProperties)(corePropertiesAndEmojiProperties >> 20);
+		private readonly int _corePropertiesAndEmojiProperties;
+		public CoreProperties CoreProperties => (CoreProperties)(_corePropertiesAndEmojiProperties & 0x000FFFFF);
+		public EmojiProperties EmojiProperties => (EmojiProperties)(_corePropertiesAndEmojiProperties >> 20);
 
 		public readonly int[] CrossRerefences; // NB: It seems that parsing NamesList is required in order to provide data for this field ?
 
@@ -48,26 +48,26 @@ namespace System.Unicode
 			int[] crossRerefences
 		)
 		{
-			this.CodePointRange = codePointRange;
-			this.Name = name;
-			this.NameAliases = nameAliases;
-			this.Category = category;
-			this.CanonicalCombiningClass = canonicalCombiningClass;
-			this.BidirectionalClass = bidirectionalClass;
-			this.DecompositionType = decompositionType;
-			this.DecompositionMapping = decompositionMapping;
-			this.NumericType = numericType;
-			this.numericValue = numericValue;
-			this.BidirectionalMirrored = bidirectionalMirrored;
-			this.OldName = oldName;
-			this.SimpleUpperCaseMapping = simpleUpperCaseMapping;
-			this.SimpleLowerCaseMapping = simpleLowerCaseMapping;
-			this.SimpleTitleCaseMapping = simpleTitleCaseMapping;
-			this.ContributoryProperties = contributoryProperties;
-			this.corePropertiesAndEmojiProperties = corePropertiesAndEmojiProperties;
-			this.CrossRerefences = crossRerefences;
+			CodePointRange = codePointRange;
+			Name = name;
+			NameAliases = nameAliases;
+			Category = category;
+			CanonicalCombiningClass = canonicalCombiningClass;
+			BidirectionalClass = bidirectionalClass;
+			DecompositionType = decompositionType;
+			DecompositionMapping = decompositionMapping;
+			NumericType = numericType;
+			_numericValue = numericValue;
+			BidirectionalMirrored = bidirectionalMirrored;
+			OldName = oldName;
+			SimpleUpperCaseMapping = simpleUpperCaseMapping;
+			SimpleLowerCaseMapping = simpleLowerCaseMapping;
+			SimpleTitleCaseMapping = simpleTitleCaseMapping;
+			ContributoryProperties = contributoryProperties;
+			_corePropertiesAndEmojiProperties = corePropertiesAndEmojiProperties;
+			CrossRerefences = crossRerefences;
 		}
 
-		public UnicodeRationalNumber? NumericValue => NumericType != UnicodeNumericType.None ? numericValue : null as UnicodeRationalNumber?;
+		public UnicodeRationalNumber? NumericValue => NumericType != UnicodeNumericType.None ? _numericValue : null as UnicodeRationalNumber?;
 	}
 }

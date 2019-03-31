@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace System.Unicode
 {
 	/// <summary>Provides complementary information on <see cref="UnicodeCategory"/> values.</summary>
-	public struct UnicodeCategoryInfo : IEquatable<UnicodeCategoryInfo>
+	public readonly struct UnicodeCategoryInfo : IEquatable<UnicodeCategoryInfo>
 	{
-		private static readonly UnicodeCategoryInfo[] categories =
+		private static readonly UnicodeCategoryInfo[] Categories =
 		{
 			new UnicodeCategoryInfo(UnicodeCategory.UppercaseLetter, "Lu", "Uppercase_Letter"),
 			new UnicodeCategoryInfo(UnicodeCategory.LowercaseLetter, "Ll", "Lowercase_Letter"),
@@ -40,14 +40,14 @@ namespace System.Unicode
 			new UnicodeCategoryInfo(UnicodeCategory.OtherNotAssigned, "Cn", "Unassigned"),
 		};
 
-		private static readonly Dictionary<string, UnicodeCategory> unicodeShortNameToCategoryDictionary = BuildShortNameDictionary();
-		private static readonly Dictionary<string, UnicodeCategory> unicodeLongNameToCategoryDictionary = BuildLongNameDictionary();
+		private static readonly Dictionary<string, UnicodeCategory> UnicodeShortNameToCategoryDictionary = BuildShortNameDictionary();
+		private static readonly Dictionary<string, UnicodeCategory> UnicodeLongNameToCategoryDictionary = BuildLongNameDictionary();
 
 		private static Dictionary<string, UnicodeCategory> BuildShortNameDictionary()
 		{
 			var dictionary = new Dictionary<string, UnicodeCategory>(StringComparer.OrdinalIgnoreCase);
 
-			foreach (var info in categories)
+			foreach (var info in Categories)
 			{
 				dictionary.Add(info.ShortName, info.Category);
 			}
@@ -59,7 +59,7 @@ namespace System.Unicode
 		{
 			var dictionary = new Dictionary<string, UnicodeCategory>(StringComparer.OrdinalIgnoreCase);
 
-			foreach (var info in categories)
+			foreach (var info in Categories)
 			{
 				dictionary.Add(info.LongName, info.Category);
 			}
@@ -68,19 +68,15 @@ namespace System.Unicode
 		}
 
 		private static UnicodeCategory GetCategoryFromShortName(string name)
-		{
-			return unicodeShortNameToCategoryDictionary[name];
-		}
+			=> UnicodeShortNameToCategoryDictionary[name];
 
 		private static UnicodeCategory GetCategoryFromLongName(string name)
-		{
-			return unicodeLongNameToCategoryDictionary[name];
-		}
+			=> UnicodeLongNameToCategoryDictionary[name];
 
 		/// <summary>Gets an <see cref="UnicodeCategoryInfo"/> value providing information on the specified unicode category.</summary>
 		/// <param name="category">The category on which information should be retrieved.</param>
 		/// <returns>Information on the specified category.</returns>
-		public static UnicodeCategoryInfo Get(UnicodeCategory category) => categories[(int)category];
+		public static UnicodeCategoryInfo Get(UnicodeCategory category) => Categories[(int)category];
 
 		/// <summary>Gets an <see cref="UnicodeCategoryInfo"/> value providing information on the unicode category, accessed by its short name, as per the Unicode standard.</summary>
 		/// <param name="name">The short name for which information should be retrieved .</param>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Unicode;
 using Xunit;
@@ -36,18 +36,14 @@ namespace UnicodeInformation.Tests
 		[InlineData(0x110000)]
 		[InlineData(int.MaxValue)]
 		public void ConstructorShouldFailForInvalidCodePoint(int codePoint)
-		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(codePoint));
-		}
+			=> Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(codePoint));
 
 		[Theory]
 		[InlineData(-1, 10)]
 		[InlineData(10, 0x110000)]
 		[InlineData(-1, 0x110000)]
 		public void ConstructorShouldFailForInvalidCodePoints(int firstCodePoint, int lastCodePoint)
-		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(firstCodePoint, lastCodePoint));
-		}
+			=> Assert.Throws<ArgumentOutOfRangeException>(() => new UnicodeCodePointRange(firstCodePoint, lastCodePoint));
 
 		[Theory]
 		[InlineData(0xA3F, 0x105F)]

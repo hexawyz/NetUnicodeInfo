@@ -1,9 +1,8 @@
-﻿using System;
-using System.Unicode;
-using System.Collections.Generic;
-using Xunit;
+using System;
 using System.Collections;
 using System.Linq;
+using System.Unicode;
+using Xunit;
 
 namespace UnicodeInformation.Tests
 {
@@ -53,9 +52,7 @@ namespace UnicodeInformation.Tests
 
 		[Fact]
 		public void NullArgumentShouldThrowArgumentNullException()
-		{
-			Assert.Throws<ArgumentNullException>(() => { foreach (int codePoint in (null as string).AsCodePointEnumerable()) { } });
-		}
+			=> Assert.Throws<ArgumentNullException>(() => { foreach (int codePoint in (null as string).AsCodePointEnumerable()) { } });
 
 		public static readonly TheoryData<XUnitSerializableString> EnumerationFailureTestData = new TheoryData<XUnitSerializableString>
 		{
@@ -73,8 +70,6 @@ namespace UnicodeInformation.Tests
 		[Theory]
 		[MemberData(nameof(EnumerationFailureTestData))]
 		public void EnumerationOfInvalidUtf16StringsShouldThrowArgumentException(XUnitSerializableString text)
-		{
-			Assert.Throws<ArgumentException>(() => { foreach (int codePoint in ((string)text).AsCodePointEnumerable()) { } });
-		}
+			=> Assert.Throws<ArgumentException>(() => { foreach (int codePoint in ((string)text).AsCodePointEnumerable()) { } });
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -6,23 +6,17 @@ namespace System.Unicode.Builder
 {
 	public class HttpDataSource : IDataSource
 	{
-		private readonly HttpClient httpClient;
-		private readonly Uri baseUri;
-		
+		private readonly HttpClient _httpClient;
+		private readonly Uri _baseUri;
+
 		public HttpDataSource(Uri baseUri, HttpClient httpClient)
 		{
-			this.httpClient = httpClient ?? new HttpClient();
-			this.baseUri = baseUri;
+			_httpClient = httpClient ?? new HttpClient();
+			_baseUri = baseUri;
 		}
 
-		public void Dispose()
-		{
-			httpClient.Dispose();
-		}
+		public void Dispose() => _httpClient.Dispose();
 
-		public Task<Stream> OpenDataFileAsync(string fileName)
-		{
-			return httpClient.GetStreamAsync(baseUri + fileName);
-		}
+		public Task<Stream> OpenDataFileAsync(string fileName) => _httpClient.GetStreamAsync(_baseUri + fileName);
 	}
 }

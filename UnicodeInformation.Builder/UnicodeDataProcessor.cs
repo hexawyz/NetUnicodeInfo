@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -273,15 +270,13 @@ namespace System.Unicode.Builder
 		}
 
 		private static CjkRadicalData UpdateRadicalData(CjkRadicalData traditionalData, char simplifiedRadicalCodePoint, char simplifiedCharacterCodePoint)
-		{
-			return new CjkRadicalData
+			=> new CjkRadicalData
 			(
 				traditionalData.TraditionalRadicalCodePoint,
 				traditionalData.TraditionalCharacterCodePoint,
 				simplifiedRadicalCodePoint,
 				simplifiedCharacterCodePoint
 			);
-		}
 
 		private static async Task ProcessNameAliasesFile(IDataSource ucdSource, UnicodeInfoBuilder builder)
 		{
@@ -377,13 +372,13 @@ namespace System.Unicode.Builder
 
 					switch (line[0])
 					{
-						case '@':
-						case ';':
-						case '\t':
-							characterData = null;
-							break;
-						default:
-							throw new InvalidDataException("Unrecognized data in NamesList.txt.");
+					case '@':
+					case ';':
+					case '\t':
+						characterData = null;
+						break;
+					default:
+						throw new InvalidDataException("Unrecognized data in NamesList.txt.");
 					}
 				}
 			}
@@ -409,18 +404,18 @@ namespace System.Unicode.Builder
 					// This statement is used to skip unhandled properties entirely.
 					switch (reader.PropertyName)
 					{
-						case UnihanProperty.kDefinition:
-						case UnihanProperty.kMandarin:
-						case UnihanProperty.kCantonese:
-						case UnihanProperty.kJapaneseKun:
-						case UnihanProperty.kJapaneseOn:
-						case UnihanProperty.kKorean:
-						case UnihanProperty.kHangul:
-						case UnihanProperty.kVietnamese:
-							break;
-						default:
-							// Ignore unhandled properties for now.
-							continue;
+					case UnihanProperty.kDefinition:
+					case UnihanProperty.kMandarin:
+					case UnihanProperty.kCantonese:
+					case UnihanProperty.kJapaneseKun:
+					case UnihanProperty.kJapaneseOn:
+					case UnihanProperty.kKorean:
+					case UnihanProperty.kHangul:
+					case UnihanProperty.kVietnamese:
+						break;
+					default:
+						// Ignore unhandled properties for now.
+						continue;
 					}
 
 					// This entry will only be created if there is meaningful data.
@@ -428,32 +423,32 @@ namespace System.Unicode.Builder
 
 					switch (reader.PropertyName)
 					{
-						case UnihanProperty.kDefinition:
-							entry.Definition = reader.PropertyValue;
-							break;
-						case UnihanProperty.kMandarin:
-							entry.MandarinReading = reader.PropertyValue;
-							break;
-						case UnihanProperty.kCantonese:
-							entry.CantoneseReading = reader.PropertyValue;
-							break;
-						case UnihanProperty.kJapaneseKun:
-							entry.JapaneseKunReading = reader.PropertyValue;
-							break;
-						case UnihanProperty.kJapaneseOn:
-							entry.JapaneseOnReading = reader.PropertyValue;
-							break;
-						case UnihanProperty.kKorean:
-							entry.KoreanReading = reader.PropertyValue;
-							break;
-						case UnihanProperty.kHangul:
-							entry.HangulReading = reader.PropertyValue;
-							break;
-						case UnihanProperty.kVietnamese:
-							entry.VietnameseReading = reader.PropertyValue;
-							break;
-						default:
-							throw new InvalidOperationException();
+					case UnihanProperty.kDefinition:
+						entry.Definition = reader.PropertyValue;
+						break;
+					case UnihanProperty.kMandarin:
+						entry.MandarinReading = reader.PropertyValue;
+						break;
+					case UnihanProperty.kCantonese:
+						entry.CantoneseReading = reader.PropertyValue;
+						break;
+					case UnihanProperty.kJapaneseKun:
+						entry.JapaneseKunReading = reader.PropertyValue;
+						break;
+					case UnihanProperty.kJapaneseOn:
+						entry.JapaneseOnReading = reader.PropertyValue;
+						break;
+					case UnihanProperty.kKorean:
+						entry.KoreanReading = reader.PropertyValue;
+						break;
+					case UnihanProperty.kHangul:
+						entry.HangulReading = reader.PropertyValue;
+						break;
+					case UnihanProperty.kVietnamese:
+						entry.VietnameseReading = reader.PropertyValue;
+						break;
+					default:
+						throw new InvalidOperationException();
 					}
 				}
 			}
@@ -468,26 +463,26 @@ namespace System.Unicode.Builder
 					// This statement is used to skip unhandled properties entirely.
 					switch (reader.PropertyName)
 					{
-						case UnihanProperty.kSimplifiedVariant:
-						case UnihanProperty.kTraditionalVariant:
-							break;
-						default:
-							// Ignore unhandled properties for now.
-							continue;
+					case UnihanProperty.kSimplifiedVariant:
+					case UnihanProperty.kTraditionalVariant:
+						break;
+					default:
+						// Ignore unhandled properties for now.
+						continue;
 					}
 
 					var entry = builder.GetUnihan(reader.CodePoint);
 
 					switch (reader.PropertyName)
 					{
-						case UnihanProperty.kSimplifiedVariant:
-							entry.SimplifiedVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
-							break;
-						case UnihanProperty.kTraditionalVariant:
-							entry.TraditionalVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
-							break;
-						default:
-							throw new InvalidOperationException();
+					case UnihanProperty.kSimplifiedVariant:
+						entry.SimplifiedVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
+						break;
+					case UnihanProperty.kTraditionalVariant:
+						entry.TraditionalVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
+						break;
+					default:
+						throw new InvalidOperationException();
 					}
 				}
 			}
@@ -503,17 +498,17 @@ namespace System.Unicode.Builder
 
 					switch (reader.PropertyName)
 					{
-						case UnihanProperty.kAccountingNumeric:
-							entry.NumericType = UnihanNumericType.Accounting;
-							break;
-						case UnihanProperty.kOtherNumeric:
-							entry.NumericType = UnihanNumericType.Other;
-							break;
-						case UnihanProperty.kPrimaryNumeric:
-							entry.NumericType = UnihanNumericType.Primary;
-							break;
-						default:
-							throw new InvalidDataException("Unrecognized property name: " + reader.PropertyName + ".");
+					case UnihanProperty.kAccountingNumeric:
+						entry.NumericType = UnihanNumericType.Accounting;
+						break;
+					case UnihanProperty.kOtherNumeric:
+						entry.NumericType = UnihanNumericType.Other;
+						break;
+					case UnihanProperty.kPrimaryNumeric:
+						entry.NumericType = UnihanNumericType.Primary;
+						break;
+					default:
+						throw new InvalidDataException("Unrecognized property name: " + reader.PropertyName + ".");
 					}
 
 					entry.NumericValue = long.Parse(reader.PropertyValue);
@@ -529,36 +524,36 @@ namespace System.Unicode.Builder
 				{
 					switch (reader.PropertyName)
 					{
-						case UnihanProperty.kRSUnicode:
-							var entry = builder.GetUnihan(reader.CodePoint);
-							var values = reader.PropertyValue.Split(' ');
+					case UnihanProperty.kRSUnicode:
+						var entry = builder.GetUnihan(reader.CodePoint);
+						var values = reader.PropertyValue.Split(' ');
 
-							foreach (var value in values)
+						foreach (string value in values)
+						{
+							bool isSimplified = false;
+							int index;
+
+							for (int i = 0; i < value.Length; ++i)
 							{
-								bool isSimplified = false;
-								int index;
-
-								for (int i = 0; i < value.Length; ++i)
+								switch (value[i])
 								{
-									switch (value[i])
-									{
-										case '\'':
-											isSimplified = true;
-											goto case '.';
-										case '.':
-											index = i;
-											goto SeparatorFound;
-									}
+								case '\'':
+									isSimplified = true;
+									goto case '.';
+								case '.':
+									index = i;
+									goto SeparatorFound;
 								}
-								throw new InvalidDataException("Failed to decode value for kRSUnicode / Unicode_Radical_Stroke.");
-
-							SeparatorFound:;
-								entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), sbyte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.AllowLeadingSign), isSimplified));
 							}
-							break;
-						default:
-							// Ignore unhandled properties for now.
-							break;
+							throw new InvalidDataException("Failed to decode value for kRSUnicode / Unicode_Radical_Stroke.");
+
+						SeparatorFound:;
+							entry.UnicodeRadicalStrokeCounts.Add(new UnicodeRadicalStrokeCount(byte.Parse(value.Substring(0, index), NumberStyles.None), sbyte.Parse(value.Substring(index + (isSimplified ? 2 : 1)), NumberStyles.AllowLeadingSign), isSimplified));
+						}
+						break;
+					default:
+						// Ignore unhandled properties for now.
+						break;
 					}
 				}
 			}

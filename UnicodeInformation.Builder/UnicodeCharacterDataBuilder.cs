@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,21 +7,21 @@ namespace System.Unicode.Builder
 {
 	public sealed class UnicodeCharacterDataBuilder
 	{
-		private UnicodeCategory category = UnicodeCategory.OtherNotAssigned;
+		private UnicodeCategory _category = UnicodeCategory.OtherNotAssigned;
 
-		private readonly List<UnicodeNameAlias> nameAliases = new List<UnicodeNameAlias>();
-		private readonly List<int> crossRerefences = new List<int>();
+		private readonly List<UnicodeNameAlias> _nameAliases = new List<UnicodeNameAlias>();
+		private readonly List<int> _crossRerefences = new List<int>();
 
 		public UnicodeCodePointRange CodePointRange { get; }
 
 		public string Name { get; set; }
 
-		public IList<UnicodeNameAlias> NameAliases { get { return nameAliases; } }
+		public IList<UnicodeNameAlias> NameAliases => _nameAliases;
 
 		public UnicodeCategory Category
 		{
-			get => category;
-			set => category = Enum.IsDefined(typeof(UnicodeCategory), value) ?
+			get => _category;
+			set => _category = Enum.IsDefined(typeof(UnicodeCategory), value) ?
 				value :
 				throw new ArgumentOutOfRangeException(nameof(value));
 		}
@@ -39,7 +39,7 @@ namespace System.Unicode.Builder
 		public ContributoryProperties ContributoryProperties { get; set; }
 		public CoreProperties CoreProperties { get; set; }
 		public EmojiProperties EmojiProperties { get; set; }
-		public IList<int> CrossRerefences { get { return crossRerefences; } }
+		public IList<int> CrossRerefences => _crossRerefences;
 
 		public UnicodeCharacterDataBuilder(int codePoint)
 			: this(new UnicodeCodePointRange(codePoint))
@@ -49,16 +49,15 @@ namespace System.Unicode.Builder
 		public UnicodeCharacterDataBuilder(UnicodeCodePointRange codePointRange)
 		{
 			CodePointRange = codePointRange;
-			this.category = UnicodeCategory.OtherNotAssigned;
+			_category = UnicodeCategory.OtherNotAssigned;
 		}
 
 		internal UnicodeCharacterData ToCharacterData()
-		{
-			return new UnicodeCharacterData
+			=> new UnicodeCharacterData
 			(
 				CodePointRange,
 				Name,
-				nameAliases.Count > 0 ? nameAliases.ToArray() : UnicodeNameAlias.EmptyArray,
+				_nameAliases.Count > 0 ? _nameAliases.ToArray() : UnicodeNameAlias.EmptyArray,
 				Category,
 				CanonicalCombiningClass,
 				BidirectionalClass,
@@ -75,18 +74,17 @@ namespace System.Unicode.Builder
 				(int)CoreProperties | (int)EmojiProperties << 20,
 				CrossRerefences.Count > 0 ? CrossRerefences.ToArray() : null
 			);
-		}
 
 		internal void WriteToFile(BinaryWriter writer)
 		{
-			if (nameAliases.Count > 64) throw new InvalidDataException("Cannot handle more than 64 name aliases.");
+			if (_nameAliases.Count > 64) throw new InvalidDataException("Cannot handle more than 64 name aliases.");
 
-			UcdFields fields = default(UcdFields);
+			UcdFields fields = default;
 
 			if (!CodePointRange.IsSingleCodePoint) fields = UcdFields.CodePointRange;
 
-			if (Name != null || nameAliases.Count > 0) fields |= UcdFields.Name; // This field combines name and alias.
-			if (category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
+			if (Name != null || _nameAliases.Count > 0) fields |= UcdFields.Name; // This field combines name and alias.
+			if (_category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
 			if (CanonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
 			/*if (bidirectionalClass != 0)*/
 			fields |= UcdFields.BidirectionalClass;
@@ -99,7 +97,7 @@ namespace System.Unicode.Builder
 			if (SimpleTitleCaseMapping != null) fields |= UcdFields.SimpleTitleCaseMapping;
 			if (ContributoryProperties != 0) fields |= UcdFields.ContributoryProperties;
 			if (CoreProperties != 0 || EmojiProperties != 0) fields |= UcdFields.CorePropertiesAndEmojiProperties;
-			if (crossRerefences.Count > 0) fields |= UcdFields.CrossRerefences;
+			if (_crossRerefences.Count > 0) fields |= UcdFields.CrossRerefences;
 
 			writer.Write((ushort)fields);
 
@@ -113,14 +111,14 @@ namespace System.Unicode.Builder
 				// The first 8 bit sequence will encore either the length of the name property alone,
 				// or the number of aliases and a bit indicating the presence of the name property.
 
-				if (nameAliases.Count > 0)
+				if (_nameAliases.Count > 0)
 				{
-					writer.WritePackedLength((byte)(Name != null ? 3 : 2), nameAliases.Count);
+					writer.WritePackedLength((byte)(Name != null ? 3 : 2), _nameAliases.Count);
 
 					if (Name != null)
 						writer.WriteNamePropertyToFile(Name);
 
-					foreach (var nameAlias in nameAliases)
+					foreach (var nameAlias in _nameAliases)
 						writer.WriteNameAliasToFile(nameAlias);
 				}
 				else
@@ -128,7 +126,7 @@ namespace System.Unicode.Builder
 					writer.WriteNamePropertyToFile(Name);
 				}
 			}
-			if ((fields & UcdFields.Category) != 0) writer.Write((byte)category);
+			if ((fields & UcdFields.Category) != 0) writer.Write((byte)_category);
 			if ((fields & UcdFields.CanonicalCombiningClass) != 0) writer.Write((byte)CanonicalCombiningClass);
 			if ((fields & UcdFields.BidirectionalClass) != 0) writer.Write((byte)BidirectionalClass);
 			if ((fields & UcdFields.DecompositionMapping) != 0)
@@ -149,8 +147,8 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.CorePropertiesAndEmojiProperties) != 0) writer.WriteUInt24((int)CoreProperties | (int)EmojiProperties << 20);
 			if ((fields & UcdFields.CrossRerefences) != 0)
 			{
-				writer.Write(checked((byte)(crossRerefences.Count - 1)));
-				foreach (int crossReference in crossRerefences)
+				writer.Write(checked((byte)(_crossRerefences.Count - 1)));
+				foreach (int crossReference in _crossRerefences)
 					writer.WriteCodePoint(crossReference);
 			}
 		}

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 
 namespace System.Unicode.Builder
@@ -9,7 +9,7 @@ namespace System.Unicode.Builder
 		{
 			if (value < 0 || value > 0xFFFFFF) throw new ArgumentOutOfRangeException(nameof(value));
 
-			writer.Write((byte)(value));
+			writer.Write((byte)value);
 			writer.Write((byte)(value >> 8));
 			writer.Write((byte)(value >> 16));
 		}

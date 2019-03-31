@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace System.Unicode
 {
 	/// <summary>Represents a Unicode block.</summary>
 	[DebuggerDisplay("[{CodePointRange.ToString(),nq}] {Name,nq}")]
-	public struct UnicodeBlock
+	public readonly struct UnicodeBlock
 	{
 		/// <summary>The code point range of this block.</summary>
 		public readonly UnicodeCodePointRange CodePointRange;

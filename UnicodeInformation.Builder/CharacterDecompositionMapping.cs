@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace System.Unicode.Builder
 {
 	public struct CharacterDecompositionMapping
@@ -13,15 +7,15 @@ namespace System.Unicode.Builder
 
 		public CharacterDecompositionMapping(CompatibilityFormattingTag decompositionType, string decompositionMapping)
 		{
-			this.DecompositionType = decompositionType;
-			this.DecompositionMapping = decompositionMapping;
+			DecompositionType = decompositionType;
+			DecompositionMapping = decompositionMapping;
 		}
 
 		public unsafe static CharacterDecompositionMapping Parse(string s)
 		{
-			if (string.IsNullOrEmpty(s)) return default(CharacterDecompositionMapping);
+			if (string.IsNullOrEmpty(s)) return default;
 
-			CompatibilityFormattingTag tag = CompatibilityFormattingTag.Canonical;
+			var tag = CompatibilityFormattingTag.Canonical;
 
 			int index;
 

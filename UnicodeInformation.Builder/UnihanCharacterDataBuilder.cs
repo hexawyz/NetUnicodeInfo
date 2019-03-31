@@ -1,82 +1,59 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Unicode.Builder
 {
 	internal sealed class UnihanCharacterDataBuilder
 	{
-		private readonly int codePoint;
-		private UnihanNumericType numericType;
-		private long numericValue;
-		private string definition;
-		private string mandarinReading;
-		private string cantoneseReading;
-		private string japaneseKunReading;
-		private string japaneseOnReading;
-		private string koreanReading;
-		private string hangulReading;
-		private string vietnameseReading;
-		private string simplifiedVariant;
-		private string traditionalVariant;
+		public int CodePoint { get; }
+		public UnihanNumericType NumericType { get; set; }
+		public long NumericValue { get; set; }
+		public string Definition { get; set; }
+		public string MandarinReading { get; set; }
+		public string CantoneseReading { get; set; }
+		public string JapaneseKunReading { get; set; }
+		public string JapaneseOnReading { get; set; }
+		public string KoreanReading { get; set; }
+		public string HangulReading { get; set; }
+		public string VietnameseReading { get; set; }
+		public string SimplifiedVariant { get; set; }
+		public string TraditionalVariant { get; set; }
+		public IList<UnicodeRadicalStrokeCount> UnicodeRadicalStrokeCounts => _unicodeRadicalStrokeCounts;
 
-		private readonly List<UnicodeRadicalStrokeCount> unicodeRadicalStrokeCounts = new List<UnicodeRadicalStrokeCount>();
+		private readonly List<UnicodeRadicalStrokeCount> _unicodeRadicalStrokeCounts = new List<UnicodeRadicalStrokeCount>();
 
-		public int CodePoint { get { return codePoint; } }
-		public UnihanNumericType NumericType { get { return numericType; } set { numericType = value; } }
-		public long NumericValue { get { return numericValue; } set { numericValue = value; } }
-		public string Definition { get { return definition; } set { definition = value; } }
-		public string MandarinReading { get { return mandarinReading; } set { mandarinReading = value; } }
-		public string CantoneseReading { get { return cantoneseReading; } set { cantoneseReading = value; } }
-		public string JapaneseKunReading { get { return japaneseKunReading; } set { japaneseKunReading = value; } }
-		public string JapaneseOnReading { get { return japaneseOnReading; } set { japaneseOnReading = value; } }
-		public string KoreanReading { get { return koreanReading; } set { koreanReading = value; } }
-		public string HangulReading { get { return hangulReading; } set { hangulReading = value; } }
-		public string VietnameseReading { get { return vietnameseReading; } set { vietnameseReading = value; } }
-		public string SimplifiedVariant { get { return simplifiedVariant; } set { simplifiedVariant = value; } }
-		public string TraditionalVariant { get { return traditionalVariant; } set { traditionalVariant = value; } }
-		public IList<UnicodeRadicalStrokeCount> UnicodeRadicalStrokeCounts { get { return unicodeRadicalStrokeCounts; } }
-
-		internal UnihanCharacterDataBuilder(int codePoint)
-		{
-			this.codePoint = codePoint;
-		}
+		internal UnihanCharacterDataBuilder(int codePoint) => CodePoint = codePoint;
 
 		internal UnihanCharacterData ToCharacterData()
-		{
-			return new UnihanCharacterData
+			=> new UnihanCharacterData
 			(
-				codePoint,
-				numericType,
-				numericValue,
-				unicodeRadicalStrokeCounts.ToArray(),
-				definition,
-				mandarinReading,
-				cantoneseReading,
-				japaneseKunReading,
-				japaneseOnReading,
-				koreanReading,
-				hangulReading,
-				vietnameseReading,
-				simplifiedVariant,
-				traditionalVariant
+				CodePoint,
+				NumericType,
+				NumericValue,
+				_unicodeRadicalStrokeCounts.ToArray(),
+				Definition,
+				MandarinReading,
+				CantoneseReading,
+				JapaneseKunReading,
+				JapaneseOnReading,
+				KoreanReading,
+				HangulReading,
+				VietnameseReading,
+				SimplifiedVariant,
+				TraditionalVariant
 			);
-		}
 
 		internal void WriteToFile(BinaryWriter writer)
 		{
-			UnihanFields fields = default(UnihanFields);
+			UnihanFields fields = default;
 
 			fields |= (UnihanFields)NumericType;
 			// For now, we have enough bits to encode the length of the array in the field specifier, so we'll do that.
 			// (NB: A quick analysis of the files revealed thare there are almost always exactly one Radical/Stroke count, and occasionally two, yet never more.)
-			if (unicodeRadicalStrokeCounts.Count > 0)
+			if (_unicodeRadicalStrokeCounts.Count > 0)
 			{
-				if (unicodeRadicalStrokeCounts.Count == 1) fields |= UnihanFields.UnicodeRadicalStrokeCount;
-				else if (unicodeRadicalStrokeCounts.Count == 2) fields |= UnihanFields.UnicodeRadicalStrokeCountTwice;
+				if (_unicodeRadicalStrokeCounts.Count == 1) fields |= UnihanFields.UnicodeRadicalStrokeCount;
+				else if (_unicodeRadicalStrokeCounts.Count == 2) fields |= UnihanFields.UnicodeRadicalStrokeCountTwice;
 				else fields |= UnihanFields.UnicodeRadicalStrokeCountMore;
 			}
 			if (Definition != null) fields |= UnihanFields.Definition;
@@ -92,19 +69,19 @@ namespace System.Unicode.Builder
 
 			writer.Write((ushort)fields);
 
-			writer.WriteCodePoint(UnihanCharacterData.PackCodePoint(codePoint));
-			if ((fields & UnihanFields.OtherNumeric) != 0) writer.Write(numericValue);
+			writer.WriteCodePoint(UnihanCharacterData.PackCodePoint(CodePoint));
+			if ((fields & UnihanFields.OtherNumeric) != 0) writer.Write(NumericValue);
 
 			if ((fields & UnihanFields.UnicodeRadicalStrokeCountMore) != 0)
 			{
 				if ((fields & (UnihanFields.UnicodeRadicalStrokeCountMore)) == UnihanFields.UnicodeRadicalStrokeCountMore)
-					writer.Write(checked((byte)(unicodeRadicalStrokeCounts.Count - 3)));
+					writer.Write(checked((byte)(_unicodeRadicalStrokeCounts.Count - 3)));
 
-                foreach (var radicalStrokeCount in unicodeRadicalStrokeCounts)
+				foreach (var radicalStrokeCount in _unicodeRadicalStrokeCounts)
 				{
 					writer.Write(radicalStrokeCount.Radical);
 					writer.Write(radicalStrokeCount.RawStrokeCount);
-                }
+				}
 			}
 
 			if ((fields & UnihanFields.Definition) != 0) writer.Write(Definition);

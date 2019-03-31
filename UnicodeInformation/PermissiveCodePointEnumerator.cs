@@ -18,8 +18,8 @@ namespace System.Unicode
 			if (text == null) throw new ArgumentNullException(nameof(text));
 
 			this.text = text;
-			this.current = 0;
-			this.index = -1;
+			current = 0;
+			index = -1;
 		}
 
 		/// <summary>Gets the element in the collection at the current position of the enumerator..</summary>

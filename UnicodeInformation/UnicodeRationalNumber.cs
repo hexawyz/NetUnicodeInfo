@@ -1,7 +1,7 @@
-﻿namespace System.Unicode
+namespace System.Unicode
 {
 	/// <summary>Represents a rational number in a format compatible with the Unicode standard.</summary>
-	public struct UnicodeRationalNumber : IEquatable<UnicodeRationalNumber>
+	public readonly struct UnicodeRationalNumber : IEquatable<UnicodeRationalNumber>
 	{
 		/// <summary>Parses a rational number from a string representation.</summary>
 		/// <remarks>
@@ -31,8 +31,8 @@
 		/// <param name="number">The number which should be represented as a rational number.</param>
 		public UnicodeRationalNumber(long number)
 		{
-			this.Numerator = number;
-			this.Denominator = 1;
+			Numerator = number;
+			Denominator = 1;
 		}
 
 		/// <summary>Initializes a new instance of the <see cref="UnicodeRationalNumber"/> structure that represents a signed integer..</summary>
@@ -40,13 +40,13 @@
 		/// <param name="denominator">The number which should be used as denominator in the rational number.</param>
 		public UnicodeRationalNumber(long numerator, ushort denominator)
 		{
-			this.Numerator = numerator;
-			this.Denominator = denominator;
+			Numerator = numerator;
+			Denominator = denominator;
 		}
 
 		/// <summary>Gets a value indicating whether the current value is the default value of the type.</summary>
 		/// <remarks>The default value is an invalid fraction of 0/0.</remarks>
-		public bool IsDefaultValue { get { return Numerator == 0 && Denominator == 0; } }
+		public bool IsDefaultValue => Numerator == 0 && Denominator == 0;
 
 		/// <summary>Creates a string representation of the current rational number.</summary>
 		/// <returns>The created representation is culture invariant, and will be parsable by the <see cref="Parse(string)"/> method.</returns>

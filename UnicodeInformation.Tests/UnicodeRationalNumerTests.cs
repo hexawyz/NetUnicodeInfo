@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Unicode;
 using Xunit;
 
@@ -60,21 +57,15 @@ namespace UnicodeInformation.Tests
 		[Theory]
 		[MemberData(nameof(StringConversionTestData))]
 		public void MethodToStringShouldReturnExpectedResult(string expectedText, long numerator, byte denominator)
-		{
-			Assert.Equal(expectedText, new UnicodeRationalNumber(numerator, denominator).ToString());
-		}
+			=> Assert.Equal(expectedText, new UnicodeRationalNumber(numerator, denominator).ToString());
 
 		[Fact]
 		public void ParsingNullValueShoudlFail()
-		{
-			Assert.Throws<ArgumentNullException>(() => UnicodeRationalNumber.Parse(null));
-		}
+			=> Assert.Throws<ArgumentNullException>(() => UnicodeRationalNumber.Parse(null));
 
 		[Fact]
 		public void ParsingEmptyValueShoudlFail()
-		{
-			Assert.Throws<ArgumentException>(() => UnicodeRationalNumber.Parse(string.Empty));
-		}
+			=> Assert.Throws<ArgumentException>(() => UnicodeRationalNumber.Parse(string.Empty));
 
 		[Theory]
 		[InlineData(0, "0")]
@@ -86,9 +77,7 @@ namespace UnicodeInformation.Tests
 		[InlineData(long.MinValue, "-9223372036854775808")]
 		[InlineData(long.MinValue, "-9223372036854775808/1")]
 		public void ParsingCanReturnSimpleNumber(long expectedNumber, string text)
-		{
-			Assert.Equal(new UnicodeRationalNumber(expectedNumber), UnicodeRationalNumber.Parse(text));
-		}
+			=> Assert.Equal(new UnicodeRationalNumber(expectedNumber), UnicodeRationalNumber.Parse(text));
 
 		public static readonly TheoryData<long, byte, string> FractionParsingTestData = new TheoryData<long, byte, string>
 		{
@@ -111,16 +100,14 @@ namespace UnicodeInformation.Tests
 		[Theory]
 		[MemberData(nameof(FractionParsingTestData))]
 		public void ParsingCanReturnFraction(long expectedNumerator, byte expectedDenominator, string text)
-		{
-			Assert.Equal(new UnicodeRationalNumber(expectedNumerator, expectedDenominator), UnicodeRationalNumber.Parse(text));
-		}
+			=> Assert.Equal(new UnicodeRationalNumber(expectedNumerator, expectedDenominator), UnicodeRationalNumber.Parse(text));
 
 		[Fact]
 		public void EqualityComparisonAndHashCodeShouldWorkAsExpected()
 		{
 			var numbers = new[]
 			{
-				default(UnicodeRationalNumber),
+				default,
 				new UnicodeRationalNumber(0),
 				new UnicodeRationalNumber(1),
 				new UnicodeRationalNumber(1, 10),

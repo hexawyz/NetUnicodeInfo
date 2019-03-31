@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace System.Unicode
 {
 	internal static class EnumHelper<T>
-		where T : struct
+		where T : struct, Enum
 	{
-		private static readonly Dictionary<T, string[]> valueNameDictionary = CreateValueNameDictionary();
+		private static readonly Dictionary<T, string[]> ValueNameDictionary = CreateValueNameDictionary();
 
 		private static Dictionary<T, string[]> CreateValueNameDictionary()
 		{
@@ -31,6 +31,6 @@ namespace System.Unicode
 			).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
-		public static string[] GetValueNames(T value) => valueNameDictionary.TryGetValue(value, out string[] names) ? names : null;
+		public static string[] GetValueNames(T value) => ValueNameDictionary.TryGetValue(value, out string[] names) ? names : null;
 	}
 }
