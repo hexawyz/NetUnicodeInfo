@@ -161,7 +161,7 @@ namespace System.Unicode
 			string simpleLowerCaseMapping = (fields & UcdFields.SimpleLowerCaseMapping) != 0 ? reader.ReadString() : null;
 			string simpleTitleCaseMapping = (fields & UcdFields.SimpleTitleCaseMapping) != 0 ? reader.ReadString() : null;
 			var contributoryProperties = (fields & UcdFields.ContributoryProperties) != 0 ? (ContributoryProperties)reader.ReadInt32() : 0;
-			int corePropertiesAndEmojiProperties = (fields & UcdFields.CorePropertiesAndEmojiProperties) != 0 ? ReadInt24(reader) : 0;
+			int corePropertiesAndEmojiProperties = (fields & UcdFields.CorePropertiesAndEmojiProperties) != 0 ? ReadEmojiAndCoreProperties(reader) : 0;
 			int[] crossReferences = (fields & UcdFields.CrossRerefences) != 0 ? new int[reader.ReadByte() + 1] : null;
 
 			if (crossReferences != null)
@@ -287,6 +287,31 @@ namespace System.Unicode
 		}
 
 		private static int ReadInt24(BinaryReader reader) => reader.ReadByte() | ((reader.ReadByte() | (reader.ReadByte() << 8)) << 8);
+
+		private static int ReadEmojiAndCoreProperties(BinaryReader reader)
+		{
+			int value = 0;
+			byte flags = reader.ReadByte();
+			byte high = (byte)(flags & 0x3F);
+
+			if ((sbyte)flags < 0)
+			{
+				value = high << 24;
+			}
+			if ((flags & 64) != 0)
+			{
+				if ((sbyte)flags < 0)
+				{
+					value |= ReadInt24(reader);
+				}
+				else
+				{
+					value = high << 16 | reader.ReadUInt16();
+				}
+			}
+
+			return value;
+		}
 
 #if DEBUG
 		internal static int ReadCodePoint(BinaryReader reader)

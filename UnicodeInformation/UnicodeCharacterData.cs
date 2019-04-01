@@ -21,8 +21,8 @@ namespace System.Unicode
 		public readonly string SimpleTitleCaseMapping;
 		public readonly ContributoryProperties ContributoryProperties;
 		private readonly int _corePropertiesAndEmojiProperties;
-		public CoreProperties CoreProperties => (CoreProperties)(_corePropertiesAndEmojiProperties & 0x000FFFFF);
-		public EmojiProperties EmojiProperties => (EmojiProperties)(_corePropertiesAndEmojiProperties >> 20);
+		public CoreProperties CoreProperties => (CoreProperties)(_corePropertiesAndEmojiProperties & 0x003FFFFF);
+		public EmojiProperties EmojiProperties => (EmojiProperties)(_corePropertiesAndEmojiProperties >> 24);
 
 		public readonly int[] CrossRerefences; // NB: It seems that parsing NamesList is required in order to provide data for this field ?
 

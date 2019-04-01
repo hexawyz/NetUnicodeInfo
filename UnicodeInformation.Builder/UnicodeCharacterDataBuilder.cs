@@ -71,7 +71,7 @@ namespace System.Unicode.Builder
 				SimpleLowerCaseMapping,
 				SimpleTitleCaseMapping,
 				ContributoryProperties,
-				(int)CoreProperties | (int)EmojiProperties << 20,
+				(int)CoreProperties | (int)EmojiProperties << 24,
 				CrossRerefences.Count > 0 ? CrossRerefences.ToArray() : null
 			);
 
@@ -144,7 +144,30 @@ namespace System.Unicode.Builder
 			if ((fields & UcdFields.SimpleLowerCaseMapping) != 0) writer.Write(SimpleLowerCaseMapping);
 			if ((fields & UcdFields.SimpleTitleCaseMapping) != 0) writer.Write(SimpleTitleCaseMapping);
 			if ((fields & UcdFields.ContributoryProperties) != 0) writer.Write((int)ContributoryProperties);
-			if ((fields & UcdFields.CorePropertiesAndEmojiProperties) != 0) writer.WriteUInt24((int)CoreProperties | (int)EmojiProperties << 20);
+			if ((fields & UcdFields.CorePropertiesAndEmojiProperties) != 0)
+			{
+				// This encoding is very dirty and needs to be reworked. For now I just want to make this work.
+				// First byte has its 2 MSB indicating presence of 1) Emoji P. 2) Core P. Value 00xxxxxx is invalid & not used at all.
+				// If emoji properties are present, they are contained in the first byte, possibly followed by an Int24 for core properties.
+				// If emoji properties are absent, the byte is the high part of core properties, followed by an Int16 for the rest.
+				if (CoreProperties != 0)
+				{
+					if (EmojiProperties != 0)
+					{
+						writer.Write((byte)(192 | (byte)EmojiProperties));
+						writer.WriteUInt24((int)CoreProperties & 0x00FFFFFF);
+					}
+					else
+					{
+						writer.Write((byte)(64 | (int)CoreProperties >> 16));
+						writer.Write((ushort)CoreProperties);
+					}
+				}
+				else
+				{
+					writer.Write((byte)(128 | (byte)EmojiProperties));
+				}
+			}
 			if ((fields & UcdFields.CrossRerefences) != 0)
 			{
 				writer.Write(checked((byte)(_crossRerefences.Count - 1)));
