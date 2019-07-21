@@ -9,7 +9,7 @@ namespace UnicodeInformation.Tests
 	{
 		[Fact]
 		public void UnicodeVersionShouldBeTheLatestSupported()
-			=> Assert.Equal(new Version(12, 0, 0), UnicodeInfo.UnicodeVersion);
+			=> Assert.Equal(new Version(12, 1, 0), UnicodeInfo.UnicodeVersion);
 
 		[Fact]
 		public void ControlCharactersShouldHaveSpecificDisplayText()
@@ -51,6 +51,7 @@ namespace UnicodeInformation.Tests
 		[InlineData(0x1F966, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "BROCCOLI", "Supplemental Symbols and Pictographs")]
 		[InlineData(0x1F99E, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "LOBSTER", "Supplemental Symbols and Pictographs")]
 		[InlineData(0x1F9A6, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "OTTER", "Supplemental Symbols and Pictographs")]
+		[InlineData(0x32FF, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "SQUARE ERA NAME REIWA", "Enclosed CJK Letters and Months")]
 		public void CharacterInfoShouldHaveExpectedResults(int codePoint, UnicodeCategory expectedCategory, UnicodeNumericType expectedNumericType, string expectedNumericValue, string expectedName, string expectedBlock)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
