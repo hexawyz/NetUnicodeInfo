@@ -404,14 +404,14 @@ namespace System.Unicode.Builder
 					// This statement is used to skip unhandled properties entirely.
 					switch (reader.PropertyName)
 					{
-					case UnihanProperty.kDefinition:
-					case UnihanProperty.kMandarin:
-					case UnihanProperty.kCantonese:
-					case UnihanProperty.kJapaneseKun:
-					case UnihanProperty.kJapaneseOn:
-					case UnihanProperty.kKorean:
-					case UnihanProperty.kHangul:
-					case UnihanProperty.kVietnamese:
+					case UnihanProperty.Definition:
+					case UnihanProperty.Mandarin:
+					case UnihanProperty.Cantonese:
+					case UnihanProperty.JapaneseKun:
+					case UnihanProperty.JapaneseOn:
+					case UnihanProperty.Korean:
+					case UnihanProperty.Hangul:
+					case UnihanProperty.Vietnamese:
 						break;
 					default:
 						// Ignore unhandled properties for now.
@@ -423,28 +423,28 @@ namespace System.Unicode.Builder
 
 					switch (reader.PropertyName)
 					{
-					case UnihanProperty.kDefinition:
+					case UnihanProperty.Definition:
 						entry.Definition = reader.PropertyValue;
 						break;
-					case UnihanProperty.kMandarin:
+					case UnihanProperty.Mandarin:
 						entry.MandarinReading = reader.PropertyValue;
 						break;
-					case UnihanProperty.kCantonese:
+					case UnihanProperty.Cantonese:
 						entry.CantoneseReading = reader.PropertyValue;
 						break;
-					case UnihanProperty.kJapaneseKun:
+					case UnihanProperty.JapaneseKun:
 						entry.JapaneseKunReading = reader.PropertyValue;
 						break;
-					case UnihanProperty.kJapaneseOn:
+					case UnihanProperty.JapaneseOn:
 						entry.JapaneseOnReading = reader.PropertyValue;
 						break;
-					case UnihanProperty.kKorean:
+					case UnihanProperty.Korean:
 						entry.KoreanReading = reader.PropertyValue;
 						break;
-					case UnihanProperty.kHangul:
+					case UnihanProperty.Hangul:
 						entry.HangulReading = reader.PropertyValue;
 						break;
-					case UnihanProperty.kVietnamese:
+					case UnihanProperty.Vietnamese:
 						entry.VietnameseReading = reader.PropertyValue;
 						break;
 					default:
@@ -463,8 +463,8 @@ namespace System.Unicode.Builder
 					// This statement is used to skip unhandled properties entirely.
 					switch (reader.PropertyName)
 					{
-					case UnihanProperty.kSimplifiedVariant:
-					case UnihanProperty.kTraditionalVariant:
+					case UnihanProperty.SimplifiedVariant:
+					case UnihanProperty.TraditionalVariant:
 						break;
 					default:
 						// Ignore unhandled properties for now.
@@ -475,10 +475,10 @@ namespace System.Unicode.Builder
 
 					switch (reader.PropertyName)
 					{
-					case UnihanProperty.kSimplifiedVariant:
+					case UnihanProperty.SimplifiedVariant:
 						entry.SimplifiedVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
 						break;
-					case UnihanProperty.kTraditionalVariant:
+					case UnihanProperty.TraditionalVariant:
 						entry.TraditionalVariant = char.ConvertFromUtf32(HexCodePoint.ParsePrefixed(reader.PropertyValue));
 						break;
 					default:
@@ -498,13 +498,13 @@ namespace System.Unicode.Builder
 
 					switch (reader.PropertyName)
 					{
-					case UnihanProperty.kAccountingNumeric:
+					case UnihanProperty.AccountingNumeric:
 						entry.NumericType = UnihanNumericType.Accounting;
 						break;
-					case UnihanProperty.kOtherNumeric:
+					case UnihanProperty.OtherNumeric:
 						entry.NumericType = UnihanNumericType.Other;
 						break;
-					case UnihanProperty.kPrimaryNumeric:
+					case UnihanProperty.PrimaryNumeric:
 						entry.NumericType = UnihanNumericType.Primary;
 						break;
 					default:
@@ -524,7 +524,7 @@ namespace System.Unicode.Builder
 				{
 					switch (reader.PropertyName)
 					{
-					case UnihanProperty.kRSUnicode:
+					case UnihanProperty.RSUnicode:
 						var entry = builder.GetUnihan(reader.CodePoint);
 						var values = reader.PropertyValue.Split(' ');
 
