@@ -1,15 +1,7 @@
 <Project Sdk="Microsoft.Net.Sdk">
-  <Import Project="../Common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\System.Unicode.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <ItemGroup>
-    <None Include="..\System.Unicode.snk">
-      <Link>System.Unicode.snk</Link>
-    </None>
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -21,8 +13,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Unicode\System.Unicode.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>

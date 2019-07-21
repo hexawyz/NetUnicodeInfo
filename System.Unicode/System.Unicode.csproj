@@ -1,11 +1,8 @@
 <Project Sdk="Microsoft.Net.Sdk">
-  <Import Project="../Common.props" />
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\System.Unicode.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -55,9 +52,6 @@ Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is n
     <EmbeddedResource Include="ucd.dat">
       <LogicalName>ucd.dat</LogicalName>
     </EmbeddedResource>
-    <None Include="..\System.Unicode.snk">
-      <Link>System.Unicode.snk</Link>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
