@@ -18,7 +18,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../UnicodeInformation/**/*.cs" Exclude="../UnicodeInformation/bin/**;../UnicodeInformation/obj/**" Link="System.Unicode/%(RecursiveDir)%(FileName)%(Extension)" />
+    <Compile Include="../System.Unicode/**/*.cs" Exclude="../System.Unicode/bin/**;../System.Unicode/obj/**" Link="System.Unicode/%(RecursiveDir)%(FileName)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="UnihanProperty.cs">

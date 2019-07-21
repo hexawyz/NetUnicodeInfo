@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\System.Unicode.snk</AssemblyOriginatorKeyFile>
-    <Description />
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\System.Unicode.snk">
@@ -21,7 +20,7 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UnicodeInformation\UnicodeInformation.csproj" />
+    <ProjectReference Include="..\System.Unicode\System.Unicode.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
