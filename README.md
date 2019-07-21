@@ -1,36 +1,38 @@
-Unicode Character Inspector & .NET Unicode Information Library
-==============================================================
+# .NET Unicode Information Library
 
 [![Build Status](https://dev.azure.com/goldencrystal/UnicodeInformation/_apis/build/status/GoldenCrystal.NetUnicodeInfo?branchName=master)](https://dev.azure.com/goldencrystal/UnicodeInformation/_build/latest?definitionId=1&branchName=master)
 
-Summary
--------
-This projects has two parts.
-One is a library, providing access to some of the data contained in the Unicode Character Database by the means of a portable .NET assembly.
-The other, is a small WPF application allowing to inspect the Unicode code points composing a specified text.
+## Summary
 
-Version of Unicode supported
-----------------------------
-Unicode 10.0.0
-Emoji 5.0
+This project consists of a library that provides access to some of the data contained in the Unicode Character Database.
 
-Using the Unicode Character Inspector application
--------------------------------------------------
-Simply launch the application, then type or paste some text in the text box on the top of the window.
-The code points will be displayed in the list on the left side. Select one of them to display the associated information in the bottom-right pane.
-![Screenshot of Unicode Character Inspector](docs/uci-00.png)
+## Version of Unicode supported
 
-Breaking changes from versions 1.x to 2.x
------------------------------------------
+Unicode 12.1
+Emoji 12.0
+
+## Breaking changes from versions 1.x to 2.x
+
 UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.
 
-Compiling and using the project
--------------------------------
-### Using the UnicodeInformation library
+## Using the library
+
+### Reference the NuGet package
+
 Grab the latest version of the package on NuGet: https://www.nuget.org/packages/UnicodeInformation/.
 Once the library is installed in your project, you will find everything you need in the System.Unicode namespace.
 
-Let's see a simple example:
+### Basic information
+
+Everything provided by the library will be under the namespace `System.Unicode`.
+XML documentation should be complete enough so that you can navigate the API without getting lost.
+
+In its current state, the project is written in C# 7.3, compilable by [Roslyn](http://roslyn.codeplex.com/), and targets both .NET Standard 2.0 and .NET Standard 1.1.
+The library UnicodeInformation includes a (large) subset of the official [Unicode Character Database](http://www.unicode.org/Public/UCD/latest/) stored in a custom file format.
+
+### Example usage
+
+The following program will display informations on a few characters:
 
 ```csharp
 using System;
@@ -60,14 +62,23 @@ namespace Example
 	}
 }
 ```
-This example shows a few usages of the library. It gets information on a specific code point, queries the library for the text to display for the specific character (usually the character itself), and displays the character's name and category.
 
-### Details
-In its current state, the project is written in C# 6, compilable by [Roslyn](http://roslyn.codeplex.com/), and targets the .NET 4.5 framework.
-The core of the project, UnicodeInformation.dll, is a portable class library usable for either regular .NET or Windows 8 applications.
-This library includes a subset of the official [Unicode Character Database](http://www.unicode.org/Public/UCD/latest/) stored in a custom file format.
+Explanations:
+
+* `UnicodeInfo.GetCharInfo(int)` returns a structure `UnicodeCharInfo` that provides access to various bit of information associated with the specified code point.
+* `UnicodeInfo.GetDisplayText(UnicodeCharInfo)` is a helper method that computes a display text for the specified code point.
+  Since some code points are not designed to be displayed in a standalone fashion, this will try to make the specified character more displayable.
+  The algorithm used to provide a display text is quite simplistic, and will only affect very specific code points. (e.g. Control Characters)
+  For most code points, this will simply return the direct string representation.
+* `UnicodeCharInfo.Name` returns the name of the code point as specified by the Unicode standard.
+  Please note that some characters will, by design, not have any name assigned to them in the standard. (e.g. control characters)
+  Those characters, however may have alternate names assigned to them, that you can use as fallbacks. (e.g. `UnicodeCharInfo.OldName`)
+* `UnicodeCharInfo.OldName` returns the name of the character as defined in Unicode 1.0, when applicable and different from the current name.
+* `UnicodeCharInfo.Category` returns the category assigned to the specified code point.
+
 
 ### Included Properties
+
 #### From UCD
 * Name
 * General_Category
@@ -139,6 +150,15 @@ This library includes a subset of the official [Unicode Character Database](http
 * Code point cross references extracted from NamesList.txt
 
 NB: The UCD property ISO_Comment will never be included since this one is empty in all new Unicode versions.
+
+#### From Unicode Emoji
+
+* Emoji
+* Emoji_Presentation
+* Emoji_Modifier
+* Emoji_Modifier_Base
+* Emoji_Component
+* Extended_Pictographic
 
 #### From Unihan
 * kAccountingNumeric
