@@ -14,8 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73097DF3-04B7-4C5F-B4EA-0EB800E40702}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		appveyor.yml = appveyor.yml
 		AssemblyInfo.Common.cs = AssemblyInfo.Common.cs
+		azure-pipelines.yml = azure-pipelines.yml
 		Common.props = Common.props
 		Example.cs = Example.cs
 		LICENSE.txt = LICENSE.txt
