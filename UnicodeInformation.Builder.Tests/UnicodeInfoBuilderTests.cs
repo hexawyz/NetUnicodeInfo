@@ -1,16 +1,13 @@
-using System;
-using System.Threading.Tasks;
-using System.Net;
-using System.IO;
-using System.IO.Compression;
-using System.Unicode.Builder;
-using System.Text;
-using System.Net.Http;
 using System.Collections.Generic;
-using Xunit;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
 
-namespace System.Unicode.Tests
+namespace System.Unicode.Builder.Tests
 {
 	public class UnicodeInfoBuilderTests
 	{

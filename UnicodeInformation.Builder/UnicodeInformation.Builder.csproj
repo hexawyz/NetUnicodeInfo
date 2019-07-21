@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.Net.Sdk">
+<Project Sdk="Microsoft.Net.Sdk">
   <Import Project="../Common.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -15,10 +15,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UnicodeInformation\UnicodeInformation.csproj" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <Compile Include="../UnicodeInformation/**/*.cs" Exclude="../UnicodeInformation/bin/**;../UnicodeInformation/obj/**" Link="System.Unicode/%(RecursiveDir)%(FileName)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="UnihanProperty.cs">

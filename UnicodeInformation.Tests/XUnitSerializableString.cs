@@ -1,8 +1,7 @@
-using System;
 using System.Text;
 using Xunit.Abstractions;
 
-namespace UnicodeInformation.Tests
+namespace System.Unicode.Tests
 {
 	// This class is needed because apparently, somewhere in the process of unit testing, strings with invalid UTF-16 sequences are "fixed", which totally messes up the tests here.
 	// This is just a wrapper over regular strings… Data is serialized as an array of chars instead of a string. This seems to do the trick.

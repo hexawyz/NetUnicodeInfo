@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Unicode;
 using Xunit;
 
-namespace UnicodeInformation.Tests
+namespace System.Unicode.Tests
 {
 	public class UnicodeRationalNumerTests
 	{

@@ -1,9 +1,7 @@
-using System;
-using System.Unicode;
 using System.Globalization;
 using Xunit;
 
-namespace UnicodeInformation.Tests
+namespace System.Unicode.Tests
 {
 	public class UnicodeInfoTests
 	{
@@ -257,7 +255,7 @@ namespace UnicodeInformation.Tests
 		public void CodePointShouldNotHaveEmojiProperties(int codePoint, EmojiProperties emojiProperties)
 			=> Assert.Equal((EmojiProperties)0, UnicodeInfo.GetCharInfo(codePoint).EmojiProperties & emojiProperties);
 
-#if DEBUG
+#if FIXME
 		[Theory]
 		[InlineData('\0')]
 		[InlineData('\uABFF')]
@@ -374,7 +372,7 @@ namespace UnicodeInformation.Tests
 			}
 		}
 
-#if DEBUG
+#if FIXME
 		[Fact]
 		public void UnihanCodePointPackingShouldHaveExpectedResults()
 		{

@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
-using System.Unicode;
 using Xunit;
 
-namespace UnicodeInformation.Tests
+namespace System.Unicode.Tests
 {
 	public class UnicodeCodePointRangeTests
 	{
