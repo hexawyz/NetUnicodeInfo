@@ -1,0 +1,14 @@
+<Project>
+	<PropertyGroup>
+		<UseTaskForUnicodeDatabaseGeneration Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == ''">false</UseTaskForUnicodeDatabaseGeneration>
+	</PropertyGroup>
+	<UsingTask
+		TaskName="GenerateUnicodeDatabase"
+		AssemblyFile="$(MSBuildThisFileDirectory)bin\$(Configuration)\netstandard2.0\$(MSBuildThisFileName).dll"
+		Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == 'true' And '$(MSBuildRuntimeType)' == 'Core'" />
+	<UsingTask
+		TaskName="GenerateUnicodeDatabase"
+		AssemblyFile="$(MSBuildThisFileDirectory)bin\$(Configuration)\net472\$(MSBuildThisFileName).dll"
+		TaskFactory="TaskHostFactory"
+		Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == 'true' And '$(MSBuildRuntimeType)' != 'Core'" />
+</Project>

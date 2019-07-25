@@ -1,9 +1,9 @@
 using System.IO;
 using System.Text;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
-	internal static class BinaryWriterExtensions
+	public static class BinaryWriterExtensions
 	{
 		public static void WriteUInt24(this BinaryWriter writer, int value)
 		{

@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<DefineConstants>$(DefineConstants);BUILD_SYSTEM</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Label="Shared Source File List">
+		<SharedSourceFile Include="BidirectionalClass" />
+		<SharedSourceFile Include="CanonicalCombiningClass" />
+		<SharedSourceFile Include="CjkRadicalData" />
+		<SharedSourceFile Include="CompatibilityFormattingTag" />
+		<SharedSourceFile Include="ContributoryProperties" />
+		<SharedSourceFile Include="CoreProperties" />
+		<SharedSourceFile Include="EmojiProperties" />
+		<SharedSourceFile Include="EnumHelper" />
+		<SharedSourceFile Include="UcdFields" />
+		<SharedSourceFile Include="UnihanFields" />
+		<SharedSourceFile Include="UnicodeBlock" />
+		<SharedSourceFile Include="UnicodeCategoryInfo" />
+		<SharedSourceFile Include="UnicodeCharacterData" />
+		<SharedSourceFile Include="UnicodeCodePointRange" />
+		<SharedSourceFile Include="UnicodeNameAlias" />
+		<SharedSourceFile Include="UnicodeNameAliasKind" />
+		<SharedSourceFile Include="UnicodeNumericType" />
+		<SharedSourceFile Include="UnicodeRadicalStrokeCount" />
+		<SharedSourceFile Include="UnicodeRationalNumber" />
+		<SharedSourceFile Include="UnihanCharacterData" />
+		<SharedSourceFile Include="UnihanNumericType" />
+		<SharedSourceFile Include="ValueNameAttribute" />
+	</ItemGroup>
+
+	<ItemGroup Label="Shared Source File Inclusion">
+		<Compile Include="@(SharedSourceFile-&gt;'../System.Unicode/%(Identity).cs')" Link="System.Unicode/%(Filename).cs" />
+		<SharedSourceFile Remove="@(SharedSourceFile)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="UnihanProperty.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>UnihanProperty.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="UnihanProperty.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>UnihanProperty.tt</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
+	</ItemGroup>
+
+</Project>

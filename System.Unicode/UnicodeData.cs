@@ -211,7 +211,7 @@ namespace System.Unicode
 						reader.ReadByte() + 3 :
 						((byte)(fields & UnihanFields.UnicodeRadicalStrokeCountMore) >> 2)
 				] :
-#if NETSTANDARD1_1
+#if NETSTANDARD1_1 || NET45
 				UnicodeRadicalStrokeCount.EmptyArray;
 #else
 				Array.Empty<UnicodeRadicalStrokeCount>();

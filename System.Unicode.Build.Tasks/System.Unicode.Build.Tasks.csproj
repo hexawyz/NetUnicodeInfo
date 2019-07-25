@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.Net.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\System.Unicode.Build.Core\System.Unicode.Build.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.0.461" PrivateAssets="All" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" PrivateAssets="All" />
+		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.Net.Http" />
+	</ItemGroup>
+
+</Project>

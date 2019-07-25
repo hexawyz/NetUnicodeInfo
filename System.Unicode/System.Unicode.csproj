@@ -1,26 +1,29 @@
-<Project Sdk="Microsoft.Net.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
-  <PropertyGroup Label="Package">
-    <PackageId>UnicodeInformation</PackageId>
-    <Title>.NET Unicode Information Library</Title>
-    <AssemblyTitle>.NET Unicode Information Library</AssemblyTitle>
-    <Description>Library providing access to Unicode data to .NET clients.</Description>
-    <PackageTags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/GoldenCrystal/NetUnicodeInfo</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/Icon.ico</PackageIconUrl>
-    <RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Version 2.4.0
+﻿<Project Sdk="Microsoft.Net.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard1.1;net45</TargetFrameworks>
+		<DefaultLanguage>en-US</DefaultLanguage>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<AssemblyName>UnicodeInformation</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Package">
+		<PackageId>UnicodeInformation</PackageId>
+		<Title>.NET Unicode Information Library</Title>
+		<AssemblyTitle>.NET Unicode Information Library</AssemblyTitle>
+		<Description>Library providing access to Unicode data to .NET clients.</Description>
+		<PackageTags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/GoldenCrystal/NetUnicodeInfo</PackageProjectUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/Icon.ico</PackageIconUrl>
+		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes>Version 2.4.0
 -------------
 Support for Unicode 12.1.
 Added the missing Emoji properties Extended_Pictographic and EmojiModifier that were missing. 🎉
@@ -46,15 +49,43 @@ Support for Unicode 10.0.
 Version 2.0.0
 -------------
 Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.</PackageReleaseNotes>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="ucd.dat" />
-    <EmbeddedResource Include="ucd.dat">
-      <LogicalName>ucd.dat</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
-  </ItemGroup>
+	</PropertyGroup>
+
+	<!-- Gracefully include the ucd.dat file as a resource of the project. -->
+	<ItemGroup>
+		<None Remove="ucd.dat" />
+		<EmbeddedResource Include="ucd.dat" Condition="Exists('ucd.dat')" LogicalName="ucd.dat" />
+	</ItemGroup>
+
+	<Target Name="GenerateUnicodeDatabase" BeforeTargets="AssignTargetPaths">
+
+		<!-- Call the project that will build the database.
+		Thanks to caching, this shouldn't actually be called more than once for all the target frameworks. -->
+		<MSBuild
+			Projects="GenerateUnicodeDatabase.proj"
+			Properties="Configuration=$(Configuration)"
+			RemoveProperties="TargetFramework"
+			Targets="Build" />
+
+		<!-- Determine if ucd.dat file has been included as a resource during the evaluation phase. -->
+		<FindInList List="@(EmbeddedResource)" ItemSpecToFind="ucd.dat">
+			<Output TaskParameter="ItemFound" ItemName="_FoundUnicodeDatabaseResource" />
+		</FindInList>
+
+		<!-- Include the ucd.dat file as a resource if it wasn't already. -->
+		<ItemGroup Condition="'@(_FoundUnicodeDatabaseResource)' == ''">
+			<EmbeddedResource Include="ucd.dat" Condition="Exists('ucd.dat')" LogicalName="ucd.dat" />
+		</ItemGroup>
+
+	</Target>
+
+	<ItemGroup>
+		<None Include="*.proj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+	</ItemGroup>
+
 </Project>

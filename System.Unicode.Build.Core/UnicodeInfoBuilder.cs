@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
-	internal class UnicodeInfoBuilder
+	public class UnicodeInfoBuilder
 	{
 		public const int CjkRadicalCount = 214; // The number of radicals (214) shouldn't change in the near future…
 

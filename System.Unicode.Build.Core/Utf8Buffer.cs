@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	public struct Utf8Buffer : IDisposable
 	{

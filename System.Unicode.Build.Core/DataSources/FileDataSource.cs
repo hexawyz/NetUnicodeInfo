@@ -1,7 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core.DataSources
 {
 	public sealed class FileDataSource : IDataSource
 	{
@@ -14,7 +14,7 @@ namespace System.Unicode.Builder
 		{
 		}
 
-		public Task<Stream> OpenDataFileAsync(string fileName)
-			=> Task.FromResult<Stream>(File.OpenRead(Path.Combine(_baseDirectory, fileName)));
+		public ValueTask<Stream> OpenDataFileAsync(string fileName)
+			=> new ValueTask<Stream>(File.OpenRead(Path.Combine(_baseDirectory, fileName)));
 	}
 }

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
-	internal sealed class UnihanCharacterDataBuilder
+	public sealed class UnihanCharacterDataBuilder
 	{
 		public int CodePoint { get; }
 		public UnihanNumericType NumericType { get; set; }

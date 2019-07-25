@@ -42,7 +42,7 @@ namespace System.Unicode
 
 		internal UnicodeRadicalStrokeCountCollection(UnicodeRadicalStrokeCount[] items)
 			=> _items = items
-#if NETSTANDARD1_1
+#if NETSTANDARD1_1 || NET45
 			?? UnicodeRadicalStrokeCount.EmptyArray;
 #else
 			?? Array.Empty<UnicodeRadicalStrokeCount>();

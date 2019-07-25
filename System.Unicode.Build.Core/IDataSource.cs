@@ -1,10 +1,10 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	public interface IDataSource : IDisposable
 	{
-		Task<Stream> OpenDataFileAsync(string fileName);
+		ValueTask<Stream> OpenDataFileAsync(string fileName);
 	}
 }

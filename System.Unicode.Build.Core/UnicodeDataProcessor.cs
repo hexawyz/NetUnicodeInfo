@@ -4,9 +4,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
-	internal class UnicodeDataProcessor
+	public class UnicodeDataProcessor
 	{
 		public const string ReadMeFileName = "ReadMe.txt";
 		public const string UnicodeDataFileName = "UnicodeData.txt";

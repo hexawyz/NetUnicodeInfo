@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	internal static class EnumHelper<T>
 		where T : struct, Enum

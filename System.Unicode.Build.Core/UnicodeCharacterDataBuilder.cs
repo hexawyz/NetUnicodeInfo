@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	public sealed class UnicodeCharacterDataBuilder
 	{

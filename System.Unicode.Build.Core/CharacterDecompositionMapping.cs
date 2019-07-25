@@ -1,4 +1,4 @@
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	public struct CharacterDecompositionMapping
 	{

@@ -1,6 +1,11 @@
 namespace System.Unicode
 {
-	internal readonly struct CjkRadicalData
+#if BUILD_SYSTEM
+	public
+#else
+	internal
+#endif
+	readonly struct CjkRadicalData
 	{
 		public readonly char TraditionalRadicalCodePoint;
 		public readonly char TraditionalCharacterCodePoint;

@@ -12,6 +12,6 @@
 		<DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\System.Unicode\System.Unicode.csproj" />
+		<ProjectReference Include="..\System.Unicode.Build.Tasks\System.Unicode.Build.Tasks.csproj" />
 	</ItemGroup>
 </Project>

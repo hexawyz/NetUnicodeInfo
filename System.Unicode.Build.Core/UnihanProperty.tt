@@ -98,7 +98,7 @@ var propertyNames = new[]
 	"kXHC1983",
 };
 #>
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	public static class UnihanProperty
 	{

@@ -41,9 +41,8 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: 'UnicodeInformation/bin/$(buildConfiguration)/?(*.nupkg|*.snupkg)'
+    Contents: 'System.Unicode/bin/$(buildConfiguration)/?(*.nupkg|*.snupkg)'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:

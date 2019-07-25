@@ -1,0 +1,77 @@
+<Project>
+
+	<!-- These targets are designed to integrate with a standard csproj build system.
+	However, due to multi targeting, database generation could be called multiple times in parallel,
+	which does not works well. In order to avoid this, the target CoreBuildUnicodeDatabase will be
+	called from a separate MSBuild project, which will only be "built" once thanks to the MSBuild task
+	relying on a cache of built projects.
+	To disable csproj integration, simply set the property AutoGenerateUnicodeDatabase to false. -->
+
+	<PropertyGroup>
+		<UnicodeDatabaseName Condition="'$(UnicodeDatabaseName)' == ''">ucd.dat</UnicodeDatabaseName>
+		<ShouldGenerateUnicodeDatabase>false</ShouldGenerateUnicodeDatabase>
+		<ShouldGenerateUnicodeDatabase Condition="'$(ForceGenerateUnicodeDatabase)' == 'true'">true</ShouldGenerateUnicodeDatabase>
+		<UnicodeDatabasePath Condition="'$(UnicodeDatabasePath)' == ''">$(UnicodeDatabaseName)</UnicodeDatabasePath>
+		<AutoGenerateUnicodeDatabase Condition="'$(AutoGenerateUnicodeDatabase)' == ''">true</AutoGenerateUnicodeDatabase>
+	</PropertyGroup>
+
+	<Target Name="AssignUnicodeDatabaseIntermediatePaths">
+		<PropertyGroup>
+			<UnicodeDatabaseIntermediateDirectory>$(BaseIntermediateOutputPath)Unicode/</UnicodeDatabaseIntermediateDirectory>
+			<UnicodeDatabaseIntermediatePath>$(BaseIntermediateOutputPath)$(UnicodeDatabaseName)</UnicodeDatabaseIntermediatePath>
+		</PropertyGroup>
+	</Target>
+
+	<PropertyGroup>
+		<EnsureProjectsGenerationDependsOn Condition="'$(AutoGenerateUnicodeDatabase)' == 'true'">ResolveProjectReferences</EnsureProjectsGenerationDependsOn>
+	</PropertyGroup>
+
+	<Target Name="EnsureProjectsGeneration" DependsOnTargets="$(EnsureProjectsGenerationDependsOn)">
+
+		<ItemGroup>
+			<UnicodeProjectToGenerate Include="$(MSBuildThisFileDirectory)System.Unicode.Build.Tasks.csproj" />
+			<UnicodeProjectToGenerate Include="$(MSBuildThisFileDirectory)../System.Unicode.Build.DatabaseGenerator/System.Unicode.Build.DatabaseGenerator.csproj" Condition="'$(UseTaskForUnicodeDatabaseGeneration)' != 'true'" />
+		</ItemGroup>
+
+		<MSBuild
+			Projects="@(UnicodeProjectToGenerate)"
+			Properties="Configuration=$(Configuration)"
+			RemoveProperties="TargetFramework"
+			Targets="Build" />
+
+	</Target>
+
+	<Target Name="DetectUnicodeDatabase" Condition="!Exists('$(UnicodeDatabasePath)')">
+		<PropertyGroup>
+			<ShouldGenerateUnicodeDatabase>true</ShouldGenerateUnicodeDatabase>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="GenerateUnicodeDatabase" DependsOnTargets="AssignUnicodeDatabaseIntermediatePaths;EnsureProjectsGeneration" Condition="'$(ShouldGenerateUnicodeDatabase)' == 'true'" Returns="$(UnicodeDatabaseIntermediatePath)">
+
+		<Message Text="Generating the Unicode Database…" Importance="Normal" />
+
+		<GenerateUnicodeDatabase
+			DatabasePath="$(UnicodeDatabaseIntermediatePath)"
+			IntermediateDirectory="$(UnicodeDatabaseIntermediateDirectory)"
+			Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == 'true'" />
+
+		<Exec
+			Command="dotnet &quot;$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)','../System.Unicode.Build.DatabaseGenerator/bin/$(Configuration)/netcoreapp2.2/GenerateDatabase.dll'))&quot; &quot;$(UnicodeDatabaseIntermediateDirectory)&quot; &quot;$(UnicodeDatabaseIntermediatePath)&quot;"
+			Condition="'$(UseTaskForUnicodeDatabaseGeneration)' != 'true'" />
+
+	</Target>
+
+	<Target Name="CopyUnicodeDatabase" DependsOnTargets="AssignUnicodeDatabaseIntermediatePaths;GenerateUnicodeDatabase" Inputs="$(UnicodeDatabaseIntermediatePath)" Outputs="$(UnicodeDatabasePath)">
+		<Copy
+			SourceFiles="$(UnicodeDatabaseIntermediatePath)"
+			DestinationFiles="$(UnicodeDatabasePath)"
+			SkipUnchangedFiles="true"
+			UseHardlinksIfPossible="true" />
+	</Target>
+
+	<Target Name="CoreBuildUnicodeDatabase" DependsOnTargets="DetectUnicodeDatabase;CopyUnicodeDatabase" />
+
+	<Target Name="BuildUnicodeDatabase" DependsOnTargets="CoreBuildUnicodeDatabase" Condition="'$(AutoGenerateUnicodeDatabase)' == 'true'" BeforeTargets="AssignTargetPaths" />
+
+</Project>

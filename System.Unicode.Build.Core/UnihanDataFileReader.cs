@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core
 {
 	public sealed class UnihanDataFileReader : IDisposable
 	{

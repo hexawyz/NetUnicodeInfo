@@ -2,7 +2,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace System.Unicode.Builder
+namespace System.Unicode.Build.Core.DataSources
 {
 	public class HttpDataSource : IDataSource
 	{
@@ -17,6 +17,7 @@ namespace System.Unicode.Builder
 
 		public void Dispose() => _httpClient.Dispose();
 
-		public Task<Stream> OpenDataFileAsync(string fileName) => _httpClient.GetStreamAsync(_baseUri + fileName);
+		public ValueTask<Stream> OpenDataFileAsync(string fileName)
+			=> new ValueTask<Stream>(_httpClient.GetStreamAsync(_baseUri + fileName));
 	}
 }

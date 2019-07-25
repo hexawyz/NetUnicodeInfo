@@ -7,7 +7,7 @@ namespace System.Unicode
 	[DebuggerDisplay(@"{IsSimplified ? ""Simplified"" : ""Traditional"",nq} Radical {Radical} + {StrokeCount} Strokes")]
 	public readonly struct UnicodeRadicalStrokeCount
 	{
-#if NETSTANDARD1_1
+#if NETSTANDARD1_1 || NET45
 		internal static readonly UnicodeRadicalStrokeCount[] EmptyArray = new UnicodeRadicalStrokeCount[0];
 #endif
 

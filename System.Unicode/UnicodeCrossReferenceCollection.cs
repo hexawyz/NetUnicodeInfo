@@ -6,7 +6,7 @@ namespace System.Unicode
 	/// <summary>Represents a collection of code point cross-references.</summary>
 	public readonly struct UnicodeCrossReferenceCollection : IList<int>
 	{
-#if NETSTANDARD1_1
+#if NETSTANDARD1_1 || NET45
 		private static readonly int[] EmptyArray = new int[0];
 #endif
 
@@ -41,7 +41,7 @@ namespace System.Unicode
 
 		/// <summary>Gets an empty <see cref="UnicodeCrossReferenceCollection"/> struct.</summary>
 		public static readonly UnicodeCrossReferenceCollection Empty =
-#if NETSTANDARD1_1
+#if NETSTANDARD1_1 || NET45
 			new UnicodeCrossReferenceCollection(EmptyArray);
 #else
 			new UnicodeCrossReferenceCollection(Array.Empty<int>());
@@ -51,7 +51,7 @@ namespace System.Unicode
 
 		internal UnicodeCrossReferenceCollection(int[] items)
 			=> _items = items
-#if NETSTANDARD1_1
+#if NETSTANDARD1_1 || NET45
 			?? EmptyArray;
 #else
 			?? Array.Empty<int>();

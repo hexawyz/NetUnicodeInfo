@@ -1,0 +1,14 @@
+<Project DefaultTargets="Build">
+
+	<Import Project="../System.Unicode.Build.Tasks/System.Unicode.Build.Tasks.props" />
+
+	<PropertyGroup>
+		<AutoGenerateUnicodeDatabase>false</AutoGenerateUnicodeDatabase>
+	</PropertyGroup>
+
+	<!-- Defer to the main target in System.Unicode.Build.Tasks.targets -->
+	<Target Name="Build" DependsOnTargets="CoreBuildUnicodeDatabase" />
+
+	<Import Project="../System.Unicode.Build.Tasks/System.Unicode.Build.Tasks.targets" />
+
+</Project>
