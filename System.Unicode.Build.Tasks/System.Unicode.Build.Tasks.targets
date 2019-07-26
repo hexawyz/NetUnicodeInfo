@@ -8,6 +8,7 @@
 	To disable csproj integration, simply set the property AutoGenerateUnicodeDatabase to false. -->
 
 	<PropertyGroup>
+		<RequestedUnicodeVersionFilePath>../UnicodeVersion.txt</RequestedUnicodeVersionFilePath>
 		<UnicodeDatabaseName Condition="'$(UnicodeDatabaseName)' == ''">ucd.dat</UnicodeDatabaseName>
 		<ShouldGenerateUnicodeDatabase>false</ShouldGenerateUnicodeDatabase>
 		<ShouldGenerateUnicodeDatabase Condition="'$(ForceGenerateUnicodeDatabase)' == 'true'">true</ShouldGenerateUnicodeDatabase>
@@ -47,6 +48,22 @@
 		</PropertyGroup>
 	</Target>
 
+	<Target Name="CheckUnicodeDatabaseVersion" DependsOnTargets="EnsureProjectsGeneration" Condition="Exists('$(UnicodeDatabasePath)')">
+
+		<ReadLinesFromFile File="$(RequestedUnicodeVersionFilePath)">
+			<Output TaskParameter="Lines" PropertyName="RequestedUnicodeVersion" />
+		</ReadLinesFromFile>
+
+		<GetUnicodeDatabaseVersion DatabasePath="$(UnicodeDatabasePath)">
+			<Output TaskParameter="UnicodeDatabaseVersion" PropertyName="UnicodeDatabaseVersion" />
+		</GetUnicodeDatabaseVersion>
+
+		<PropertyGroup Condition="'$(UnicodeDatabaseVersion)' != '$(RequestedUnicodeVersion)'">
+			<ShouldGenerateUnicodeDatabase>true</ShouldGenerateUnicodeDatabase>
+		</PropertyGroup>
+
+	</Target>
+
 	<Target Name="GenerateUnicodeDatabase" DependsOnTargets="AssignUnicodeDatabaseIntermediatePaths;EnsureProjectsGeneration" Condition="'$(ShouldGenerateUnicodeDatabase)' == 'true'" Returns="$(UnicodeDatabaseIntermediatePath)">
 
 		<Message Text="Generating the Unicode Database…" Importance="Normal" />
@@ -70,7 +87,7 @@
 			UseHardlinksIfPossible="true" />
 	</Target>
 
-	<Target Name="CoreBuildUnicodeDatabase" DependsOnTargets="DetectUnicodeDatabase;CopyUnicodeDatabase" />
+	<Target Name="CoreBuildUnicodeDatabase" DependsOnTargets="DetectUnicodeDatabase;CheckUnicodeDatabaseVersion;CopyUnicodeDatabase" />
 
 	<Target Name="BuildUnicodeDatabase" DependsOnTargets="CoreBuildUnicodeDatabase" Condition="'$(AutoGenerateUnicodeDatabase)' == 'true'" BeforeTargets="AssignTargetPaths" />
 

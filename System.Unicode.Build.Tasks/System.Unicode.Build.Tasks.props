@@ -1,14 +1,22 @@
 <Project>
+
 	<PropertyGroup>
 		<UseTaskForUnicodeDatabaseGeneration Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == ''">false</UseTaskForUnicodeDatabaseGeneration>
+		<SystemUnicodeBuildTasksTargetFramework Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard2.0</SystemUnicodeBuildTasksTargetFramework>
+		<SystemUnicodeBuildTasksTargetFramework Condition="'$(MSBuildRuntimeType)' != 'Core'">net472</SystemUnicodeBuildTasksTargetFramework>
+		<SystemUnicodeBuildTasksFactory Condition="'$(MSBuildRuntimeType)' != 'Core'">TaskHostFactory</SystemUnicodeBuildTasksFactory>
+		<SystemUnicodeBuildTasksAssemblyPath>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(SystemUnicodeBuildTasksTargetFramework)\$(MSBuildThisFileName).dll</SystemUnicodeBuildTasksAssemblyPath>
 	</PropertyGroup>
+
 	<UsingTask
 		TaskName="GenerateUnicodeDatabase"
-		AssemblyFile="$(MSBuildThisFileDirectory)bin\$(Configuration)\netstandard2.0\$(MSBuildThisFileName).dll"
-		Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == 'true' And '$(MSBuildRuntimeType)' == 'Core'" />
-	<UsingTask
-		TaskName="GenerateUnicodeDatabase"
-		AssemblyFile="$(MSBuildThisFileDirectory)bin\$(Configuration)\net472\$(MSBuildThisFileName).dll"
-		TaskFactory="TaskHostFactory"
+		AssemblyFile="$(SystemUnicodeBuildTasksAssemblyPath)"
+		TaskFactory="$(SystemUnicodeBuildTasksFactory)"
 		Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == 'true' And '$(MSBuildRuntimeType)' != 'Core'" />
+
+	<UsingTask
+		TaskName="GetUnicodeDatabaseVersion"
+		AssemblyFile="$(SystemUnicodeBuildTasksAssemblyPath)"
+		TaskFactory="$(SystemUnicodeBuildTasksFactory)" />
+
 </Project>

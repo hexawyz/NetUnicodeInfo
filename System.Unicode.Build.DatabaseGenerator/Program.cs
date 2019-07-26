@@ -8,7 +8,6 @@ namespace System.Unicode.Build.DatabaseGenerator
 	{
 		private static async Task Main(string[] args)
 		{
-			Console.WriteLine("Called Once !!!");
 			// The sole purpose of this program is to consistently generate the database using .NET Core 2.2.
 			using (var httpClient = new HttpClient())
 			{

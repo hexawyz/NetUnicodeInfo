@@ -1,0 +1,43 @@
+<Project>
+
+	<PropertyGroup>
+		<RequestedUnicodeVersionFilePath>../UnicodeVersion.txt</RequestedUnicodeVersionFilePath>
+	</PropertyGroup>
+
+	<Target Name="CoreGenerateRequestedUnicodeVersionCsharpCode" Inputs="$(MSBuildThisFileFullPath);$(RequestedUnicodeVersionFilePath)" Outputs="$(BaseIntermediateOutputPath)RequestedUnicodeVersion.cs">
+
+		<ReadLinesFromFile File="$(RequestedUnicodeVersionFilePath)">
+			<Output TaskParameter="Lines" PropertyName="RequestedUnicodeVersion" />
+		</ReadLinesFromFile>
+
+		<ItemGroup>
+			<RequestedUnicodeVersionCsharpCode Include="namespace System.Unicode.Tests" />
+			<RequestedUnicodeVersionCsharpCode Include="{" />
+			<RequestedUnicodeVersionCsharpCode Include="%09internal static class RequestedUnicodeVersion" />
+			<RequestedUnicodeVersionCsharpCode Include="%09{" />
+			<RequestedUnicodeVersionCsharpCode Include="%09%09public static System.Version Value = new System.Version(@&quot;$(RequestedUnicodeVersion)&quot;)%3B" />
+			<RequestedUnicodeVersionCsharpCode Include="%09}" />
+			<RequestedUnicodeVersionCsharpCode Include="}" />
+		</ItemGroup>
+
+		<WriteLinesToFile
+			File="$(BaseIntermediateOutputPath)RequestedUnicodeVersion.cs"
+			Lines="@(RequestedUnicodeVersionCsharpCode)"
+			Encoding="utf-8"
+			Overwrite="true"
+			WriteOnlyWhenDifferent="true" />
+
+		<ItemGroup>
+			<RequestedUnicodeVersionCsharpCode Remove="@(RequestedUnicodeVersionCsharpCode)" />
+		</ItemGroup>
+
+		<ItemGroup>
+			<Compile Include="$(BaseIntermediateOutputPath)RequestedUnicodeVersion.cs" />
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="GenerateRequestedUnicodeVersionCsharpCodeDesignTime" DependsOnTargets="CoreGenerateRequestedUnicodeVersionCsharpCode" BeforeTargets="CompileDesignTime" />
+	<Target Name="GenerateRequestedUnicodeVersionCsharpCode" DependsOnTargets="CoreGenerateRequestedUnicodeVersionCsharpCode" BeforeTargets="CoreCompile" />
+
+</Project>

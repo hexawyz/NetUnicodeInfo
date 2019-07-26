@@ -7,7 +7,7 @@ namespace System.Unicode.Tests
 	{
 		[Fact]
 		public void UnicodeVersionShouldBeTheLatestSupported()
-			=> Assert.Equal(new Version(12, 1, 0), UnicodeInfo.UnicodeVersion);
+			=> Assert.Equal(RequestedUnicodeVersion.Value, UnicodeInfo.UnicodeVersion);
 
 		[Fact]
 		public void ControlCharactersShouldHaveSpecificDisplayText()
