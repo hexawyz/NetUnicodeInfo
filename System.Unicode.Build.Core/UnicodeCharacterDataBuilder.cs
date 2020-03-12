@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 
 namespace System.Unicode.Build.Core
 {
+	[DebuggerDisplay("{CodePointRange} {DisplayName,nq}")]
 	public sealed class UnicodeCharacterDataBuilder
 	{
 		private UnicodeCategory _category = UnicodeCategory.OtherNotAssigned;
@@ -51,6 +53,8 @@ namespace System.Unicode.Build.Core
 			CodePointRange = codePointRange;
 			_category = UnicodeCategory.OtherNotAssigned;
 		}
+
+		private string DisplayName => Name ?? OldName;
 
 		internal UnicodeCharacterData ToCharacterData()
 			=> new UnicodeCharacterData
