@@ -1,0 +1,8 @@
+{
+    "profiles": {
+        "System.Unicode.Build.DatabaseGenerator": {
+            "commandName": "Project",
+            "commandLineArgs": ". ucd.dat"
+        }
+    }
+}
