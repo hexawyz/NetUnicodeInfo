@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<DefineConstants>$(DefineConstants);BUILD_SYSTEM</DefineConstants>
 	</PropertyGroup>
@@ -19,12 +19,12 @@
 		<SharedSourceFile Include="UnihanFields" />
 		<SharedSourceFile Include="UnicodeBlock" />
 		<SharedSourceFile Include="UnicodeCategoryInfo" />
-		<SharedSourceFile Include="UnicodeCharacterData" />
 		<SharedSourceFile Include="UnicodeCodePointRange" />
 		<SharedSourceFile Include="UnicodeNameAlias" />
 		<SharedSourceFile Include="UnicodeNameAliasKind" />
 		<SharedSourceFile Include="UnicodeNumericType" />
 		<SharedSourceFile Include="UnicodeRadicalStrokeCount" />
+		<SharedSourceFile Include="UnicodeRadicalStrokeCountCollection" />
 		<SharedSourceFile Include="UnicodeRationalNumber" />
 		<SharedSourceFile Include="UnihanCharacterData" />
 		<SharedSourceFile Include="UnihanNumericType" />

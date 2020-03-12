@@ -5,34 +5,34 @@ namespace System.Unicode
 		public readonly int CodePoint;
 		public readonly UnihanNumericType NumericType;
 		public readonly long NumericValue;
-		public readonly UnicodeRadicalStrokeCount[] UnicodeRadicalStrokeCounts;
-		public readonly string Definition;
-		public readonly string MandarinReading;
-		public readonly string CantoneseReading;
-		public readonly string JapaneseKunReading;
-		public readonly string JapaneseOnReading;
-		public readonly string KoreanReading;
-		public readonly string HangulReading;
-		public readonly string VietnameseReading;
-		public readonly string SimplifiedVariant;
-		public readonly string TraditionalVariant;
+		public readonly UnicodeRadicalStrokeCountCollection UnicodeRadicalStrokeCounts;
+		public readonly UnicodeDataString Definition;
+		public readonly UnicodeDataString MandarinReading;
+		public readonly UnicodeDataString CantoneseReading;
+		public readonly UnicodeDataString JapaneseKunReading;
+		public readonly UnicodeDataString JapaneseOnReading;
+		public readonly UnicodeDataString KoreanReading;
+		public readonly UnicodeDataString HangulReading;
+		public readonly UnicodeDataString VietnameseReading;
+		public readonly UnicodeDataString SimplifiedVariant;
+		public readonly UnicodeDataString TraditionalVariant;
 
 		internal UnihanCharacterData
 		(
 			int codePoint,
 			UnihanNumericType numericType,
 			long numericValue,
-			UnicodeRadicalStrokeCount[] unicodeRadicalStrokeCounts,
-			string definition,
-			string mandarinReading,
-			string cantoneseReading,
-			string japaneseKunReading,
-			string japaneseOnReading,
-			string koreanReading,
-			string hangulReading,
-			string vietnameseReading,
-			string simplifiedVariant,
-			string traditionalVariant
+			UnicodeRadicalStrokeCountCollection unicodeRadicalStrokeCounts,
+			UnicodeDataString definition,
+			UnicodeDataString mandarinReading,
+			UnicodeDataString cantoneseReading,
+			UnicodeDataString japaneseKunReading,
+			UnicodeDataString japaneseOnReading,
+			UnicodeDataString koreanReading,
+			UnicodeDataString hangulReading,
+			UnicodeDataString vietnameseReading,
+			UnicodeDataString simplifiedVariant,
+			UnicodeDataString traditionalVariant
 		)
 		{
 			CodePoint = codePoint;
@@ -51,6 +51,7 @@ namespace System.Unicode
 			TraditionalVariant = traditionalVariant;
 		}
 
+#if BUILD_SYSTEM
 		internal static int PackCodePoint(int codePoint)
 		{
 			if (codePoint >= 0x3400)
@@ -67,6 +68,7 @@ namespace System.Unicode
 
 			throw new ArgumentOutOfRangeException(nameof(codePoint));
 		}
+#endif
 
 		internal static int UnpackCodePoint(int packedCodePoint)
 		{

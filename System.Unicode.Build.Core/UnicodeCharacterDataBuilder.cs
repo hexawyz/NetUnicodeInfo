@@ -52,29 +52,6 @@ namespace System.Unicode.Build.Core
 			_category = UnicodeCategory.OtherNotAssigned;
 		}
 
-		internal UnicodeCharacterData ToCharacterData()
-			=> new UnicodeCharacterData
-			(
-				CodePointRange,
-				Name,
-				_nameAliases.Count > 0 ? _nameAliases.ToArray() : UnicodeNameAlias.EmptyArray,
-				Category,
-				CanonicalCombiningClass,
-				BidirectionalClass,
-				CharacterDecompositionMapping.DecompositionType,
-				CharacterDecompositionMapping.DecompositionMapping,
-				NumericType,
-				NumericValue,
-				BidirectionalMirrored,
-				OldName,
-				SimpleUpperCaseMapping,
-				SimpleLowerCaseMapping,
-				SimpleTitleCaseMapping,
-				ContributoryProperties,
-				(int)CoreProperties | (int)EmojiProperties << 24,
-				CrossRerefences.Count > 0 ? CrossRerefences.ToArray() : null
-			);
-
 		internal void WriteToFile(BinaryWriter writer)
 		{
 			if (_nameAliases.Count > 64) throw new InvalidDataException("Cannot handle more than 64 name aliases.");
@@ -86,8 +63,7 @@ namespace System.Unicode.Build.Core
 			if (Name != null || _nameAliases.Count > 0) fields |= UcdFields.Name; // This field combines name and alias.
 			if (_category != UnicodeCategory.OtherNotAssigned) fields |= UcdFields.Category;
 			if (CanonicalCombiningClass != CanonicalCombiningClass.NotReordered) fields |= UcdFields.CanonicalCombiningClass;
-			/*if (bidirectionalClass != 0)*/
-			fields |= UcdFields.BidirectionalClass;
+			if (BidirectionalClass != 0) fields |= UcdFields.BidirectionalClass;
 			if (CharacterDecompositionMapping.DecompositionMapping != null) fields |= UcdFields.DecompositionMapping;
 			fields |= (UcdFields)((int)NumericType << 6);
 			if (BidirectionalMirrored) fields |= UcdFields.BidirectionalMirrored;

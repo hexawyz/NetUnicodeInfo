@@ -14,8 +14,6 @@ namespace System.Unicode
 		/// <summary>The block name returned when no block is assigned to a specific code point.</summary>
 		public const string DefaultBlock = "No_Block";
 
-		private static readonly UnicodeData UnicodeData = UnicodeData.ReadFromResources();
-
 		/// <summary>Gets the version of the Unicode standard supported by the class.</summary>
 		public static Version UnicodeVersion => UnicodeData.UnicodeVersion;
 
@@ -202,7 +200,7 @@ namespace System.Unicode
 
 		internal static string GetName(int codePoint, in UnicodeCharacterData characterData)
 		{
-			if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
+			if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name.ToString();
 			else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
 			else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
 			else return null;

@@ -4,21 +4,21 @@ namespace System.Unicode
 {
 	internal readonly struct UnicodeCharacterData
 	{
-		public readonly UnicodeCodePointRange CodePointRange;
-		public readonly string Name;
-		public readonly UnicodeNameAlias[] NameAliases;
+		//public readonly UnicodeCodePointRange CodePointRange;
+		public readonly UnicodeDataString Name;
+		public readonly UnicodeNameAliasCollection NameAliases;
 		public readonly UnicodeCategory Category;
 		public readonly CanonicalCombiningClass CanonicalCombiningClass;
 		public readonly BidirectionalClass BidirectionalClass;
 		public readonly CompatibilityFormattingTag DecompositionType;
-		public readonly string DecompositionMapping;
+		public readonly UnicodeDataString DecompositionMapping;
 		public readonly UnicodeNumericType NumericType;
 		private readonly UnicodeRationalNumber _numericValue;
 		public readonly bool BidirectionalMirrored;
-		public readonly string OldName;
-		public readonly string SimpleUpperCaseMapping;
-		public readonly string SimpleLowerCaseMapping;
-		public readonly string SimpleTitleCaseMapping;
+		public readonly UnicodeDataString OldName;
+		public readonly UnicodeDataString SimpleUpperCaseMapping;
+		public readonly UnicodeDataString SimpleLowerCaseMapping;
+		public readonly UnicodeDataString SimpleTitleCaseMapping;
 		public readonly ContributoryProperties ContributoryProperties;
 		private readonly int _corePropertiesAndEmojiProperties;
 		public CoreProperties CoreProperties => (CoreProperties)(_corePropertiesAndEmojiProperties & 0x003FFFFF);
@@ -28,27 +28,27 @@ namespace System.Unicode
 
 		internal UnicodeCharacterData
 		(
-			UnicodeCodePointRange codePointRange,
-			string name,
-			UnicodeNameAlias[] nameAliases,
+			//UnicodeCodePointRange codePointRange,
+			UnicodeDataString name,
+			UnicodeNameAliasCollection nameAliases,
 			UnicodeCategory category,
 			CanonicalCombiningClass canonicalCombiningClass,
 			BidirectionalClass bidirectionalClass,
 			CompatibilityFormattingTag decompositionType,
-			string decompositionMapping,
+			UnicodeDataString decompositionMapping,
 			UnicodeNumericType numericType,
 			UnicodeRationalNumber numericValue,
 			bool bidirectionalMirrored,
-			string oldName,
-			string simpleUpperCaseMapping,
-			string simpleLowerCaseMapping,
-			string simpleTitleCaseMapping,
+			UnicodeDataString oldName,
+			UnicodeDataString simpleUpperCaseMapping,
+			UnicodeDataString simpleLowerCaseMapping,
+			UnicodeDataString simpleTitleCaseMapping,
 			ContributoryProperties contributoryProperties,
 			int corePropertiesAndEmojiProperties,
 			int[] crossRerefences
 		)
 		{
-			CodePointRange = codePointRange;
+			//CodePointRange = codePointRange;
 			Name = name;
 			NameAliases = nameAliases;
 			Category = category;

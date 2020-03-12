@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace System.Unicode
 {
 	/// <summary>Represents a collection of name aliases.</summary>
-	public readonly struct UnicodeNameAliasCollection : IList<UnicodeNameAlias>
+	public readonly struct UnicodeBlockCollection : IList<UnicodeBlock>
 	{
-		/// <summary>Represents an enumerator for the <see cref="UnicodeNameAliasCollection"/> class.</summary>
-		public struct Enumerator : IEnumerator<UnicodeNameAlias>
+		/// <summary>Represents an enumerator for the <see cref="UnicodeBlockCollection"/> class.</summary>
+		public struct Enumerator : IEnumerator<UnicodeBlock>
 		{
 			private readonly int _dataAddress;
 			private readonly int _itemCount;
@@ -32,14 +32,14 @@ namespace System.Unicode
 
 			/// <summary>Gets the element in the collection at the current position of the enumerator..</summary>
 			/// <value>The element in the collection at the current position of the enumerator.</value>
-			public UnicodeNameAlias Current
+			public UnicodeBlock Current
 			{
 				get
 				{
 					var span = Span;
 					int i = _index * 2;
 
-					return new UnicodeNameAlias(new UnicodeDataString(_dataAddress + 2 * _itemCount + _nameStartOffset, span[i]), (UnicodeNameAliasKind)span[i + 1]);
+					return new UnicodeBlock(new UnicodeDataString(_dataAddress + 2 * _itemCount + _nameStartOffset, span[i]), (UnicodeBlockKind)span[i + 1]);
 				}
 			}
 
@@ -63,20 +63,20 @@ namespace System.Unicode
 			void IEnumerator.Reset() => (_nameStartOffset, _index) = (0, -1);
 		}
 
-		/// <summary>Gets an empty <see cref="UnicodeNameAliasCollection"/> struct.</summary>
-		public static readonly UnicodeNameAliasCollection Empty = default;
+		/// <summary>Gets an empty <see cref="UnicodeBlockCollection"/> struct.</summary>
+		public static readonly UnicodeBlockCollection Empty = default;
 
 		private readonly int _dataAddress;
 		private readonly int _itemCount;
 
-		internal UnicodeNameAliasCollection(int dataAddress, int itemCount)
+		internal UnicodeBlockCollection(int dataAddress, int itemCount)
 			=> (_dataAddress, _itemCount) = (dataAddress, itemCount);
 
-		/// <summary>Gets the <see cref="UnicodeNameAlias"/> at the specified index.</summary>
-		/// <value>The <see cref="UnicodeNameAlias"/>.</value>
+		/// <summary>Gets the <see cref="UnicodeBlock"/> at the specified index.</summary>
+		/// <value>The <see cref="UnicodeBlock"/>.</value>
 		/// <param name="index">The index.</param>
-		/// <returns>The <see cref="UnicodeNameAlias"/> at the specified index.</returns>
-		public UnicodeNameAlias this[int index]
+		/// <returns>The <see cref="UnicodeBlock"/> at the specified index.</returns>
+		public UnicodeBlock this[int index]
 		{
 			get
 			{
@@ -91,38 +91,38 @@ namespace System.Unicode
 					stringStartOffset += span[i * 2];
 				}
 
-				return new UnicodeNameAlias
+				return new UnicodeBlock
 				(
 					new UnicodeDataString(_dataAddress + arraySize + stringStartOffset, span[requestedDataOffset]),
-					(UnicodeNameAliasKind)span[requestedDataOffset + 1]
+					(UnicodeBlockKind)span[requestedDataOffset + 1]
 				);
 			}
 		}
 
-		UnicodeNameAlias IList<UnicodeNameAlias>.this[int index]
+		UnicodeBlock IList<UnicodeBlock>.this[int index]
 		{
 			get => this[index];
 			set => throw new NotSupportedException();
 		}
 
-		/// <summary>Gets the number of elements contained in the <see cref="UnicodeNameAliasCollection"/>.</summary>
-		/// <value>The number of elements contained in the <see cref="UnicodeNameAliasCollection"/>.</value>
+		/// <summary>Gets the number of elements contained in the <see cref="UnicodeBlockCollection"/>.</summary>
+		/// <value>The number of elements contained in the <see cref="UnicodeBlockCollection"/>.</value>
 		public int Count => _itemCount;
 
-		bool ICollection<UnicodeNameAlias>.IsReadOnly => true;
+		bool ICollection<UnicodeBlock>.IsReadOnly => true;
 
-		void ICollection<UnicodeNameAlias>.Add(UnicodeNameAlias item) => throw new NotSupportedException();
-		void IList<UnicodeNameAlias>.Insert(int index, UnicodeNameAlias item) => throw new NotSupportedException();
+		void ICollection<UnicodeBlock>.Add(UnicodeBlock item) => throw new NotSupportedException();
+		void IList<UnicodeBlock>.Insert(int index, UnicodeBlock item) => throw new NotSupportedException();
 
-		bool ICollection<UnicodeNameAlias>.Remove(UnicodeNameAlias item) => throw new NotSupportedException();
-		void IList<UnicodeNameAlias>.RemoveAt(int index) => throw new NotSupportedException();
+		bool ICollection<UnicodeBlock>.Remove(UnicodeBlock item) => throw new NotSupportedException();
+		void IList<UnicodeBlock>.RemoveAt(int index) => throw new NotSupportedException();
 
-		void ICollection<UnicodeNameAlias>.Clear() => throw new NotSupportedException();
+		void ICollection<UnicodeBlock>.Clear() => throw new NotSupportedException();
 
-		/// <summary>Determines the index of a specific item in the <see cref="UnicodeNameAliasCollection"/>.</summary>
-		/// <param name="item">The object to locate in the <see cref="UnicodeNameAliasCollection"/>.</param>
+		/// <summary>Determines the index of a specific item in the <see cref="UnicodeBlockCollection"/>.</summary>
+		/// <param name="item">The object to locate in the <see cref="UnicodeBlockCollection"/>.</param>
 		/// <returns>The index of the item if found in the list; otherwise, -1.</returns>
-		public int IndexOf(UnicodeNameAlias item)
+		public int IndexOf(UnicodeBlock item)
 		{
 			int arraySize = 2 * _itemCount;
 			var span = UnicodeData.UnicodeCharacterData.Slice(_dataAddress, arraySize);
@@ -134,14 +134,14 @@ namespace System.Unicode
 			{
 				int stringLength = span[currentDataOffset];
 
-				var currentItem = new UnicodeNameAlias
+				var currentItem = new UnicodeBlock
 				(
 					new UnicodeDataString
 					(
 						UnicodeData.GetDataAddress(UnicodeData.StringDataOrigin.UnicodeCharacterData, stringStartOffset),
 						stringLength
 					),
-					(UnicodeNameAliasKind)span[currentDataOffset + 1]
+					(UnicodeBlockKind)span[currentDataOffset + 1]
 				);
 
 				if (item == currentItem)
@@ -155,17 +155,17 @@ namespace System.Unicode
 			return -1;
 		}
 
-		/// <summary>Determines whether the <see cref="UnicodeNameAliasCollection"/> contains a specific value.</summary>
-		/// <param name="item">The object to locate in the <see cref="UnicodeNameAliasCollection"/>.</param>
-		/// <returns><see langword="true" /> if item is fount in the <see cref="UnicodeNameAliasCollection"/>; <see langword="false" /> otherwise.</returns>
-		public bool Contains(UnicodeNameAlias item) => IndexOf(item) >= 0;
+		/// <summary>Determines whether the <see cref="UnicodeBlockCollection"/> contains a specific value.</summary>
+		/// <param name="item">The object to locate in the <see cref="UnicodeBlockCollection"/>.</param>
+		/// <returns><see langword="true" /> if item is fount in the <see cref="UnicodeBlockCollection"/>; <see langword="false" /> otherwise.</returns>
+		public bool Contains(UnicodeBlock item) => IndexOf(item) >= 0;
 
 		/// <summary>
-		/// Copies the elements of the UnicodeNameAliasCollection to an <see cref="System.Array" />, starting at a particular <see cref="System.Array" /> index.
+		/// Copies the elements of the UnicodeBlockCollection to an <see cref="System.Array" />, starting at a particular <see cref="System.Array" /> index.
 		/// </summary>
-		/// <param name="array">The one-dimensional <see cref="System.Array" /> that is the destination of the elements to copy from UnicodeNameAliasCollection. The <see cref="System.Array" /> must have zero-based indexing.</param>
+		/// <param name="array">The one-dimensional <see cref="System.Array" /> that is the destination of the elements to copy from UnicodeBlockCollection. The <see cref="System.Array" /> must have zero-based indexing.</param>
 		/// <param name="arrayIndex">The zeo-based index in array at which copy begins.</param>
-		public void CopyTo(UnicodeNameAlias[] array, int arrayIndex)
+		public void CopyTo(UnicodeBlock[] array, int arrayIndex)
 		{
 			if (unchecked((uint)arrayIndex >= (uint)array.Length)) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 			if (unchecked(_itemCount >= (uint)array.Length - (uint)arrayIndex)) throw new ArgumentException();
@@ -180,14 +180,14 @@ namespace System.Unicode
 			{
 				int stringLength = span[currentDataOffset];
 
-				array[arrayIndex] = new UnicodeNameAlias
+				array[arrayIndex] = new UnicodeBlock
 				(
 					new UnicodeDataString
 					(
 						UnicodeData.GetDataAddress(UnicodeData.StringDataOrigin.UnicodeCharacterData, stringStartOffset),
 						stringLength
 					),
-					(UnicodeNameAliasKind)span[currentDataOffset + 1]
+					(UnicodeBlockKind)span[currentDataOffset + 1]
 				);
 
 				stringStartOffset += stringLength;
@@ -198,7 +198,7 @@ namespace System.Unicode
 		/// <returns>An <see cref="Enumerator"/> that can be used to iterate through the collection.</returns>
 		public Enumerator GetEnumerator() => new Enumerator(_dataAddress, _itemCount);
 
-		IEnumerator<UnicodeNameAlias> IEnumerable<UnicodeNameAlias>.GetEnumerator() => GetEnumerator();
+		IEnumerator<UnicodeBlock> IEnumerable<UnicodeBlock>.GetEnumerator() => GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }

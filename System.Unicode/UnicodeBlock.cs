@@ -9,9 +9,9 @@ namespace System.Unicode
 		/// <summary>The code point range of this block.</summary>
 		public readonly UnicodeCodePointRange CodePointRange;
 		/// <summary>The name of this block.</summary>
-		public readonly string Name;
+		public readonly UnicodeDataString Name;
 
-		internal UnicodeBlock(UnicodeCodePointRange codePointRange, string name)
+		internal UnicodeBlock(UnicodeCodePointRange codePointRange, UnicodeDataString name)
 		{
 			CodePointRange = codePointRange;
 			Name = name;

@@ -1,0 +1,85 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".Generated.cs" #>
+<#
+var stringData = new List<byte>();
+var jamoLTable = new List<byte>();
+var jamoVTable = new List<byte>();
+var jamoTTable = new List<byte>();
+
+const string prefix = "HANGUL SYLLABLE ";
+
+stringData.AddRange(Encoding.UTF8.GetBytes(prefix));
+
+void ProcessTable(List<byte> destination, string[] source)
+{
+	foreach (string s in source)
+	{
+		destination.Add(checked((byte)stringData.Count));
+		stringData.AddRange(Encoding.UTF8.GetBytes(s));
+	}
+	destination.Add(checked((byte)stringData.Count));
+}
+
+ProcessTable(jamoLTable, JamoLTable);
+ProcessTable(jamoVTable, JamoVTable);
+ProcessTable(jamoTTable, JamoTTable);
+
+void EmitArray(IReadOnlyList<byte> data)
+{
+	WriteLine("new byte[]");
+	WriteLine("{");
+	PushIndent("\t");
+	for (int i = 0; i < data.Count; i += 16)
+	{
+		int count = Math.Min(16, data.Count - i);
+
+		for (int j = 0; j < count; j++)
+		{
+			Write($"{(j > 0 ? " " : "")}0x{data[i + j].ToString("X2")},");
+		}
+		WriteLine("");
+	}
+	PopIndent();
+	Write("}");
+}
+#>namespace System.Unicode
+{
+	partial class HangulInfo
+	{
+		private const int PrefixLength = <#= prefix.Length #>;
+
+		private static ReadOnlySpan<byte> JamoLTable => <# PushIndent("\t\t"); EmitArray(jamoLTable); PopIndent(); #>;
+
+		private static ReadOnlySpan<byte> JamoVTable => <# PushIndent("\t\t"); EmitArray(jamoVTable); PopIndent(); #>;
+
+		private static ReadOnlySpan<byte> JamoTTable => <# PushIndent("\t\t"); EmitArray(jamoTTable); PopIndent(); #>;
+
+		private static ReadOnlySpan<byte> StringData => <# PushIndent("\t\t"); EmitArray(stringData); PopIndent(); #>;
+	}
+}
+
+<#+
+	private static readonly string[] JamoLTable =
+	{
+		"G", "GG", "N", "D", "DD", "R", "M", "B", "BB",
+		"S", "SS", "", "J", "JJ", "C", "K", "T", "P", "H"
+	};
+
+	private static readonly string[] JamoVTable =
+	{
+		"A", "AE", "YA", "YAE", "EO", "E", "YEO", "YE", "O",
+		"WA", "WAE", "OE", "YO", "U", "WEO", "WE", "WI",
+		"YU", "EU", "YI", "I"
+	};
+
+	private static readonly string[] JamoTTable =
+	{
+		"", "G", "GG", "GS", "N", "NJ", "NH", "D", "L", "LG", "LM",
+		"LB", "LS", "LT", "LP", "LH", "M", "B", "BS",
+		"S", "SS", "NG", "J", "C", "K", "T", "P", "H"
+	};
+#>
