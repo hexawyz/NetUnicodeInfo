@@ -25,10 +25,12 @@ namespace System.Unicode
 		/// <param name="radical">The index of the Kangxi radical of the character.</param>
 		/// <param name="strokeCount">The number of additional strokes required to form the character from the radical.</param>
 		/// <param name="isSimplified">Indicates whether the character is simplified.</param>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="strokeCount"/> is outside of the allowed range.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="strokeCount"/> is outside of the allowed range of -8 to 119 inclusive.</exception>
 		internal UnicodeRadicalStrokeCount(byte radical, sbyte strokeCount, bool isSimplified)
 		{
-			if (strokeCount < -64 || strokeCount > 63) throw new ArgumentOutOfRangeException(nameof(strokeCount));
+			// Two's complement doesn't work anymore there, as we have some code points with more than 64 additional strokes.
+			// Negative strokes don't seem to go below -5 for now, so we'll map value between -8 and 119 as 120..127;0..119.
+			if (strokeCount < -8 || strokeCount > 127 - 8) throw new ArgumentOutOfRangeException(nameof(strokeCount));
 
 			Radical = radical;
 			// Pack strokeCount together with isSimplified in a single byte.
@@ -41,13 +43,16 @@ namespace System.Unicode
 		public byte Radical { get; }
 
 		/// <summary>Gets the value of <see cref="StrokeCount"/> packed with <see cref="IsSimplified"/>.</summary>
-		/// <remarks>The stroke count is stored as a 7bit signed value, together with the <see cref="IsSimplified"/> flag as a 1bit value.</remarks>
+		/// <remarks>
+		/// The stroke count is stored as a 7bit value, together with the <see cref="IsSimplified"/> flag as a 1bit value.
+		/// Raw values between 120 and 127 represent negative stroke counts -8 to -1.
+		/// </remarks>
 		/// <value>The raw value of <see cref="StrokeCount"/>.</value>
 		internal byte RawStrokeCount { get; }
 
 		/// <summary>Gets the additional stroke count.</summary>
 		/// <value>The additional stroke count.</value>
-		public sbyte StrokeCount => unchecked((sbyte)(RawStrokeCount & 0x7F | (RawStrokeCount & 0x40) << 1));  // To unpack the stroke count, we simply need to copy bit 6 to bit 7.
+		public sbyte StrokeCount => (RawStrokeCount & 0x7F) is int c && c > 119 ? unchecked((sbyte)(c - 128)) : unchecked((sbyte)c);
 
 		/// <summary>Gets a value indicating whether the information is based on the simplified form of the radical.</summary>
 		/// <value><see langword="true" /> if the information is based on the simplified form of the radical; otherwise, <see langword="false" />.</value>
