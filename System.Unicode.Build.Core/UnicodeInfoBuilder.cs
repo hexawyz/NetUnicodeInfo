@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -39,6 +40,7 @@ namespace System.Unicode.Build.Core
 			return -1;
 		}
 
+		// Returns the index at which a new range can be insertes, or at which a pre-existing range overlaps.
 		private int FindUcdInsertionPoint(int startCodePoint, int endCodePoint)
 		{
 			int minIndex;
@@ -54,13 +56,12 @@ namespace System.Unicode.Build.Core
 
 				int δ = _ucdEntries[index].CodePointRange.CompareCodePoint(startCodePoint);
 
-				if (δ == 0) return -1;
+				if (δ == 0) return index;
 				else if (δ < 0) maxIndex = index;
 				else minIndex = index;
 			} while (maxIndex - minIndex > 1);
 
-			if (_ucdEntries[maxIndex].CodePointRange.FirstCodePoint < endCodePoint) return -1;
-			else return maxIndex;
+			return maxIndex;
 		}
 
 		private int FindUnihanCodePoint(int codePoint)
@@ -108,24 +109,70 @@ namespace System.Unicode.Build.Core
 			else return maxIndex;
 		}
 
-		public void Insert(UnicodeCharacterDataBuilder data)
+		// Returns true if the range has been inserted as a whole; false if multiple empty ranges have been created.
+		// NB: We could split the provided range into multiple ones, but only the caller knows how to update the ranegs that were already there…
+		public bool Insert(UnicodeCharacterDataBuilder data)
 		{
 			int insertionPoint = FindUcdInsertionPoint(data.CodePointRange.FirstCodePoint, data.CodePointRange.LastCodePoint);
 
 			if (insertionPoint < 0) throw new InvalidOperationException("The specified range overlaps with pre-existing ranges.");
 
-			if (_ucdEntryCount == _ucdEntries.Length)
+			int currentCodePoint = data.CodePointRange.FirstCodePoint;
+
+			// Validate that the returned index properly indicates where the range starts.
+			Debug.Assert(insertionPoint >= _ucdEntryCount || _ucdEntries[insertionPoint].CodePointRange.FirstCodePoint > currentCodePoint || _ucdEntries[insertionPoint].CodePointRange.Contains(currentCodePoint));
+
+			// Either insert the specified data as a whole, or successively insert bits of empty data.
+			while (currentCodePoint <= data.CodePointRange.LastCodePoint)
 			{
-				Array.Resize(ref _ucdEntries, _ucdEntries.Length << 1);
+				int lastCodePoint = data.CodePointRange.LastCodePoint;
+
+				// If we insert at the position of an already existing range,
+				// check how many code points we can span, or if we must skip the range.
+				if (insertionPoint < _ucdEntryCount)
+				{
+					int firstCodePointAtInsertionPoint = _ucdEntries[insertionPoint].CodePointRange.FirstCodePoint;
+
+					// Skip a range that has already been inserted.
+					if (currentCodePoint >= firstCodePointAtInsertionPoint)
+					{
+						currentCodePoint = _ucdEntries[insertionPoint].CodePointRange.LastCodePoint + 1;
+						insertionPoint++;
+						continue;
+					}
+
+					// We can only insert a range that stops before the next one.
+					lastCodePoint = Math.Min(lastCodePoint, firstCodePointAtInsertionPoint - 1);
+				}
+
+				if (_ucdEntryCount == _ucdEntries.Length)
+				{
+					Array.Resize(ref _ucdEntries, _ucdEntries.Length << 1);
+				}
+
+				if (insertionPoint < _ucdEntryCount)
+				{
+					Array.Copy(_ucdEntries, insertionPoint, _ucdEntries, insertionPoint + 1, _ucdEntryCount - insertionPoint);
+				}
+
+				++_ucdEntryCount;
+
+				if (currentCodePoint == data.CodePointRange.FirstCodePoint && lastCodePoint == data.CodePointRange.LastCodePoint)
+				{
+					_ucdEntries[insertionPoint] = data;
+					return true;
+				}
+				else
+				{
+					_ucdEntries[insertionPoint] = new UnicodeCharacterDataBuilder(new UnicodeCodePointRange(currentCodePoint, lastCodePoint));
+					// We should be able to skip to after the next data, but that would make the code more complex.
+					// Let's just waste the next iteration of the loop instead.
+					insertionPoint++;
+					currentCodePoint = lastCodePoint + 1;
+				}
 			}
 
-			if (insertionPoint < _ucdEntryCount)
-			{
-				Array.Copy(_ucdEntries, insertionPoint, _ucdEntries, insertionPoint + 1, _ucdEntryCount - insertionPoint);
-			}
-
-			_ucdEntries[insertionPoint] = data;
-			++_ucdEntryCount;
+			return false;
 		}
 
 		private void Insert(UnihanCharacterDataBuilder data)
@@ -175,13 +222,16 @@ namespace System.Unicode.Build.Core
 
 		public void SetProperties(ContributoryProperties property, UnicodeCodePointRange codePointRange)
 		{
-			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
-			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
+			var (firstIndex, lastIndex) = FindCodePointRange(codePointRange);
 
-			if (firstIndex < 0 && lastIndex < 0)
+			if (firstIndex < 0 || lastIndex < 0)
 			{
-				Insert(new UnicodeCharacterDataBuilder(codePointRange) { ContributoryProperties = property });
-				return;
+				if (Insert(new UnicodeCharacterDataBuilder(codePointRange) { ContributoryProperties = property }))
+				{
+					return;
+				}
+
+				(firstIndex, lastIndex) = FindCodePointRange(codePointRange);
 			}
 
 			if (firstIndex < 0
@@ -206,13 +256,16 @@ namespace System.Unicode.Build.Core
 
 		public void SetProperties(CoreProperties property, UnicodeCodePointRange codePointRange)
 		{
-			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
-			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
+			var (firstIndex, lastIndex) = FindCodePointRange(codePointRange);
 
-			if (firstIndex < 0 && lastIndex < 0)
+			if (firstIndex < 0 || lastIndex < 0)
 			{
-				Insert(new UnicodeCharacterDataBuilder(codePointRange) { CoreProperties = property });
-				return;
+				if (Insert(new UnicodeCharacterDataBuilder(codePointRange) { CoreProperties = property }))
+				{
+					return;
+				}
+
+				(firstIndex, lastIndex) = FindCodePointRange(codePointRange);
 			}
 
 			if (firstIndex < 0
@@ -237,13 +290,16 @@ namespace System.Unicode.Build.Core
 
 		public void SetProperties(EmojiProperties property, UnicodeCodePointRange codePointRange)
 		{
-			int firstIndex = FindUcdCodePoint(codePointRange.FirstCodePoint);
-			int lastIndex = FindUcdCodePoint(codePointRange.LastCodePoint);
+			var (firstIndex, lastIndex) = FindCodePointRange(codePointRange);
 
-			if (firstIndex < 0 && lastIndex < 0)
+			if (firstIndex < 0 || lastIndex < 0)
 			{
-				Insert(new UnicodeCharacterDataBuilder(codePointRange) { EmojiProperties = property });
-				return;
+				if (Insert(new UnicodeCharacterDataBuilder(codePointRange) { EmojiProperties = property }))
+				{
+					return;
+				}
+
+				(firstIndex, lastIndex) = FindCodePointRange(codePointRange);
 			}
 
 			if (firstIndex < 0
@@ -265,6 +321,9 @@ namespace System.Unicode.Build.Core
 				++i;
 			}
 		}
+
+		private (int FirstIndex, int LastIndex) FindCodePointRange(UnicodeCodePointRange codePointRange)
+			=> (FindUcdCodePoint(codePointRange.FirstCodePoint), FindUcdCodePoint(codePointRange.LastCodePoint));
 
 		public void SetRadicalInfo(int radicalIndex, CjkRadicalData data)
 		{
