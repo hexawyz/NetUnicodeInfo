@@ -138,6 +138,8 @@ namespace System.Unicode.Build.Core
 
 					if (shouldSaveFiles == true)
 					{
+						Directory.CreateDirectory(dataDirectory);
+
 						await Task.WhenAll
 						(
 							Array.ConvertAll
@@ -146,7 +148,7 @@ namespace System.Unicode.Build.Core
 								//file => File.WriteAllBytesAsync(Path.Combine(dataDirectory, file.Name), file.Data)
 								async file =>
 								{
-									using (var stream = File.Open(Path.Combine(dataDirectory, file.Name), FileMode.Create, FileAccess.Read, FileShare.None))
+									using (var stream = File.Open(Path.Combine(dataDirectory, file.Name), FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
 									{
 										await stream.WriteAsync(file.Data, 0, file.Data.Length).ConfigureAwait(false);
 									}
