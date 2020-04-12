@@ -5,7 +5,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\System.Unicode\UnihanCharacterData.cs" Link="UnihanCharacterData.cs" />
+		<Compile Include="..\System.Unicode\UnihanCharacterData.cs" Link="UnihanCharacterData.cs" />
+		<Compile Include="..\System.Unicode\UnihanCharacterData.Generated.cs" Link="UnihanCharacterData.Generated.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

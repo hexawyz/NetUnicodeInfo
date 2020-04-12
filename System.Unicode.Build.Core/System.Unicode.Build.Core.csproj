@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -27,12 +27,13 @@
 		<SharedSourceFile Include="UnicodeRadicalStrokeCount" />
 		<SharedSourceFile Include="UnicodeRationalNumber" />
 		<SharedSourceFile Include="UnihanCharacterData" />
+		<SharedSourceFile Include="UnihanCharacterData.Generated" />
 		<SharedSourceFile Include="UnihanNumericType" />
 		<SharedSourceFile Include="ValueNameAttribute" />
 	</ItemGroup>
 
 	<ItemGroup Label="Shared Source File Inclusion">
-		<Compile Include="@(SharedSourceFile-&gt;'../System.Unicode/%(Identity).cs')" Link="System.Unicode/%(Filename).cs" />
+		<Compile Include="@(SharedSourceFile->'../System.Unicode/%(Identity).cs')" Link="System.Unicode/%(Filename).cs" />
 		<SharedSourceFile Remove="@(SharedSourceFile)" />
 	</ItemGroup>
 

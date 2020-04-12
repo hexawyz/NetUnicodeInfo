@@ -1,6 +1,6 @@
 namespace System.Unicode
 {
-	internal readonly struct UnihanCharacterData
+	internal readonly partial struct UnihanCharacterData
 	{
 		public readonly int CodePoint;
 		public readonly UnihanNumericType NumericType;
@@ -72,9 +72,12 @@ namespace System.Unicode
 						// 2B740..2B81F; CJK Unified Ideographs Extension D
 						// 2B820..2CEAF; CJK Unified Ideographs Extension E
 						// 2CEB0..2EBEF; CJK Unified Ideographs Extension F
+						// ..2F7FF; NA
 						if (codePoint < 0x2F800) return codePoint - 0x19400;
 						// 2F800..2FA1F; CJK Compatibility Ideographs Supplement
 						else if (codePoint < 0x2FA20) return codePoint - 0x10000;
+						// 30000..3134F; CJK Unified Ideographs Extension G
+						else if (codePoint >= 0x3000 && codePoint < 0x31350) return 0;
 					}
 				}
 			}
@@ -100,6 +103,8 @@ namespace System.Unicode
 				// F900..FAFF; CJK Compatibility Ideographs
 				else if (packedCodePoint < 0x1F800) return packedCodePoint - 0xFD00;
 				// 2F800..2FA1F; CJK Compatibility Ideographs Supplement
+				else if (packedCodePoint < 0x20000) return packedCodePoint + 0x10000;
+				// 30000..3134F; CJK Unified Ideographs Extension G
 				else if (packedCodePoint < 0x20000) return packedCodePoint + 0x10000;
 			}
 			throw new ArgumentOutOfRangeException(nameof(packedCodePoint));

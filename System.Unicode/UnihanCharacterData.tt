@@ -1,0 +1,183 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".Generated.cs" #>
+<#
+// This file will generate the code point packing and unpacking code for unihan data.
+// Since Unihan data covers pretty specific code point ranges, we can rebase those ranges closer to zero in order to get a better encoding in files.
+// The algorithm now generated a densely packed map, as opposed to the previous handwritten code.
+
+// Declare the blocks to pack and unpack in the arbitrarily chosen order.
+var blocks = new UnicodeBlockList
+{
+	{ 0x4E00, 0x9FFF, "CJK Unified Ideographs" },
+	{ 0x3400, 0x4DBF, "CJK Unified Ideographs Extension A" },
+	{ 0x20000, 0x2A6DF, "CJK Unified Ideographs Extension B" },
+	{ 0x2A700, 0x2B73F, "CJK Unified Ideographs Extension C" },
+	{ 0x2B740, 0x2B81F, "CJK Unified Ideographs Extension D" },
+	{ 0x2B820, 0x2CEAF, "CJK Unified Ideographs Extension E" },
+	{ 0x2CEB0, 0x2EBEF, "CJK Unified Ideographs Extension F" },
+	{ 0xF900, 0xFAFF, "CJK Compatibility Ideographs" },
+	{ 0x2F800, 0x2FA1F, "CJK Compatibility Ideographs Supplement" },
+};
+
+// Assign the (re)base(d) index for each block.
+{
+	int baseIndex = 0;
+	foreach (var block in blocks)
+	{
+		block.RebasedStartIndex = baseIndex;
+		baseIndex += block.CodePointCount;
+	}
+}
+
+// Merge contiguous blocks together in order to avoid useless branches
+{
+	int firstMergeIndex = -1;
+	UnicodeBlock lastBlock = null;
+	for (int i = 0; i < blocks.Count; i++)
+	{
+		var block = blocks[i];
+		if (lastBlock is object)
+		{
+			bool isContiguous = block.FirstCodePoint - lastBlock.LastCodePoint == 1;
+
+			if (!isContiguous || i == blocks.Count - 1)
+			{
+				int blockCount = i - firstMergeIndex + (isContiguous ? 1 : 0);
+
+				if (blockCount > 1)
+				{
+					var mergedBlocks = blocks.GetRange(firstMergeIndex, blockCount).ToArray();
+					blocks[firstMergeIndex] = new UnicodeBlock(mergedBlocks);
+					blocks.RemoveRange(firstMergeIndex + 1, blockCount - 1);
+				}
+				firstMergeIndex = i -= blockCount - 1;
+			}
+		}
+		else
+		{
+			firstMergeIndex = i;
+		}
+		lastBlock = block;
+	}
+}
+
+// Sort blocks by first code point
+var sortedBlocks = blocks.ToArray();
+Array.Sort(sortedBlocks, (a, b) => Comparer<int>.Default.Compare(a.FirstCodePoint, b.FirstCodePoint));
+#>
+#if false // To be enabled later on
+namespace System.Unicode
+{
+	partial struct UnihanCharacterData
+	{
+		// This method densely packs code points by predicted order of importance (it may be wrong)
+		// Its purpose is to avoid skipping numbers so that file encoding can be more efficient.
+		internal static int PackCodePoint(int codePoint)
+		{
+<#
+{
+	int lastCodePoint = -1;
+	int indentCount = 0;
+
+	foreach (var block in sortedBlocks)
+	{
+		bool isContiguous = block.FirstCodePoint - lastCodePoint <= 1;
+
+		if (!isContiguous)
+		{
+#>
+			<#= lastCodePoint >= 0 ? "else " : "" #>if (codePoint >= 0x<#= block.FirstCodePoint.ToString("X4") #>)
+			{
+<#
+			indentCount++;
+			PushIndent("\t");
+		}
+
+		foreach (var mergedBlock in block.MergedBlocks)
+		{
+#>
+			// <#= mergedBlock #>
+<#
+		}
+
+		int offset = block.RebasedStartIndex - block.FirstCodePoint;
+#>
+			<#= isContiguous ? "else " : "" #>if (codePoint < 0x<#= (block.LastCodePoint + 1).ToString("X4") #>) return codePoint <#= offset < 0 ? "-" : "+" #> 0x<#= Math.Abs(offset).ToString("X5") #>;
+<#
+
+		lastCodePoint = block.LastCodePoint;
+	}
+
+	while (indentCount-- > 0)
+	{
+		PopIndent();
+#>
+			}
+<#
+	}
+}
+#>
+
+			throw new ArgumentOutOfRangeException(nameof(codePoint));
+		}
+
+		// Reverses the packing done by the PackCodePoint method.
+		internal static int UnpackCodePoint(int packedCodePoint)
+		{
+			if (packedCodePoint >= 0)
+			{
+<#
+{
+	foreach (var block in blocks)
+	{
+		foreach (var mergedBlock in block.MergedBlocks)
+		{
+#>
+				// <#= mergedBlock #>
+<#
+		}
+
+		int offset = block.FirstCodePoint - block.RebasedStartIndex;
+#>
+				<#= block.RebasedStartIndex > 0 ? "else " : "" #>if (packedCodePoint < 0x<#= (block.RebasedStartIndex + block.CodePointCount).ToString("X5") #>) return packedCodePoint <#= offset < 0 ? "-" : "+" #> 0x<#= Math.Abs(offset).ToString("X4") #>;
+<#
+	}
+}
+#>
+			}
+			throw new ArgumentOutOfRangeException(nameof(packedCodePoint));
+		}
+	}
+}
+#endif
+
+<#+
+class UnicodeBlock
+{
+	public int FirstCodePoint { get; }
+	public int LastCodePoint { get; }
+	public string Name { get; }
+	public UnicodeBlock[] MergedBlocks { get; }
+	public int CodePointCount => LastCodePoint - FirstCodePoint + 1;
+	public int RebasedStartIndex { get; set; }
+
+	public UnicodeBlock(int firstCodePoint, int lastCodePoint, string name)
+		=> (FirstCodePoint, LastCodePoint, Name, MergedBlocks) = (firstCodePoint, lastCodePoint, name, new[] { this });
+
+	public UnicodeBlock(UnicodeBlock[] mergedBlocks)
+		=> (FirstCodePoint, LastCodePoint, Name, RebasedStartIndex, MergedBlocks) = (mergedBlocks[0].FirstCodePoint, mergedBlocks[mergedBlocks.Length - 1].LastCodePoint, "MERGED Block", mergedBlocks[0].RebasedStartIndex, mergedBlocks);
+
+	public override string ToString()
+		=> $"{FirstCodePoint:X4}..{LastCodePoint:X4}; {Name}";
+}
+
+class UnicodeBlockList : List<UnicodeBlock>
+{
+	public void Add(int firstCodePoint, int lastCodePoint, string name)
+		=> Add(new UnicodeBlock(firstCodePoint, lastCodePoint, name));
+}
+#>
