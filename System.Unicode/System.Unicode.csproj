@@ -23,7 +23,10 @@
 		<PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/Icon.ico</PackageIconUrl>
 		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Version 2.4.0
+		<PackageReleaseNotes>Version 2.5.0
+-------------
+Support for Unicode 13.0.
+
 -------------
 Support for Unicode 12.1.
 Added the missing Emoji properties Extended_Pictographic and EmojiModifier that were missing. 🎉
