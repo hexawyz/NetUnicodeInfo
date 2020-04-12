@@ -20,7 +20,7 @@
 		<PackageTags>Unicode Unihan Data .NET C# String Text Char Character CodePoint Code Point</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/GoldenCrystal/NetUnicodeInfo</PackageProjectUrl>
-		<PackageIconUrl>https://raw.githubusercontent.com/GoldenCrystal/NetUnicodeInfo/master/Icon.ico</PackageIconUrl>
+		<PackageIcon>Icon.ico</PackageIcon>
 		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>Version 2.5.0
@@ -53,6 +53,11 @@ Version 2.0.0
 -------------
 Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is now of type System.SByte instead of type System.Byte.</PackageReleaseNotes>
 	</PropertyGroup>
+
+	<!-- Add the icon for the package. -->
+	<ItemGroup>
+		<None Include="../Icon.ico" Link="%(Filename)%(Extension)" Pack="true" PackagePath="" />
+	</ItemGroup>
 
 	<!-- Gracefully include the ucd.dat file as a resource of the project. -->
 	<ItemGroup>
