@@ -18,9 +18,10 @@ namespace System.Unicode.Build.Core
 
 			using (var ucdSource = await GetDataSourceAsync(httpClient, UnicodeCharacterDataUri, baseDirectory, UcdDataSourceName, UcdRequiredFiles, true, shouldDownloadFiles, shouldSaveFiles, shouldExtractFiles))
 			using (var unihanSource = await GetDataSourceAsync(httpClient, UnicodeCharacterDataUri, baseDirectory, UnihanDataSourceName, UnihanRequiredFiles, true, shouldDownloadFiles, shouldSaveFiles, shouldExtractFiles))
-			using (var emojiSource = await GetDataSourceAsync(httpClient, EmojiDataUri, baseDirectory, EmojiDataSourceName, EmojiRequiredFiles, false, shouldDownloadFiles, shouldSaveFiles, shouldExtractFiles))
+			using (var ucdEmojiSource = await GetDataSourceAsync(httpClient, UcdEmojiDataUri, baseDirectory, EmojiDataSourceName, UcdEmojiRequiredFiles, false, shouldDownloadFiles, shouldSaveFiles, shouldExtractFiles))
+			//using (var emojiSource = await GetDataSourceAsync(httpClient, EmojiDataUri, baseDirectory, EmojiDataSourceName, EmojiRequiredFiles, false, shouldDownloadFiles, shouldSaveFiles, shouldExtractFiles))
 			{
-				data = await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource, emojiSource);
+				data = await UnicodeDataProcessor.BuildDataAsync(ucdSource, unihanSource, ucdEmojiSource);
 			}
 
 			// This part is actually highly susceptible to framework version. Different frameworks give a different results.

@@ -74,7 +74,7 @@
 			Condition="'$(UseTaskForUnicodeDatabaseGeneration)' == 'true'" />
 
 		<Exec
-			Command="dotnet &quot;$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)','../System.Unicode.Build.DatabaseGenerator/bin/$(Configuration)/netcoreapp2.2/GenerateDatabase.dll'))&quot; &quot;$(UnicodeDatabaseIntermediateDirectory)&quot; &quot;$(UnicodeDatabaseIntermediatePath)&quot;"
+			Command="dotnet &quot;$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)','../System.Unicode.Build.DatabaseGenerator/bin/$(Configuration)/netcoreapp3.1/GenerateDatabase.dll'))&quot; &quot;$(UnicodeDatabaseIntermediateDirectory)&quot; &quot;$(UnicodeDatabaseIntermediatePath)&quot;"
 			Condition="'$(UseTaskForUnicodeDatabaseGeneration)' != 'true'" />
 
 	</Target>

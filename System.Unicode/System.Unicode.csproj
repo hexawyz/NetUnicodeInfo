@@ -61,11 +61,7 @@ Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is n
 
 		<!-- Call the project that will build the database.
 		Thanks to caching, this shouldn't actually be called more than once for all the target frameworks. -->
-		<MSBuild
-			Projects="GenerateUnicodeDatabase.proj"
-			Properties="Configuration=$(Configuration)"
-			RemoveProperties="TargetFramework"
-			Targets="Build" />
+		<MSBuild Projects="GenerateUnicodeDatabase.proj" Properties="Configuration=$(Configuration)" RemoveProperties="TargetFramework" Targets="Build" />
 
 		<!-- Determine if ucd.dat file has been included as a resource during the evaluation phase. -->
 		<FindInList List="@(EmbeddedResource)" ItemSpecToFind="ucd.dat">
@@ -84,7 +80,7 @@ Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is n
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
 	</ItemGroup>
 

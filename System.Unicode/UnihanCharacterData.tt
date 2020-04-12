@@ -19,6 +19,7 @@ var blocks = new UnicodeBlockList
 	{ 0x2B740, 0x2B81F, "CJK Unified Ideographs Extension D" },
 	{ 0x2B820, 0x2CEAF, "CJK Unified Ideographs Extension E" },
 	{ 0x2CEB0, 0x2EBEF, "CJK Unified Ideographs Extension F" },
+	{ 0x30000, 0x3134F, "CJK Unified Ideographs Extension G" },
 	{ 0xF900, 0xFAFF, "CJK Compatibility Ideographs" },
 	{ 0x2F800, 0x2FA1F, "CJK Compatibility Ideographs Supplement" },
 };
@@ -69,7 +70,6 @@ var blocks = new UnicodeBlockList
 var sortedBlocks = blocks.ToArray();
 Array.Sort(sortedBlocks, (a, b) => Comparer<int>.Default.Compare(a.FirstCodePoint, b.FirstCodePoint));
 #>
-#if false // To be enabled later on
 namespace System.Unicode
 {
 	partial struct UnihanCharacterData
@@ -153,7 +153,6 @@ namespace System.Unicode
 		}
 	}
 }
-#endif
 
 <#+
 class UnicodeBlock

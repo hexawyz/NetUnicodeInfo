@@ -10,6 +10,7 @@ namespace System.Unicode.Build.Core
 	public static class DataSourceProvider
 	{
 		public static readonly Uri UnicodeCharacterDataUri = new Uri("http://www.unicode.org/Public/UCD/latest/ucd/", UriKind.Absolute);
+		public static readonly Uri UcdEmojiDataUri = new Uri("http://www.unicode.org/Public/UCD/latest/ucd/emoji/", UriKind.Absolute);
 		public static readonly Uri EmojiDataUri = new Uri("http://www.unicode.org/Public/emoji/latest/", UriKind.Absolute);
 
 		public const string UnihanDataSourceName = "Unihan";
@@ -28,6 +29,12 @@ namespace System.Unicode.Build.Core
 			"Blocks.txt",
 		};
 
+		public static readonly string[] UcdEmojiRequiredFiles = new[]
+		{
+			"emoji-data.txt",
+			"emoji-variation-sequences.txt",
+		};
+
 		public static readonly string[] UnihanRequiredFiles = new[]
 		{
 			"Unihan_NumericValues.txt",
@@ -38,9 +45,9 @@ namespace System.Unicode.Build.Core
 
 		public static readonly string[] EmojiRequiredFiles = new[]
 		{
-			"emoji-data.txt",
+			//"emoji-data.txt",
 			"emoji-sequences.txt",
-			"emoji-variation-sequences.txt",
+			//"emoji-variation-sequences.txt",
 			"emoji-zwj-sequences.txt",
 		};
 

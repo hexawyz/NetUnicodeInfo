@@ -50,6 +50,8 @@ namespace System.Unicode.Tests
 		[InlineData(0x1F99E, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "LOBSTER", "Supplemental Symbols and Pictographs")]
 		[InlineData(0x1F9A6, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "OTTER", "Supplemental Symbols and Pictographs")]
 		[InlineData(0x32FF, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "SQUARE ERA NAME REIWA", "Enclosed CJK Letters and Months")]
+		[InlineData(0x1F9A4, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "DODO", "Supplemental Symbols and Pictographs")]
+		[InlineData(0x1F9AD, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "SEAL", "Supplemental Symbols and Pictographs")]
 		public void CharacterInfoShouldHaveExpectedResults(int codePoint, UnicodeCategory expectedCategory, UnicodeNumericType expectedNumericType, string expectedNumericValue, string expectedName, string expectedBlock)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
@@ -172,6 +174,7 @@ namespace System.Unicode.Tests
 		[InlineData(0x1F9FF, EmojiProperties.Emoji)] // NAZAR AMULET
 		[InlineData(0x1FA80, EmojiProperties.Emoji)] // YO-YO
 		[InlineData(0x1FA95, EmojiProperties.Emoji)] // BANJO
+		[InlineData(0x1F9A4, EmojiProperties.Emoji)] // DODO
 		[InlineData(0x231A, EmojiProperties.EmojiPresentation)] // WATCH
 		[InlineData(0x267F, EmojiProperties.EmojiPresentation)] // WHEELCHAIR SYMBOL
 		[InlineData(0x2B55, EmojiProperties.EmojiPresentation)] // HEAVY LARGE CIRCLE
@@ -180,6 +183,7 @@ namespace System.Unicode.Tests
 		[InlineData(0x1F3F8, EmojiProperties.EmojiPresentation)] // BADMINTON RACQUET AND SHUTTLECOCK
 		[InlineData(0x1FA73, EmojiProperties.EmojiPresentation)] // SHORTS
 		[InlineData(0x1FA95, EmojiProperties.EmojiPresentation)] // BANJO
+		[InlineData(0x1F9A4, EmojiProperties.EmojiPresentation)] // DODO
 		[InlineData(0x1F3FB, EmojiProperties.EmojiModifier)] // EMOJI MODIFIER FITZPATRICK TYPE-1-2
 		[InlineData(0x1F3FC, EmojiProperties.EmojiModifier)] // EMOJI MODIFIER FITZPATRICK TYPE-3
 		[InlineData(0x1F3FD, EmojiProperties.EmojiModifier)] // EMOJI MODIFIER FITZPATRICK TYPE-4

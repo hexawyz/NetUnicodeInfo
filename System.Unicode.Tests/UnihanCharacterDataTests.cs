@@ -15,6 +15,7 @@ namespace System.Unicode.Tests
 		[InlineData("CJK Unified Ideographs Extension D")]
 		[InlineData("CJK Unified Ideographs Extension E")]
 		[InlineData("CJK Unified Ideographs Extension F")]
+		[InlineData("CJK Unified Ideographs Extension G")]
 		[InlineData("CJK Compatibility Ideographs")]
 		[InlineData("CJK Compatibility Ideographs Supplement")]
 		public void CodePointPackingShouldRoundTrip(string blockName)
