@@ -26,6 +26,7 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    msbuildArgs: '/p:ContiniousIntegrationBuild=true'
 
 - task: VSTest@2
   inputs:

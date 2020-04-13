@@ -10,6 +10,8 @@
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<AssemblyName>UnicodeInformation</AssemblyName>
+		<Deterministic>true</Deterministic>
+		<PathMap>$(MSBuildThisFileDirectory)=C:\Sources\NetUnicodeInfo\System.Unicode</PathMap>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Package">
