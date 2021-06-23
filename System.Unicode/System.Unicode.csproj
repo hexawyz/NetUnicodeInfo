@@ -25,7 +25,11 @@
 		<PackageIcon>packageIcon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Version 2.5.0
+		<PackageReleaseNotes>Version 2.5.1
+-------------
+Fix for .NET 6
+
+Version 2.5.0
 -------------
 Support for Unicode 13.0.
 
