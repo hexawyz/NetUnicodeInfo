@@ -124,7 +124,14 @@ namespace System.Unicode
 				if (@case < 0x80)   // Handles the case where only the name is present.
 				{
 					length = (length & 0x7F) + 1;
-					if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
+
+					int totalRead = 0;
+					while (totalRead < length)
+					{
+						int bytesRead = reader.Read(nameBuffer, totalRead, length - totalRead);
+						if (bytesRead == 0) throw new EndOfStreamException();
+						totalRead += bytesRead;
+					}
 
 					name = Encoding.UTF8.GetString(nameBuffer, 0, length);
 				}
@@ -136,7 +143,15 @@ namespace System.Unicode
 					{
 						length = reader.ReadByte() + 1;
 						if (length > 128) throw new InvalidDataException("Did not expect names longer than 128 bytes.");
-						if (reader.Read(nameBuffer, 0, length) != length) throw new EndOfStreamException();
+
+						int totalRead = 0;
+						while (totalRead < length)
+						{
+							int bytesRead = reader.Read(nameBuffer, totalRead, length - totalRead);
+							if (bytesRead == 0) throw new EndOfStreamException();
+							totalRead += bytesRead;
+						}
+
 						name = Encoding.UTF8.GetString(nameBuffer, 0, length);
 					}
 
