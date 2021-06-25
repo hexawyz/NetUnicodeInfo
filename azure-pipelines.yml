@@ -36,6 +36,7 @@ steps:
     testAssemblyVer2: |
       **\*.Tests.dll
       !**\obj\**
+      !**\ref\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
     runOnlyImpactedTests: false
 
