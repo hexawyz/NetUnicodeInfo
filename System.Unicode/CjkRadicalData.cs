@@ -24,7 +24,7 @@ namespace System.Unicode
 		{
 			TraditionalRadicalCodePoint = traditionalRadicalCodePoint;
 			TraditionalCharacterCodePoint = traditionalCharacterCodePoint;
-			SimplifiedRadicalCodePoint = simplifiedCharacterCodePoint;
+			SimplifiedRadicalCodePoint = simplifiedRadicalCodePoint;
 			SimplifiedCharacterCodePoint = simplifiedCharacterCodePoint;
 		}
 
