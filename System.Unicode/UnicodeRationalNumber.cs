@@ -18,8 +18,11 @@ namespace System.Unicode
 			if (s.Length == 0) throw new ArgumentException();
 
 			int fractionBarIndex = s.IndexOf('/');
-
+#if HAS_NATIVE_SPAN
+			return new UnicodeRationalNumber(long.Parse(fractionBarIndex >= 0 ? s.AsSpan(0, fractionBarIndex) : s), fractionBarIndex >= 0 ? ushort.Parse(s.AsSpan(fractionBarIndex + 1)) : (byte)1);
+#else
 			return new UnicodeRationalNumber(long.Parse(fractionBarIndex >= 0 ? s.Substring(0, fractionBarIndex) : s), fractionBarIndex >= 0 ? ushort.Parse(s.Substring(fractionBarIndex + 1)) : (byte)1);
+#endif
 		}
 
 		/// <summary>The numerator of the fraction.</summary>

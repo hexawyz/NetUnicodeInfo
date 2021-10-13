@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace System.Unicode
@@ -6,27 +6,25 @@ namespace System.Unicode
 	/// <summary>Supports a permissive iteration of code points in a <see cref="string"/>.</summary>
 	public struct PermissiveCodePointEnumerator : IEnumerator<int>
 	{
-		private readonly string text;
-		private int current;
-		private int index;
+		private readonly string _text;
+		private int _current;
+		private int _index;
 
 		/// <summary>Initializes a new instance of the <see cref="PermissiveCodePointEnumerator"/> struct.</summary>
 		/// <param name="text">The text whose code point should be enumerated.</param>
-		/// <exception cref="ArgumentNullException"><paramref cref="text"/> is <see langword="null"/>.</exception>
+		/// <exception cref="ArgumentNullException"><paramref cref="_text"/> is <see langword="null"/>.</exception>
 		public PermissiveCodePointEnumerator(string text)
 		{
-			if (text == null) throw new ArgumentNullException(nameof(text));
-
-			this.text = text;
-			current = 0;
-			index = -1;
+			_text = text ?? throw new ArgumentNullException(nameof(text));
+			_current = 0;
+			_index = -1;
 		}
 
 		/// <summary>Gets the element in the collection at the current position of the enumerator..</summary>
 		/// <value>The element in the collection at the current position of the enumerator.</value>
-		public int Current { get { return current; } }
+		public int Current => _current;
 
-		object IEnumerator.Current { get { return current; } }
+		object IEnumerator.Current => _current;
 
 		void IDisposable.Dispose() { }
 
@@ -34,23 +32,19 @@ namespace System.Unicode
 		/// <returns><see langword="true"/> if the enumerator was successfully advanced to the next element; <see langword="false"/> if the enumerator has passed the end of the collection.</returns>
 		public bool MoveNext()
 		{
-			if (index < text.Length && (index += current > 0xFFFF ? 2 : 1) < text.Length)
+			if (_index < _text.Length && (_index += _current > 0xFFFF ? 2 : 1) < _text.Length)
 			{
-				current = GetUtf32(text, index);
+				_current = GetUtf32(_text, _index);
 				return true;
 			}
 			else
 			{
-				current = 0;
+				_current = 0;
 				return false;
 			}
 		}
 
-		void IEnumerator.Reset()
-		{
-			current = 0;
-			index = -1;
-		}
+		void IEnumerator.Reset() => (_current, _index) = (0, -1);
 
 		private static int GetUtf32(string s, int index)
 		{

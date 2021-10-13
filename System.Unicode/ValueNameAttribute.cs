@@ -1,4 +1,4 @@
-﻿namespace System.Unicode
+namespace System.Unicode
 {
 	/// <summary>Declares a name for a specific value.</summary>
 	/// <remarks>
@@ -8,16 +8,11 @@
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 	public sealed class ValueNameAttribute : Attribute
 	{
-		private readonly string name;
-
 		/// <summary>The name given to the property or value.</summary>
-		public string Name { get { return name; } }
+		public string Name { get; }
 
 		/// <summary>Initializes an instance of the class <see cref="ValueNameAttribute"/>.</summary>
 		/// <param name="name">The name given to the property or value on which this attribute is to be applied.</param>
-		public ValueNameAttribute(string name)
-		{
-			this.name = name;
-		}
+		public ValueNameAttribute(string name) => Name = name;
 	}
 }

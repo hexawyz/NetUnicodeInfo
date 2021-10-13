@@ -87,8 +87,8 @@ namespace System.Unicode
 		internal int CompareCodePoint(int codePoint)
 			=> FirstCodePoint <= codePoint ? LastCodePoint < codePoint ? 1 : 0 : -1;
 
-		/// <summary>Returns a <see cref="System.String" /> that represents this instance.</summary>
-		/// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+		/// <summary>Returns a <see cref="string" /> that represents this instance.</summary>
+		/// <returns>A <see cref="string" /> that represents this instance.</returns>
 		public override string ToString()
 			=> FirstCodePoint == LastCodePoint ? FirstCodePoint.ToString("X4") : FirstCodePoint.ToString("X4") + ".." + LastCodePoint.ToString("X4");
 
@@ -110,8 +110,13 @@ namespace System.Unicode
 			}
 			else
 			{
+#if HAS_NATIVE_SPAN
+				start = int.Parse(s.AsSpan(0, rangeSeparatorOffset), NumberStyles.HexNumber);
+				end = int.Parse(s.AsSpan(rangeSeparatorOffset + 2), NumberStyles.HexNumber);
+#else
 				start = int.Parse(s.Substring(0, rangeSeparatorOffset), NumberStyles.HexNumber);
 				end = int.Parse(s.Substring(rangeSeparatorOffset + 2), NumberStyles.HexNumber);
+#endif
 			}
 
 			return new UnicodeCodePointRange(start, end);
@@ -119,7 +124,7 @@ namespace System.Unicode
 
 		/// <summary>Returns an enumerator that iterates through the collection.</summary>
 		/// <returns>A <see cref="Enumerator"/> that can be used to iterate through the collection.</returns>
-		public Enumerator GetEnumerator() => new Enumerator(FirstCodePoint, LastCodePoint);
+		public Enumerator GetEnumerator() => new(FirstCodePoint, LastCodePoint);
 		IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}

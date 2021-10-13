@@ -8,7 +8,7 @@ namespace System.Unicode
 	/// This enumerable will only allow enumeration of valid UTF-16 strings.
 	/// For incomplete or invalid UTF-16 strings, please use <see cref="PermissiveCodePointEnumerable"/> instead.
 	/// </remarks>
-	public struct CodePointEnumerable : IEnumerable<int>
+	public readonly struct CodePointEnumerable : IEnumerable<int>
 	{
 		/// <summary>Initializes a new instance of the struct <see cref="CodePointEnumerable"/>.</summary>
 		/// <param name="text">The string whose code points must be enumerated.</param>

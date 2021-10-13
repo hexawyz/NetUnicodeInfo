@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace System.Unicode
@@ -8,7 +8,7 @@ namespace System.Unicode
 	/// This enumerable will allow enumeration of UTF-16 strings containing lone surrogates.
 	/// For a more conformant enumeration of code points, please use <see cref="CodePointEnumerable"/> instead.
 	/// </remarks>
-	public struct PermissiveCodePointEnumerable : IEnumerable<int>
+	public readonly struct PermissiveCodePointEnumerable : IEnumerable<int>
 	{
 		/// <summary>Initializes a new instance of the struct <see cref="PermissiveCodePointEnumerable"/>.</summary>
 		/// <param name="text">The string whose code points must be enumerated.</param>

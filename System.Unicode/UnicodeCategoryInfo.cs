@@ -109,7 +109,7 @@ namespace System.Unicode
 		/// <summary>Determines whether the specified <see cref="object" />, is equal to this instance.</summary>
 		/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
 		/// <returns><see langword="true" /> if the specified <see cref="object" /> is equal to this instance; otherwise, <see langword="false" />.</returns>
-		public override bool Equals(object obj) => obj is UnicodeCategoryInfo && Equals((UnicodeCategoryInfo)obj);
+		public override bool Equals(object obj) => obj is UnicodeCategoryInfo other && Equals(other);
 
 		/// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
 		/// <param name="other">An object to compare with this object.</param>

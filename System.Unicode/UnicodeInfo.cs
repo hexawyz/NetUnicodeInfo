@@ -111,7 +111,7 @@ namespace System.Unicode
 		/// <param name="codePoint">The Unicode code point whose block should be retrieved.</param>
 		/// <returns>The name of the block the code point was assigned to.</returns>
 		public static string GetBlockName(int codePoint)
-			=> FindBlockIndex(codePoint) is int i && i >= 0 ?
+			=> FindBlockIndex(codePoint) is int i and >= 0 ?
 				UnicodeData.Blocks[i].Name :
 				DefaultBlock;
 

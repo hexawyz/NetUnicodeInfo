@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.Net.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;netstandard2.0;netstandard1.1;net45</TargetFrameworks>
+		<TargetFrameworks>net5.0;netstandard2.1;netstandard2.0;netstandard1.1;net45</TargetFrameworks>
 		<DefaultLanguage>en-US</DefaultLanguage>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -12,6 +12,10 @@
 		<AssemblyName>UnicodeInformation</AssemblyName>
 		<Deterministic>true</Deterministic>
 		<PathMap>$(MSBuildThisFileDirectory)=C:\Sources\NetUnicodeInfo\System.Unicode</PathMap>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefineConstants Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.1' And '$(TargetFramework)' != 'net45'" >$(DefineConstants);HAS_NATIVE_SPAN</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Package">

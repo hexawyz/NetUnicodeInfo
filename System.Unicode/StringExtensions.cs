@@ -10,8 +10,7 @@ namespace System.Unicode
 		/// </remarks>
 		/// <param name="s">The string to encapsulate.</param>
 		/// <returns>An enumerable object, which can be used to enumerate code points in the string.</returns>
-		public static CodePointEnumerable AsCodePointEnumerable(this string s)
-			=> new CodePointEnumerable(s);
+		public static CodePointEnumerable AsCodePointEnumerable(this string s) => new(s);
 
 		/// <summary>Encapsulates the string in an object which can be used to enumerate code points in a permissive way.</summary>
 		/// <remarks>
@@ -20,7 +19,6 @@ namespace System.Unicode
 		/// </remarks>
 		/// <param name="s">The string to encapsulate.</param>
 		/// <returns>An enumerable object, which can be used to enumerate code points in the string.</returns>
-		public static PermissiveCodePointEnumerable AsPermissiveCodePointEnumerable(this string s)
-			=> new PermissiveCodePointEnumerable(s);
+		public static PermissiveCodePointEnumerable AsPermissiveCodePointEnumerable(this string s) => new(s);
 	}
 }
