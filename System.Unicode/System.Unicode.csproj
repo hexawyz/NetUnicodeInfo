@@ -29,7 +29,13 @@
 		<PackageIcon>packageIcon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Version 2.5.1
+		<PackageReleaseNotes>Version 2.6.0
+-------------
+Support for Unicode 14.0
+Bugfix in CjkRadicalData
+Reduce string allocations for a few methods on frameworks where native Span is available.
+
+Version 2.5.1
 -------------
 Fix for .NET 6
 
