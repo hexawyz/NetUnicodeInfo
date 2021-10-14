@@ -204,9 +204,32 @@ namespace System.Unicode
 		{
 			if (characterData.CodePointRange.IsSingleCodePoint) return characterData.Name;
 			else if (HangulInfo.IsHangul(codePoint)) return HangulInfo.GetHangulName((char)codePoint);
+#if !HAS_NATIVE_SPAN
 			else if (characterData.Name != null) return characterData.Name + "-" + codePoint.ToString("X4");
+#else
+			else if (characterData.Name != null) return GetNameFromRange(characterData.Name, codePoint);
+#endif
 			else return null;
 		}
+
+#if HAS_NATIVE_SPAN
+		private static string GetNameFromRange(string rangeName, int codePoint)
+		{
+			int length = rangeName.Length + (codePoint < 0x10000 ? 5 : codePoint < 0x100000 ? 6 : 7);
+
+			return string.Create
+			(
+				length,
+				(RangeName: rangeName, CodePoint: codePoint),
+				static (span, state) =>
+				{
+					state.RangeName.AsSpan().CopyTo(span);
+					span[state.RangeName.Length] = '-';
+					state.CodePoint.TryFormat(span[(state.RangeName.Length + 1)..], out _, "X4", CultureInfo.InvariantCulture);
+				}
+			);
+		}
+#endif
 
 		/// <summary>Returns information for a CJK radical.</summary>
 		/// <param name="radicalIndex">The index of the radical. Must be between 1 and <see cref="CjkRadicalCount"/>.</param>

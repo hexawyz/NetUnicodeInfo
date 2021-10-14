@@ -90,7 +90,24 @@ namespace System.Unicode
 		/// <summary>Returns a <see cref="string" /> that represents this instance.</summary>
 		/// <returns>A <see cref="string" /> that represents this instance.</returns>
 		public override string ToString()
+#if !HAS_NATIVE_SPAN
 			=> FirstCodePoint == LastCodePoint ? FirstCodePoint.ToString("X4") : FirstCodePoint.ToString("X4") + ".." + LastCodePoint.ToString("X4");
+#else
+			=> FirstCodePoint == LastCodePoint ? FirstCodePoint.ToString("X4") : RangeToString();
+
+		private string RangeToString()
+		{
+			Span<char> buffer = stackalloc char[14];
+
+			FirstCodePoint.TryFormat(buffer, out int length, "X4", CultureInfo.InvariantCulture);
+			buffer.Slice(length, 2).Fill('.');
+			length += 2;
+			LastCodePoint.TryFormat(buffer[length..], out int l, "X4", CultureInfo.InvariantCulture);
+			length += l;
+
+			return buffer[..length].ToString();
+		}
+#endif
 
 		/// <summary>Parses the specified into a <see cref="UnicodeCodePointRange"/>.</summary>
 		/// <remarks>Code point ranges are encoded as one unprefixed hexadecimal number for single code points, or a pair of unprefixed hexadecimal numbers separated by the characters "..".</remarks>

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace System.Unicode
 {
 	/// <summary>Represents a rational number in a format compatible with the Unicode standard.</summary>
@@ -54,9 +56,27 @@ namespace System.Unicode
 		/// <summary>Creates a string representation of the current rational number.</summary>
 		/// <returns>The created representation is culture invariant, and will be parsable by the <see cref="Parse(string)"/> method.</returns>
 		public override string ToString()
+#if !HAS_NATIVE_SPAN
+			=> !IsDefaultValue ? Denominator != 1 ? Numerator.ToString() + "/" + Denominator.ToString() : Numerator.ToString() : string.Empty;
+#else
+			=> !IsDefaultValue ?
+					Denominator != 1 ?
+						FractionToString() :
+						Numerator.ToString() :
+				string.Empty;
+
+		private string FractionToString()
 		{
-			return !IsDefaultValue ? Denominator != 1 ? Numerator.ToString() + "/" + Denominator.ToString() : Numerator.ToString() : string.Empty;
+			Span<char> buffer = stackalloc char[26];
+
+			Numerator.TryFormat(buffer, out int length, "D", CultureInfo.InvariantCulture);
+			buffer[length++] = '/';
+			Denominator.TryFormat(buffer[length..], out int l, "D", CultureInfo.InvariantCulture);
+			length += l;
+
+			return buffer[..length].ToString();
 		}
+#endif
 
 		/// <summary>Determines whether the specified rational number is equal to the current value.</summary>
 		/// <param name="other">The other value to compare to the current one.</param>
