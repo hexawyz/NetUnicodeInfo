@@ -12,10 +12,11 @@
 		<AssemblyName>UnicodeInformation</AssemblyName>
 		<Deterministic>true</Deterministic>
 		<PathMap>$(MSBuildThisFileDirectory)=C:\Sources\NetUnicodeInfo\System.Unicode</PathMap>
+		<NoWarn>$(NoWarn);NETSDK1138</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DefineConstants Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.1' And '$(TargetFramework)' != 'net45'" >$(DefineConstants);HAS_NATIVE_SPAN</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.1' And '$(TargetFramework)' != 'net45'">$(DefineConstants);HAS_NATIVE_SPAN</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Package">
@@ -29,7 +30,11 @@
 		<PackageIcon>packageIcon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Version 2.6.0
+		<PackageReleaseNotes>Version 2.7.0
+-------------
+Support for Unicode 15.0
+
+Version 2.6.0
 -------------
 Support for Unicode 14.0
 Bugfix in CjkRadicalData
@@ -106,6 +111,13 @@ Following migration to Unicode 9.0.0, UnicodeRadicalStrokeCount.StrokeCount is n
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

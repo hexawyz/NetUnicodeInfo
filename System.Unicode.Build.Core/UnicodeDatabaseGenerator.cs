@@ -27,7 +27,10 @@ namespace System.Unicode.Build.Core
 			// This part is actually highly susceptible to framework version. Different frameworks give a different results.
 			// In order to consistently produce the same result, the framework executing this code must be fixed.
 			using (var stream = new DeflateStream(File.Create(outputFilePath), CompressionLevel.Optimal, false))
+			{
 				data.WriteToStream(stream);
+				stream.Flush();
+			}
 		}
 	}
 }

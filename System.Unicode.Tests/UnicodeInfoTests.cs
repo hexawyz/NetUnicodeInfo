@@ -52,6 +52,14 @@ namespace System.Unicode.Tests
 		[InlineData(0x32FF, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "SQUARE ERA NAME REIWA", "Enclosed CJK Letters and Months")]
 		[InlineData(0x1F9A4, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "DODO", "Supplemental Symbols and Pictographs")]
 		[InlineData(0x1F9AD, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "SEAL", "Supplemental Symbols and Pictographs")]
+		[InlineData(0x31350, UnicodeCategory.OtherLetter, UnicodeNumericType.None, null, "CJK IDEOGRAPH EXTENSION H-31350", "CJK Unified Ideographs Extension H")]
+		[InlineData(0x1FADA, UnicodeCategory.OtherSymbol, UnicodeNumericType.None, null, "GINGER ROOT", "Symbols and Pictographs Extended-A")]
+		[InlineData(0x11F50, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, "0", "KAWI DIGIT ZERO", "Kawi")]
+		[InlineData(0x11F59, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, "9", "KAWI DIGIT NINE", "Kawi")]
+		[InlineData(0x1E4F0, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, "0", "NAG MUNDARI DIGIT ZERO", "Nag Mundari")]
+		[InlineData(0x1E4F9, UnicodeCategory.DecimalDigitNumber, UnicodeNumericType.Decimal, "9", "NAG MUNDARI DIGIT NINE", "Nag Mundari")]
+		[InlineData(0x1D2C0, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "0", "KAKTOVIK NUMERAL ZERO", "Kaktovik Numerals")]
+		[InlineData(0x1D2D3, UnicodeCategory.OtherNumber, UnicodeNumericType.Numeric, "19", "KAKTOVIK NUMERAL NINETEEN", "Kaktovik Numerals")]
 		public void CharacterInfoShouldHaveExpectedResults(int codePoint, UnicodeCategory expectedCategory, UnicodeNumericType expectedNumericType, string expectedNumericValue, string expectedName, string expectedBlock)
 		{
 			var info = UnicodeInfo.GetCharInfo(codePoint);
@@ -175,6 +183,7 @@ namespace System.Unicode.Tests
 		[InlineData(0x1FA80, EmojiProperties.Emoji)] // YO-YO
 		[InlineData(0x1FA95, EmojiProperties.Emoji)] // BANJO
 		[InlineData(0x1F9A4, EmojiProperties.Emoji)] // DODO
+		[InlineData(0x1FADA, EmojiProperties.Emoji)] // GINGER ROOT
 		[InlineData(0x231A, EmojiProperties.EmojiPresentation)] // WATCH
 		[InlineData(0x267F, EmojiProperties.EmojiPresentation)] // WHEELCHAIR SYMBOL
 		[InlineData(0x2B55, EmojiProperties.EmojiPresentation)] // HEAVY LARGE CIRCLE
@@ -184,6 +193,7 @@ namespace System.Unicode.Tests
 		[InlineData(0x1FA73, EmojiProperties.EmojiPresentation)] // SHORTS
 		[InlineData(0x1FA95, EmojiProperties.EmojiPresentation)] // BANJO
 		[InlineData(0x1F9A4, EmojiProperties.EmojiPresentation)] // DODO
+		[InlineData(0x1FADA, EmojiProperties.EmojiPresentation)] // GINGER ROOT
 		[InlineData(0x1F3FB, EmojiProperties.EmojiModifier)] // EMOJI MODIFIER FITZPATRICK TYPE-1-2
 		[InlineData(0x1F3FC, EmojiProperties.EmojiModifier)] // EMOJI MODIFIER FITZPATRICK TYPE-3
 		[InlineData(0x1F3FD, EmojiProperties.EmojiModifier)] // EMOJI MODIFIER FITZPATRICK TYPE-4
@@ -216,6 +226,8 @@ namespace System.Unicode.Tests
 		[InlineData(0x1F9B0, EmojiProperties.ExtendedPictographic)] // EMOJI COMPONENT RED HAIR
 		[InlineData(0x1F9B3, EmojiProperties.ExtendedPictographic)] // EMOJI COMPONENT WHITE HAIR
 		[InlineData(0x1FA95, EmojiProperties.ExtendedPictographic)] // BANJO
+		[InlineData(0x1F9A4, EmojiProperties.ExtendedPictographic)] // DODO
+		[InlineData(0x1FADA, EmojiProperties.ExtendedPictographic)] // GINGER ROOT
 		public void CodePointShouldHaveEmojiProperties(int codePoint, EmojiProperties emojiProperties)
 			=> Assert.Equal(emojiProperties, UnicodeInfo.GetCharInfo(codePoint).EmojiProperties & emojiProperties);
 

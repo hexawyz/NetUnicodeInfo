@@ -401,6 +401,8 @@ namespace System.Unicode.Build.Core
 				{
 					_unihanEntries[i].WriteToFile(writer);
 				}
+
+				writer.Flush();
 			}
 		}
 
