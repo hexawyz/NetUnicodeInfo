@@ -30,7 +30,11 @@
 		<PackageIcon>packageIcon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/GoldenCrystal/NetUnicodeInfo.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Version 2.7.0
+		<PackageReleaseNotes>Version 2.7.1
+-------------
+Fix startup performance regression at the cost of more memory usage during startup.
+
+Version 2.7.0
 -------------
 Support for Unicode 15.0
 
