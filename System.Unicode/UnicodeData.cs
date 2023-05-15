@@ -27,8 +27,13 @@ namespace System.Unicode
 
 		public static UnicodeData ReadFromResources()
 		{
-			using (var stream = new DeflateStream(typeof(UnicodeData).GetTypeInfo().Assembly.GetManifestResourceStream("ucd.dat"), CompressionMode.Decompress, false))
+			using (var stream = new MemoryStream())
 			{
+				using (var deflateStream = new DeflateStream(typeof(UnicodeData).GetTypeInfo().Assembly.GetManifestResourceStream("ucd.dat"), CompressionMode.Decompress, false))
+				{
+					deflateStream.CopyTo(stream);
+				}
+				stream.Position = 0;
 				return ReadFromStream(stream);
 			}
 		}
